@@ -1,0 +1,23 @@
+{
+  "name": "intmax2-explorer-api",
+  "private": true,
+  "version": "0.3.6",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "yarn workspaces foreach --all --topological run build",
+    "build:shared": "yarn workspace @intmax2-explorer-api/shared run build",
+    "build:parallel": "yarn workspaces foreach --all -pt run build",
+    "lint": "biome lint .",
+    "format": "biome check --write --unsafe .",
+    "check": "biome check ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "packageManager": "yarn@4.1.1+sha224.00f08619463229f8ba40c4ee90e8c2e4ced1f11c3115c26f3b98432e"
+}
