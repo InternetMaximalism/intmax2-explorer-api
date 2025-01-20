@@ -5,10 +5,16 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '**.md'
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
 
     steps:
     - uses: actions/checkout@v4
@@ -16,13 +22,13 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '22'
+        node-version: 22.13.0
 
     - name: Enable Corepack
       run: corepack enable
 
     - name: Set Yarn version
-      run: corepack prepare yarn@4.1.1 --activate
+      run: corepack prepare yarn@4.6.0 --activate
 
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
@@ -31,7 +37,10 @@ jobs:
     - uses: actions/cache@v3
       id: yarn-cache
       with:
-        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        path: |
+          ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          **/node_modules
+          packages/*/node_modules
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-

@@ -16,7 +16,6 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit"
   },
-  "packageManager": "yarn@4.1.1",
   "devDependencies": {
     "@types/geoip-lite": "^1.4.4",
     "tsx": "^4.19.2",

@@ -6,11 +6,16 @@ export const queryValidation = z.strictObject({
       message: "Hash must be a valid 32-byte hex string starting with 0x",
     }),
     z
-      .number()
-      .int()
-      .min(0)
-      .max(Number.MAX_SAFE_INTEGER, {
-        message: "Number is too large. Maximum value is " + Number.MAX_SAFE_INTEGER,
+      .string()
+      .refine((val) => !isNaN(Number(val)), {
+        message: "number must be a valid number string",
+      })
+      .transform((val) => parseInt(val, 10))
+      .refine((val) => val > 0, {
+        message: "number must be a positive integer",
+      })
+      .refine((val) => val <= Number.MAX_SAFE_INTEGER, {
+        message: "number must be less than or equal to Number.MAX_SAFE_INTEGER",
       }),
   ]),
 });

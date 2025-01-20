@@ -16,7 +16,6 @@
     "build": "rm -rf dist tsconfig.tsbuildinfo && tsc",
     "typecheck": "tsc --noEmit"
   },
-  "packageManager": "yarn@4.1.1",
   "devDependencies": {
     "typescript": "^5.7.2"
   }
