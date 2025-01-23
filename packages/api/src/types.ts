@@ -27,8 +27,8 @@ export interface BlockValidityProofResponse {
   updateWitness: UpdateWitness;
 }
 
-interface ValidityProof {
-  proof: object;
+export interface ValidityProof {
+  proof: any;
   public_inputs: any[];
 }
 

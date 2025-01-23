@@ -9,13 +9,7 @@ import { appendTrailingSlash } from "hono/trailing-slash";
 import { name } from "../package.json";
 import { APP_TIMEOUT } from "./constants";
 import { shutdown } from "./lib/shutdown";
-import {
-  configureLogging,
-  corsMiddleware,
-  geoIPRestriction,
-  limiter,
-  requestMiddleware,
-} from "./middlewares";
+import { configureLogging, corsMiddleware, limiter, requestMiddleware } from "./middlewares";
 import { routes } from "./routes";
 
 const { PORT: port } = config;
@@ -25,7 +19,7 @@ const app = new Hono({ strict: true });
 app.use("*", corsMiddleware);
 app.use(secureHeaders());
 app.use(limiter);
-app.use(geoIPRestriction);
+// app.use(geoIPRestriction);
 
 app.use(timeout(APP_TIMEOUT));
 app.use(requestMiddleware);

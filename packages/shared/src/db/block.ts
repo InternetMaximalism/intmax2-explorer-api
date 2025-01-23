@@ -1,7 +1,14 @@
 import type { CollectionReference } from "@google-cloud/firestore";
 import { FIRESTORE_COLLECTIONS } from "../constants";
 import { AppError, ErrorCode, logger } from "../lib";
-import type { BlockData, BlockFilters, BlockInput } from "../types";
+import {
+  BlockData,
+  BlockDisplayType,
+  BlockFilters,
+  BlockInput,
+  BlockType,
+  DISPLAY_TO_INTERNAL_TYPE_MAP,
+} from "../types";
 import { BaseRepository } from "./base";
 import { db } from "./firestore";
 
@@ -31,13 +38,27 @@ export class Block extends BaseRepository<BlockData, BlockFilters, BlockInput> {
     return this.list(filters, (query) => {
       let modified = query;
       if (filters?.blockType) {
-        modified = modified.where("blockType", "==", filters.blockType);
+        modified = this.applyBlockTypeFilter(modified, filters.blockType);
       }
       if (filters?.blockValidity) {
         modified = modified.where("blockValidity", "==", filters.blockValidity);
       }
       return modified;
     });
+  }
+
+  applyBlockTypeFilter(
+    query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>,
+    displayType: BlockDisplayType,
+  ) {
+    if (displayType === BlockDisplayType.NoTransaction) {
+      return query.where("transactionCount", "==", 0);
+    }
+
+    query = query.where("transactionCount", ">", 0);
+
+    const internalType = this.toInternalType(displayType);
+    return query.where("blockType", "==", internalType);
   }
 
   async getBlockByBlockHash(hash: string) {
@@ -59,5 +80,22 @@ export class Block extends BaseRepository<BlockData, BlockFilters, BlockInput> {
         "Failed to get block by block number",
       );
     }
+  }
+
+  toInternalType(displayType: BlockDisplayType): BlockType {
+    if (displayType === BlockDisplayType.NoTransaction) {
+      throw new AppError(
+        400,
+        ErrorCode.BAD_REQUEST,
+        "Cannot convert empty block type to internal type",
+      );
+    }
+
+    const internalType = DISPLAY_TO_INTERNAL_TYPE_MAP[displayType];
+    if (!internalType) {
+      throw new AppError(400, ErrorCode.BAD_REQUEST, `Invalid block type: ${displayType}`);
+    }
+
+    return internalType;
   }
 }

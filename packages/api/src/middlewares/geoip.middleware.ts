@@ -8,7 +8,6 @@ import type { RestrictedCountryCode } from "../types";
 export const geoIPRestriction = createMiddleware(async (c, next) => {
   const ip = getIP(c);
   const geo = geoip.lookup(ip as string);
-
   if (geo && geo.country in RESTRICTED_COUNTRY_CODES) {
     throw new ForbiddenError(
       `Access denied from ${RESTRICTED_COUNTRY_CODES[geo.country as RestrictedCountryCode]} IP address`,

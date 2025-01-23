@@ -74,7 +74,7 @@ export abstract class BaseRepository<
       }
 
       return {
-        items: items.map(this.formatData),
+        items: this.formatDataBulk(items),
         nextCursor: hasMore ? items[items.length - 1].hash : null,
         hasMore,
         totalCount,
@@ -108,5 +108,13 @@ export abstract class BaseRepository<
 
   protected formatData({ createdAt, ...rest }: T) {
     return rest;
+  }
+
+  protected formatDataBulk(items: T[]) {
+    const result = new Array(items.length);
+    for (let i = 0; i < items.length; i++) {
+      result[i] = this.formatData(items[i]);
+    }
+    return result;
   }
 }
