@@ -113,3 +113,20 @@ export type TokenType = 0 | 1 | 2 | 3;
 // block
 export type BlockType = "Registration" | "NonRegistration";
 export type BlockValidity = "Valid" | "Invalid";
+
+export const BlockDisplayType = {
+  NoTransaction: "Type0",
+  RegistrationBlock: "Type1",
+  NonRegistrationBlock: "Type2",
+} as const;
+export type BlockDisplayType = (typeof BlockDisplayType)[keyof typeof BlockDisplayType];
+
+export const DISPLAY_TO_INTERNAL_TYPE_MAP = {
+  [BlockDisplayType.RegistrationBlock]: "Registration",
+  [BlockDisplayType.NonRegistrationBlock]: "NonRegistration",
+} as const;
+
+export const INTERNAL_TO_DISPLAY_TYPE_MAP = {
+  Registration: BlockDisplayType.RegistrationBlock,
+  NonRegistration: BlockDisplayType.NonRegistrationBlock,
+} as const;

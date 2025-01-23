@@ -1,9 +1,9 @@
 import { config } from "@intmax2-explorer-api/shared";
 import axios, { AxiosError } from "axios";
 import { API_TIMEOUT } from "../constants";
-import type { BlockValidityProofResponse } from "../types";
+import type { BlockValidityProofResponse, ValidityProof } from "../types";
 
-export const getBlockValidityProof = async (blockNumber: number) => {
+export const fetchBlockValidityProof = async (blockNumber: number) => {
   try {
     const response = await axios.get<BlockValidityProofResponse>(
       `${config.API_VALIDITY_PROVER_BASE_URL}/validity-prover/get-update-witness`,
@@ -29,4 +29,8 @@ export const getBlockValidityProof = async (blockNumber: number) => {
       error instanceof Error ? error : undefined,
     );
   }
+};
+
+export const formatValidityProof = (blockValidityProof: BlockValidityProofResponse) => {
+  return blockValidityProof.updateWitness.validityProof as ValidityProof;
 };

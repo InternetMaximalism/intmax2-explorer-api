@@ -15,3 +15,10 @@ export const getBlock = async (c: Context) => {
   const result = await blocksService.getBlock(requestParams);
   return c.json(result);
 };
+
+export const getBlockValidityProof = async (c: Context) => {
+  const param = c.req.param();
+  const requestParams = await hashValidation.parseAsync(param);
+  const result = await blocksService.getBlockValidityProof(requestParams);
+  return c.json(result);
+};

@@ -21,6 +21,9 @@ curl -i --location --request GET "$ENDPOINT/v1/blocks?perPage=50&cursor=0x"
 # block detail
 curl -i --location --request GET "$ENDPOINT/v1/blocks/0x"
 
+# block validity proof
+curl -i --location --request GET "$ENDPOINT/v1/blocks/100/validityProof"
+
 # deposits
 curl -i --location --request GET "$ENDPOINT/v1/deposits"
 curl -i --location --request GET "$ENDPOINT/v1/deposits?perPage=50&cursor=0x"

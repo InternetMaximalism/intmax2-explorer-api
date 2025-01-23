@@ -1,5 +1,5 @@
 import type { Timestamp } from "@google-cloud/firestore";
-import { BlockType, BlockValidity } from "./blockchain";
+import { BlockDisplayType, BlockType, BlockValidity } from "./blockchain";
 
 export type BlockInput = {
   blockNumber: number;
@@ -31,6 +31,6 @@ export type BlockData = {
 export type BlockFilters = {
   perPage?: number;
   cursor?: string;
-  blockType?: BlockType;
+  blockType?: BlockDisplayType;
   blockValidity?: BlockValidity;
 };

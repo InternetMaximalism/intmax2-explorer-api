@@ -12,6 +12,7 @@ export const config = cleanEnv(process.env, {
     default: "debug",
   }),
   ALLOWED_ORIGINS: str({ default: "*", example: "https://example.com,http://localhost:3000" }),
+  RATE_LIMIT: num({ default: 10000 }),
   // gcp
   K_SERVICE: str({ default: process.env.CLOUD_RUN_JOB || "default-service" }),
   K_REVISION: str({
