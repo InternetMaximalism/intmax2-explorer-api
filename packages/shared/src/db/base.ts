@@ -1,5 +1,5 @@
 import type { CollectionReference, Query } from "@google-cloud/firestore";
-import { DEFAULT_PAGE_SIZE } from "../constants";
+import { DEFAULT_PAGE_SIZE, FIRESTORE_MAX_BATCH_SIZE } from "../constants";
 import { AppError, ErrorCode, logger } from "../lib";
 import type { BaseData, BaseFilters } from "../types";
 import { db } from "./firestore";
@@ -14,23 +14,33 @@ export abstract class BaseRepository<
   protected abstract readonly defaultOrderDirection: "asc" | "desc";
 
   protected async addBatch(inputs: I[], options: { merge?: boolean } = { merge: false }) {
-    const batch = db.batch();
+    const batches = [];
     const now = new Date();
 
-    for (const input of inputs) {
-      const ref = this.collection.doc(input.hash);
-      batch.set(
-        ref,
-        {
-          ...input,
-          createdAt: now,
-        },
-        options,
-      );
-    }
-
     try {
-      await batch.commit();
+      for (let i = 0; i < inputs.length; i += FIRESTORE_MAX_BATCH_SIZE) {
+        const batch = db.batch();
+        const batchInputs = inputs.slice(i, i + FIRESTORE_MAX_BATCH_SIZE);
+
+        for (const input of batchInputs) {
+          const ref = this.collection.doc(input.hash);
+          batch.set(
+            ref,
+            {
+              ...input,
+              createdAt: now,
+            },
+            options,
+          );
+        }
+        batches.push(batch.commit());
+      }
+
+      await Promise.all(batches);
+
+      return {
+        count: inputs.length,
+      };
     } catch (error) {
       logger.error(error);
       throw new AppError(
