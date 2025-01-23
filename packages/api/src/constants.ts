@@ -9,7 +9,6 @@ export const SLOW_THRESHOLD = 1000;
 export const CLIENT_SERVICE = "clientServiceName";
 export const LOG_EVENT_NAMES = {
   SLOW_REQUEST: "slowRequest",
-  RISK_ASSESSMENT: "riskAssessment",
 } as const;
 
 export type LogEventName = (typeof LOG_EVENT_NAMES)[keyof typeof LOG_EVENT_NAMES];
