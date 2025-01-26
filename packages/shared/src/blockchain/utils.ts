@@ -136,3 +136,17 @@ export const fetchEvents = async <T>(
     throw error;
   }
 };
+
+export const validateBlockRange = (
+  eventName: string,
+  startBlockNumber: bigint,
+  endBlockNumber: bigint,
+) => {
+  logger.info(`Fetching ${eventName} from block ${startBlockNumber} to ${endBlockNumber}`);
+
+  if (startBlockNumber > endBlockNumber) {
+    throw new Error(
+      `startBlockNumber ${startBlockNumber} is greater than currentBlockNumber ${endBlockNumber}`,
+    );
+  }
+};

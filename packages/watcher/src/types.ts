@@ -1,4 +1,4 @@
-import type { Alchemy, Event, EventData } from "@intmax2-explorer-api/shared";
+import type { Event, EventData } from "@intmax2-explorer-api/shared";
 import type { PublicClient } from "viem";
 
 // token
@@ -25,7 +25,6 @@ export type FetchAndStoreWithdrawalsParams = {
   lastWithdrawalQueueProcessedEvent: EventData | null;
   withdrawalEvent: Event;
   withdrawalQueueEvent: Event;
-  scrollAlchemy: Alchemy;
 };
 
 export const WithdrawalEvents = {

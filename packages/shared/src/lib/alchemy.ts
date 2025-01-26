@@ -3,7 +3,15 @@ import { config } from "../config";
 import { logger } from "./logger";
 
 export class Alchemy {
+  private static instance: Alchemy | undefined;
   private alchemy: AlchemyInstance;
+
+  public static getInstance(networkType: "ethereum" | "scroll") {
+    if (!this.instance) {
+      this.instance = new Alchemy(networkType);
+    }
+    return this.instance;
+  }
 
   constructor(networkType: "ethereum" | "scroll") {
     const network = this.getNetwork(networkType);

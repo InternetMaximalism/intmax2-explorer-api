@@ -47,6 +47,11 @@
     },
     {
       "inputs": [],
+      "name": "Expired",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "FailedCall",
       "type": "error"
     },
@@ -184,6 +189,12 @@
           "internalType": "address",
           "name": "blockBuilder",
           "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "timestamp",
+          "type": "uint64"
         },
         {
           "indexed": false,
@@ -480,6 +491,11 @@
           "type": "bytes32"
         },
         {
+          "internalType": "uint64",
+          "name": "expiry",
+          "type": "uint64"
+        },
+        {
           "internalType": "bytes16",
           "name": "senderFlags",
           "type": "bytes16"
@@ -521,6 +537,11 @@
           "internalType": "bytes32",
           "name": "txTreeRoot",
           "type": "bytes32"
+        },
+        {
+          "internalType": "uint64",
+          "name": "expiry",
+          "type": "uint64"
         },
         {
           "internalType": "bytes16",
@@ -635,5 +656,7 @@
       "stateMutability": "nonpayable",
       "type": "function"
     }
-  ]
+  ],
+  "linkReferences": {},
+  "deployedLinkReferences": {}
 }

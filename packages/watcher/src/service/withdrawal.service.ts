@@ -31,7 +31,6 @@ export const fetchAndStoreWithdrawals = async ({
   currentBlockNumber,
   scrollClient,
   scrollCurrentBlockNumber,
-  scrollAlchemy,
   lastWithdrawalProcessedEvent,
   lastWithdrawalQueueProcessedEvent,
   withdrawalEvent,
@@ -69,8 +68,8 @@ export const fetchAndStoreWithdrawals = async ({
   const tokenDetailsMap = new Map(tokenDetails.map((token) => [token.tokenIndex, token]));
 
   const withdrawalDetails = await Promise.all([
-    processWithdrawalEvents(directWithdrawalQueuedEvents, scrollAlchemy, tokenDetailsMap),
-    processWithdrawalEvents(claimableWithdrawalEvents, scrollAlchemy, tokenDetailsMap),
+    processWithdrawalEvents(directWithdrawalQueuedEvents, tokenDetailsMap),
+    processWithdrawalEvents(claimableWithdrawalEvents, tokenDetailsMap),
   ]).then((processed) => processed.flat());
 
   const withdrawal = Withdrawal.getInstance();
@@ -165,7 +164,6 @@ const processQueueEvents = async (
 
 const processWithdrawalEvents = async (
   events: ClaimableWithdrawalEvent[] | DirectWithdrawalQueueEvent[],
-  scrollAlchemy: Alchemy,
   tokenDetailsMap: Map<number, TokenInfo>,
 ): Promise<WithdrawalInput[]> => {
   if (events.length === 0) {
@@ -173,7 +171,7 @@ const processWithdrawalEvents = async (
   }
 
   const blockNumbers = [...new Set(events.map((event) => event.blockNumber))];
-  const blocks = await fetchBlocksInBatches(blockNumbers, scrollAlchemy);
+  const blocks = await fetchBlocksInBatches(blockNumbers);
   const blockMap = new Map(blockNumbers.map((blockNumber, index) => [blockNumber, blocks[index]]));
 
   return events.map((event) => {
@@ -204,11 +202,7 @@ const processWithdrawalEvents = async (
   });
 };
 
-const fetchBlocksInBatches = async (
-  blockNumbers: bigint[],
-  scrollAlchemy: Alchemy,
-  batchSize = 100,
-) => {
+const fetchBlocksInBatches = async (blockNumbers: bigint[], batchSize = 100) => {
   const batches = [];
   for (let i = 0; i < blockNumbers.length; i += batchSize) {
     batches.push(blockNumbers.slice(i, i + batchSize));
@@ -216,7 +210,9 @@ const fetchBlocksInBatches = async (
 
   const blocks = [];
   for (const batch of batches) {
-    const batchPromises = batch.map((blockNumber) => scrollAlchemy.getBlock(blockNumber));
+    const batchPromises = batch.map((blockNumber) =>
+      Alchemy.getInstance("scroll").getBlock(blockNumber),
+    );
 
     if (blocks.length > 0) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -225,7 +221,7 @@ const fetchBlocksInBatches = async (
     const batchResults = await Promise.all(batchPromises);
     blocks.push(...batchResults);
 
-    console.log(`Processed batch of ${batch.length} blocks. Total blocks so far: ${blocks.length}`);
+    logger.info(`Processed batch of ${batch.length} blocks. Total blocks so far: ${blocks.length}`);
   }
 
   return blocks;

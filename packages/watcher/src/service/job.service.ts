@@ -1,5 +1,4 @@
 import {
-  Alchemy,
   Event,
   type EventData,
   FIRESTORE_DOCUMENT_EVENTS,
@@ -20,7 +19,7 @@ export const performJob = async (): Promise<void> => {
     lastDepositProcessedEvent,
     lastWithdrawalProcessedEvent,
     lastWithdrawalQueueProcessedEvent,
-    { ethereumClient, currentBlockNumber, scrollClient, scrollCurrentBlockNumber, scrollAlchemy },
+    { ethereumClient, currentBlockNumber, scrollClient, scrollCurrentBlockNumber },
   ] = await Promise.all([
     blockEvent.getLatestEvent<EventData>(),
     depositEvent.getLatestEvent<EventData>(),
@@ -33,7 +32,6 @@ export const performJob = async (): Promise<void> => {
     fetchAndStoreBlocks(
       scrollClient,
       scrollCurrentBlockNumber,
-      scrollAlchemy,
       blockEvent,
       lastBlockProcessedEvent,
     ),
@@ -48,7 +46,6 @@ export const performJob = async (): Promise<void> => {
       currentBlockNumber,
       scrollClient,
       scrollCurrentBlockNumber,
-      scrollAlchemy,
       lastWithdrawalProcessedEvent,
       lastWithdrawalQueueProcessedEvent,
       withdrawalEvent,
@@ -60,7 +57,6 @@ export const performJob = async (): Promise<void> => {
 const getEthereumAndScrollBlockNumbers = async () => {
   const ethereumClient = createNetworkClient("ethereum");
   const scrollClient = createNetworkClient("scroll");
-  const scrollAlchemy = new Alchemy("scroll");
 
   const [currentBlockNumber, scrollCurrentBlockNumber] = await Promise.all([
     ethereumClient.getBlockNumber(),
@@ -72,6 +68,5 @@ const getEthereumAndScrollBlockNumbers = async () => {
     scrollClient,
     currentBlockNumber,
     scrollCurrentBlockNumber,
-    scrollAlchemy,
   };
 };
