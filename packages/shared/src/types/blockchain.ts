@@ -27,16 +27,6 @@ export type GetDepositData = {
   isRejected: boolean;
 };
 
-export interface DepositsAnalyedAndProcessedEvent extends BaseEvent {
-  args: DepositsAnalyedAndProcessedEventLog;
-}
-
-export interface DepositsAnalyedAndProcessedEventLog {
-  upToDepositId: bigint;
-  rejectedIndices: bigint[];
-  depositHashed: string[];
-}
-
 export interface DirectWithdrawalSuccessedEvent extends BaseEvent {
   args: DirectWithdrawalSuccessedEventLog;
 }
@@ -74,6 +64,7 @@ export interface BlockPostedEvent extends BaseEvent {
 
 export interface BlockPostedEventLog {
   prevBlockHash: string;
+  timestamp: number;
   blockBuilder: string;
   blockNumber: number;
   depositTreeRoot: string;
@@ -110,7 +101,6 @@ interface Withdrawal {
 export type TransactionStatus = "Pending" | "Rejected" | "Completed" | "Finalized";
 export type TokenType = 0 | 1 | 2 | 3;
 
-// block
 export type BlockType = "Registration" | "NonRegistration";
 export type BlockValidity = "Valid" | "Invalid";
 
