@@ -105,14 +105,15 @@ const formatBlockTransaction = (
   const baseTransaction = {
     functionName,
     txRoot: args[0] as `0x${string}`,
-    senderFlags: args[1] as `0x${string}`,
-    aggregatedPublicKey: args[2] as `0x${string}`[],
-    aggregatedSignature: args[3] as `0x${string}`[],
-    messagePoint: args[4] as `0x${string}`[],
+    expiry: args[1] as bigint,
+    senderFlags: args[2] as `0x${string}`,
+    aggregatedPublicKey: args[3] as `0x${string}`[],
+    aggregatedSignature: args[4] as `0x${string}`[],
+    messagePoint: args[5] as `0x${string}`[],
   };
 
   if (functionName === "postRegistrationBlock") {
-    const senderPublicKeys = args[5] as bigint[];
+    const senderPublicKeys = args[6] as bigint[];
     return {
       ...baseTransaction,
       senderPublicKeys,
@@ -120,10 +121,10 @@ const formatBlockTransaction = (
     };
   }
 
-  const senderAccountIds = args[6] as `0x${string}`;
+  const senderAccountIds = args[7] as `0x${string}`;
   return {
     ...baseTransaction,
-    publicKeysHash: args[5] as `0x${string}`,
+    publicKeysHash: args[6] as `0x${string}`,
     senderAccountIds,
     transactionCount: calculateNonRegistrationLength(senderAccountIds),
   };
