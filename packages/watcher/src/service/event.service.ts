@@ -1,12 +1,12 @@
 import {
   BLOCK_RANGE_MINIMUM,
-  DirectWithdrawalSuccessedEvent,
-  EventData,
-  WithdrawalClaimableEvent,
+  type DirectWithdrawalSuccessedEvent,
+  type EventData,
+  type WithdrawalClaimableEvent,
   directWithdrawalSuccessedEvent,
   fetchEvents,
   getStartBlockNumber,
-  logger,
+  validateBlockRange,
   withdrawalClaimableEvent,
 } from "@intmax2-explorer-api/shared";
 import { parseAbiItem } from "abitype";
@@ -23,13 +23,12 @@ const handleWithdrawalEvent = async <T extends { args: { withdrawalHash: string 
     eventName: WithdrawalEventType;
   },
 ) => {
-  logger.info(
-    `Fetching ${params.eventName} events from block ${params.startBlockNumber} to ${params.endBlockNumber}`,
-  );
+  const { eventName, startBlockNumber, endBlockNumber } = params;
+  validateBlockRange(eventName, startBlockNumber, endBlockNumber);
 
   const events = await fetchEvents<T>(ethereumClient, {
-    startBlockNumber: params.startBlockNumber,
-    endBlockNumber: params.endBlockNumber,
+    startBlockNumber,
+    endBlockNumber,
     blockRange: BLOCK_RANGE_MINIMUM,
     contractAddress: LIQUIDITY_CONTRACT_ADDRESS,
     eventInterface: params.eventInterface,

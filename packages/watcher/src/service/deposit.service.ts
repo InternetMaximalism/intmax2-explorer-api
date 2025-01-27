@@ -64,7 +64,7 @@ export const getDepositedEvent = async (
 
     // NOTE: Details: Log response size exceeded. You can make eth_getLogs requests with up to a 2K block range
     const depositEvents = await fetchEvents<DepositEvent>(ethereumClient, {
-      startBlockNumber: startBlockNumber,
+      startBlockNumber,
       endBlockNumber: currentBlockNumber,
       blockRange: BLOCK_RANGE_MINIMUM,
       contractAddress: LIQUIDITY_CONTRACT_ADDRESS,
