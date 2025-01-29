@@ -1,18 +1,19 @@
 import { FIRESTORE_DOCUMENT_STATS, Stats, type StatsData } from "@intmax2-explorer-api/shared";
 import { getTotalBlockBuilders } from "../lib/indexer";
-import { getMarketCap } from "../lib/marketCap";
+import { getTVL } from "../lib/tvl";
 
 export const getStats = async () => {
   const statsInstance = Stats.getInstance(FIRESTORE_DOCUMENT_STATS.summary);
 
-  const [marketCap, totalBlockBuilderCount, statsData] = await Promise.all([
-    getMarketCap(),
+  const [tvl, totalBlockBuilderCount, statsData] = await Promise.all([
+    getTVL(),
     getTotalBlockBuilders(),
     statsInstance.getLatestStats(),
   ]);
 
   return {
     ...((statsData as StatsData) ?? initialStatsData),
+    tvl,
     marketCap,
     totalBlockBuilderCount,
   };
