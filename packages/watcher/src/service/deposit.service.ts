@@ -10,6 +10,7 @@ import {
   fetchEvents,
   getStartBlockNumber,
   logger,
+  validateBlockRange,
 } from "@intmax2-explorer-api/shared";
 import type { Abi, PublicClient } from "viem";
 import {
@@ -59,20 +60,11 @@ export const getDepositedEvent = async (
       lastProcessedEvent,
       LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
     );
-
-    logger.info(
-      `Fetching deposited events from block ${startBlockNumber} to ${currentBlockNumber}`,
-    );
-
-    if (startBlockNumber > currentBlockNumber) {
-      throw new Error(
-        `startBlockNumber ${startBlockNumber} is greater than currentBlockNumber ${currentBlockNumber}`,
-      );
-    }
+    validateBlockRange("depositedEvent", startBlockNumber, currentBlockNumber);
 
     // NOTE: Details: Log response size exceeded. You can make eth_getLogs requests with up to a 2K block range
     const depositEvents = await fetchEvents<DepositEvent>(ethereumClient, {
-      startBlockNumber: startBlockNumber,
+      startBlockNumber,
       endBlockNumber: currentBlockNumber,
       blockRange: BLOCK_RANGE_MINIMUM,
       contractAddress: LIQUIDITY_CONTRACT_ADDRESS,

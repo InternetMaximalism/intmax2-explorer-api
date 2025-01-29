@@ -12,8 +12,15 @@ export const getStats = async () => {
   ]);
 
   return {
-    ...(statsData as StatsData),
+    ...((statsData as StatsData) ?? initialStatsData),
     tvl,
+    marketCap,
     totalBlockBuilderCount,
   };
+};
+
+const initialStatsData = {
+  latestBlockNumber: 0,
+  totalTransactionCount: 0,
+  totalWalletCount: 0,
 };

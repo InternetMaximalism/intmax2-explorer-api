@@ -26,7 +26,7 @@ export const claimableWithdrawalQueuedEvent = parseAbiItem(
 );
 
 export const blockPostedEvent = parseAbiItem(
-  "event BlockPosted(bytes32 indexed prevBlockHash, address indexed blockBuilder, uint256 blockNumber, bytes32 depositTreeRoot, bytes32 signatureHash)",
+  "event BlockPosted(bytes32 indexed prevBlockHash, address indexed blockBuilder, uint64 timestamp, uint256 blockNumber, bytes32 depositTreeRoot, bytes32 signatureHash)",
 );
 
 export const getEventLogs = async (

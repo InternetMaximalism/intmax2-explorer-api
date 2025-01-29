@@ -1,6 +1,5 @@
 import type { Transaction } from "@google-cloud/firestore";
 import {
-  Alchemy,
   BLOCK_RANGE_MINIMUM,
   Block,
   type BlockData,
@@ -20,6 +19,7 @@ import {
   fetchEvents,
   getStartBlockNumber,
   logger,
+  validateBlockRange,
 } from "@intmax2-explorer-api/shared";
 import { type Hex, type PublicClient, decodeFunctionData } from "viem";
 import {
@@ -32,7 +32,6 @@ import { calculateNonRegistrationLength } from "../lib/utils";
 export const fetchAndStoreBlocks = async (
   scrollClient: PublicClient,
   scrollCurrentBlockNumber: bigint,
-  scrollAlchemy: Alchemy,
   blockEvent: Event,
   lastBlockProcessedEvent: EventData | null,
 ) => {
@@ -45,7 +44,7 @@ export const fetchAndStoreBlocks = async (
   const blockDetails: BlockInput[] = [];
   for (let i = 0; i < blockPostedEvents.length; i += BLOCK_BATCH_SIZE) {
     const batch = blockPostedEvents.slice(i, i + BLOCK_BATCH_SIZE);
-    const blockDetail = await processBlockBatch(batch, scrollClient, scrollAlchemy);
+    const blockDetail = await processBlockBatch(batch, scrollClient);
     blockDetails.push(...blockDetail);
   }
 
@@ -106,14 +105,15 @@ const formatBlockTransaction = (
   const baseTransaction = {
     functionName,
     txRoot: args[0] as `0x${string}`,
-    senderFlags: args[1] as `0x${string}`,
-    aggregatedPublicKey: args[2] as `0x${string}`[],
-    aggregatedSignature: args[3] as `0x${string}`[],
-    messagePoint: args[4] as `0x${string}`[],
+    expiry: args[1] as bigint,
+    senderFlags: args[2] as `0x${string}`,
+    aggregatedPublicKey: args[3] as `0x${string}`[],
+    aggregatedSignature: args[4] as `0x${string}`[],
+    messagePoint: args[5] as `0x${string}`[],
   };
 
   if (functionName === "postRegistrationBlock") {
-    const senderPublicKeys = args[5] as bigint[];
+    const senderPublicKeys = args[6] as bigint[];
     return {
       ...baseTransaction,
       senderPublicKeys,
@@ -121,10 +121,10 @@ const formatBlockTransaction = (
     };
   }
 
-  const senderAccountIds = args[6] as `0x${string}`;
+  const senderAccountIds = args[7] as `0x${string}`;
   return {
     ...baseTransaction,
-    publicKeysHash: args[5] as `0x${string}`,
+    publicKeysHash: args[6] as `0x${string}`,
     senderAccountIds,
     transactionCount: calculateNonRegistrationLength(senderAccountIds),
   };
@@ -140,16 +140,7 @@ const getBlockPostedEvent = async (
       lastProcessedEvent,
       LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
     );
-
-    logger.info(
-      `Fetching blockPosted events from block ${startBlockNumber} to ${scrollCurrentBlockNumber}`,
-    );
-
-    if (startBlockNumber > scrollCurrentBlockNumber) {
-      throw new Error(
-        `startBlockNumber ${startBlockNumber} is greater than currentBlockNumber ${scrollCurrentBlockNumber}`,
-      );
-    }
+    validateBlockRange("blockPostedEvent", startBlockNumber, scrollCurrentBlockNumber);
 
     const blockPostedEvents = await fetchEvents<BlockPostedEvent>(scrollClient, {
       startBlockNumber,
@@ -171,7 +162,6 @@ const getBlockPostedEvent = async (
 const processBlockBatch = async (
   blockPostedEvents: BlockPostedEvent[],
   scrollClient: PublicClient,
-  scrollAlchemy: Alchemy,
 ) => {
   const promises = blockPostedEvents.map(async (blockPostedEvent) => {
     const transaction = await scrollClient.getTransaction({
@@ -194,8 +184,6 @@ const processBlockBatch = async (
       blockPostedEvent.args.blockNumber,
     );
 
-    const { timestamp } = await scrollAlchemy.getBlock(BigInt(blockPostedEvent.blockNumber));
-
     return {
       blockNumber: blockPostedEvent.args.blockNumber,
       hash: blockHash,
@@ -206,7 +194,7 @@ const processBlockBatch = async (
           ? "Registration"
           : ("NonRegistration" as BlockType),
       blockValidity: "Valid" as BlockValidity,
-      timestamp,
+      timestamp: blockPostedEvent.args.timestamp,
       rollupTransactionHash: blockPostedEvent.transactionHash,
       transactionDigest: formattedBlockTransaction.txRoot,
       blockAggregatorSignature: formattedBlockTransaction.aggregatedSignature,
