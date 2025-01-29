@@ -4,7 +4,7 @@ import { formatEther } from "viem";
 import { API_TIMEOUT, ETHEREUM_ADDRESS } from "../constants";
 import type { TokenPriceResponse } from "../types";
 
-export const getMarketCap = async () => {
+export const getTVL = async () => {
   const ethereumClient = createNetworkClient("ethereum");
   const [balance, ethPrice] = await Promise.all([
     ethereumClient.getBalance({
