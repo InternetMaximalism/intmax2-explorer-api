@@ -29,3 +29,6 @@ export const FIRESTORE_DOCUMENT_EVENTS = {
 
 export const FIRESTORE_MAX_BATCH_SIZE = 500;
 export const FIRESTORE_IN_MAX_BATCH_SIZE = 30;
+
+// request
+export const API_TIMEOUT = 10 * 1000;

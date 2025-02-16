@@ -1,6 +1,5 @@
-import { config } from "@intmax2-explorer-api/shared";
+import { API_TIMEOUT, config } from "@intmax2-explorer-api/shared";
 import axios, { AxiosError } from "axios";
-import { API_TIMEOUT } from "../constants";
 import type { IndexerResponse } from "../types";
 
 export const getTotalBlockBuilders = async () => {

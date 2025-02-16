@@ -164,9 +164,13 @@ const processBlockBatch = async (
   scrollClient: PublicClient,
 ) => {
   const promises = blockPostedEvents.map(async (blockPostedEvent) => {
-    const transaction = await scrollClient.getTransaction({
-      hash: blockPostedEvent.transactionHash as `0x${string}`,
-    });
+    const [transaction] = await Promise.all([
+      scrollClient.getTransaction({
+        hash: blockPostedEvent.transactionHash as `0x${string}`,
+      }),
+      // fetchValidityPis(blockPostedEvent.args.blockNumber)
+    ]);
+
     const { functionName, args } = decodeFunctionData({
       abi: RollupAbi,
       data: transaction.input,
@@ -198,6 +202,7 @@ const processBlockBatch = async (
       rollupTransactionHash: blockPostedEvent.transactionHash,
       transactionDigest: formattedBlockTransaction.txRoot,
       blockAggregatorSignature: formattedBlockTransaction.aggregatedSignature,
+      // nextAccountId // NOTE: nextAccountId is for stats
     };
   });
 

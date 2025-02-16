@@ -23,27 +23,4 @@ export interface TokenPriceResponse {
   total: number;
 }
 
-export interface BlockValidityProofResponse {
-  updateWitness: UpdateWitness;
-}
-
-export interface ValidityProof {
-  proof: any;
-  public_inputs: any[];
-}
-
-interface AccountMembershipProof {
-  isIncluded: boolean;
-  leafProof: any[];
-  leafIndex: number;
-  leaf: any;
-}
-
-interface UpdateWitness {
-  isPrevAccountTree: boolean;
-  validityProof: ValidityProof;
-  blockMerkleProof: string[];
-  accountMembershipProof: AccountMembershipProof;
-}
-
 export type RestrictedCountryCode = keyof typeof RESTRICTED_COUNTRY_CODES;

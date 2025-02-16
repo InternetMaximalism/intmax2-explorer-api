@@ -5,3 +5,4 @@ export * from "./ip";
 export * from "./logger";
 export * from "./operation";
 export * from "./utils";
+export * from "./validityProver";

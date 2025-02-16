@@ -6,8 +6,9 @@ import {
   type HashValidationType,
   INTERNAL_TO_DISPLAY_TYPE_MAP,
   NotFoundError,
+  fetchBlockValidityProof,
+  formatValidityProof,
 } from "@intmax2-explorer-api/shared";
-import { fetchBlockValidityProof, formatValidityProof } from "../lib/validityProver";
 
 export const listBlocks = async (blockPaginationOptions: BlockPaginationValidationType) => {
   const block = Block.getInstance();
