@@ -14,7 +14,6 @@ export const LOG_EVENT_NAMES = {
 export type LogEventName = (typeof LOG_EVENT_NAMES)[keyof typeof LOG_EVENT_NAMES];
 
 // timeout
-export const API_TIMEOUT = 10 * 1000; // 10 seconds
 export const CACHE_TIMEOUTS = {
   LIST: 15 * 1000, // 15 seconds
   DETAIL: 180 * 1000, // 180 seconds

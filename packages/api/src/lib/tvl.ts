@@ -1,7 +1,7 @@
-import { config, createNetworkClient } from "@intmax2-explorer-api/shared";
+import { API_TIMEOUT, config, createNetworkClient } from "@intmax2-explorer-api/shared";
 import axios, { AxiosError } from "axios";
 import { formatEther } from "viem";
-import { API_TIMEOUT, ETHEREUM_ADDRESS } from "../constants";
+import { ETHEREUM_ADDRESS } from "../constants";
 import type { TokenPriceResponse } from "../types";
 
 export const getTVL = async () => {
