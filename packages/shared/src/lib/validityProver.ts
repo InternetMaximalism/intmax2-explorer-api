@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { config } from "../config";
 import { API_TIMEOUT } from "../constants";
-import type { BlockValidityProofResponse, ValidityProof } from "../types";
+import type { BlockValidityProofResponse, ValidityPisResponse, ValidityProof } from "../types";
 
 export const fetchBlockValidityProof = async (blockNumber: number) => {
   try {
@@ -37,10 +37,7 @@ export const formatValidityProof = (blockValidityProof: BlockValidityProofRespon
 
 export const fetchValidityPis = async (blockNumber: number) => {
   try {
-    const url = new URL(`${config.API_VALIDITY_PROVER_BASE_URL}/validity-prover/get-validity-pis`);
-    url.searchParams.append("blockNumber", blockNumber.toString());
-
-    const response = await axios.get<BlockValidityProofResponse>(
+    const response = await axios.get<ValidityPisResponse>(
       `${config.API_VALIDITY_PROVER_BASE_URL}/validity-prover/get-validity-pis`,
       {
         params: {
