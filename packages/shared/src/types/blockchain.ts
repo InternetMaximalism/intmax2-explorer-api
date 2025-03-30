@@ -18,6 +18,7 @@ export interface DepositEventLog {
   recipientSaltHash: string;
   tokenIndex: number;
   amount: bigint;
+  isEligible: boolean;
   depositedAt: bigint;
 }
 
