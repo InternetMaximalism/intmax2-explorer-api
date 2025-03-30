@@ -47,7 +47,28 @@
     },
     {
       "inputs": [],
-      "name": "AlreadyAnalyzed",
+      "name": "AlreadyRelayed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "AmlValidationFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "depositAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "limit",
+          "type": "uint256"
+        }
+      ],
+      "name": "DepositAmountExceedsLimit",
       "type": "error"
     },
     {
@@ -75,6 +96,21 @@
     {
       "inputs": [],
       "name": "ERC1967NonPayable",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EligibilityValidationFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EnforcedPause",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExpectedPause",
       "type": "error"
     },
     {
@@ -121,6 +157,27 @@
     {
       "inputs": [
         {
+          "internalType": "uint256",
+          "name": "upToDepositId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "firstDepositId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "lastDepositId",
+          "type": "uint256"
+        }
+      ],
+      "name": "OutOfRange",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "address",
           "name": "token",
           "type": "address"
@@ -140,50 +197,8 @@
       "type": "error"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "upToDepositId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "firstDepositId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "lastDepositId",
-          "type": "uint256"
-        }
-      ],
-      "name": "TriedAnalyzeOutOfRange",
-      "type": "error"
-    },
-    {
       "inputs": [],
       "name": "TriedToDepositZero",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "rejectIndex",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "front",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "upToDepositId",
-          "type": "uint256"
-        }
-      ],
-      "name": "TriedToRejectOutOfRange",
       "type": "error"
     },
     {
@@ -205,6 +220,11 @@
     {
       "inputs": [],
       "name": "WithdrawalAddressNotSet",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "WithdrawalFeeRatioExceedsLimit",
       "type": "error"
     },
     {
@@ -285,6 +305,12 @@
         },
         {
           "indexed": false,
+          "internalType": "bool",
+          "name": "isEligible",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
           "internalType": "uint256",
           "name": "depositedAt",
           "type": "uint256"
@@ -304,12 +330,6 @@
         },
         {
           "indexed": false,
-          "internalType": "uint256[]",
-          "name": "rejectedIndices",
-          "type": "uint256[]"
-        },
-        {
-          "indexed": false,
           "internalType": "uint256",
           "name": "gasLimit",
           "type": "uint256"
@@ -321,7 +341,7 @@
           "type": "bytes"
         }
       ],
-      "name": "DepositsAnalyzedAndRelayed",
+      "name": "DepositsRelayed",
       "type": "event"
     },
     {
@@ -395,6 +415,38 @@
         }
       ],
       "name": "Initialized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Paused",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "amlPermitter",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "eligibilityPermitter",
+          "type": "address"
+        }
+      ],
+      "name": "PermitterSet",
       "type": "event"
     },
     {
@@ -476,6 +528,19 @@
       "anonymous": false,
       "inputs": [
         {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Unpaused",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
           "indexed": true,
           "internalType": "address",
           "name": "implementation",
@@ -499,8 +564,71 @@
       "type": "event"
     },
     {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint32",
+          "name": "token",
+          "type": "uint32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "WithdrawalFeeCollected",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint32",
+          "name": "tokenIndex",
+          "type": "uint32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "feeRatio",
+          "type": "uint256"
+        }
+      ],
+      "name": "WithdrawalFeeRatioSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint32",
+          "name": "token",
+          "type": "uint32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "WithdrawalFeeWithdrawn",
+      "type": "event"
+    },
+    {
       "inputs": [],
-      "name": "ANALYZER",
+      "name": "DEFAULT_ADMIN_ROLE",
       "outputs": [
         {
           "internalType": "bytes32",
@@ -513,7 +641,7 @@
     },
     {
       "inputs": [],
-      "name": "DEFAULT_ADMIN_ROLE",
+      "name": "RELAYER",
       "outputs": [
         {
           "internalType": "bytes32",
@@ -538,26 +666,42 @@
       "type": "function"
     },
     {
-      "inputs": [
+      "inputs": [],
+      "name": "WITHDRAWAL",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "WITHDRAWAL_FEE_RATIO_LIMIT",
+      "outputs": [
         {
           "internalType": "uint256",
-          "name": "upToDepositId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "rejectDepositIds",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "uint256",
-          "name": "gasLimit",
+          "name": "",
           "type": "uint256"
         }
       ],
-      "name": "analyzeAndRelayDeposits",
-      "outputs": [],
-      "stateMutability": "payable",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "amlPermitter",
+      "outputs": [
+        {
+          "internalType": "contract IPermitter",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -570,9 +714,19 @@
         {
           "components": [
             {
+              "internalType": "address",
+              "name": "depositor",
+              "type": "address"
+            },
+            {
               "internalType": "bytes32",
               "name": "recipientSaltHash",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
             },
             {
               "internalType": "uint32",
@@ -580,9 +734,9 @@
               "type": "uint32"
             },
             {
-              "internalType": "uint256",
-              "name": "amount",
-              "type": "uint256"
+              "internalType": "bool",
+              "name": "isEligible",
+              "type": "bool"
             }
           ],
           "internalType": "struct DepositLib.Deposit",
@@ -652,6 +806,38 @@
     {
       "inputs": [
         {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "name": "collectedWithdrawalFees",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "deploymentTime",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "address",
           "name": "tokenAddress",
           "type": "address"
@@ -670,6 +856,16 @@
           "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "amlPermission",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "eligibilityPermission",
+          "type": "bytes"
         }
       ],
       "name": "depositERC1155",
@@ -693,6 +889,16 @@
           "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "amlPermission",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "eligibilityPermission",
+          "type": "bytes"
         }
       ],
       "name": "depositERC20",
@@ -716,6 +922,16 @@
           "internalType": "uint256",
           "name": "tokenId",
           "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "amlPermission",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "eligibilityPermission",
+          "type": "bytes"
         }
       ],
       "name": "depositERC721",
@@ -729,11 +945,34 @@
           "internalType": "bytes32",
           "name": "recipientSaltHash",
           "type": "bytes32"
+        },
+        {
+          "internalType": "bytes",
+          "name": "amlPermission",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "eligibilityPermission",
+          "type": "bytes"
         }
       ],
       "name": "depositNativeToken",
       "outputs": [],
       "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "eligibilityPermitter",
+      "outputs": [
+        {
+          "internalType": "contract IPermitter",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -757,11 +996,6 @@
               "internalType": "address",
               "name": "sender",
               "type": "address"
-            },
-            {
-              "internalType": "bool",
-              "name": "isRejected",
-              "type": "bool"
             }
           ],
           "internalType": "struct DepositQueueLib.DepositData",
@@ -793,11 +1027,6 @@
               "internalType": "address",
               "name": "sender",
               "type": "address"
-            },
-            {
-              "internalType": "bool",
-              "name": "isRejected",
-              "type": "bool"
             }
           ],
           "internalType": "struct DepositQueueLib.DepositData[]",
@@ -1021,7 +1250,12 @@
         },
         {
           "internalType": "address",
-          "name": "_analyzer",
+          "name": "_claim",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_relayer",
           "type": "address"
         },
         {
@@ -1061,6 +1295,11 @@
           "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "isEligible",
+          "type": "bool"
         },
         {
           "internalType": "address",
@@ -1119,6 +1358,26 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "pauseDeposits",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paused",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "components": [
@@ -1174,6 +1433,24 @@
     {
       "inputs": [
         {
+          "internalType": "uint256",
+          "name": "upToDepositId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "gasLimit",
+          "type": "uint256"
+        }
+      ],
+      "name": "relayDeposits",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "bytes32",
           "name": "role",
           "type": "bytes32"
@@ -1210,6 +1487,42 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "_amlPermitter",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_eligibilityPermitter",
+          "type": "address"
+        }
+      ],
+      "name": "setPermitter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint32",
+          "name": "tokenIndex",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeRatio",
+          "type": "uint256"
+        }
+      ],
+      "name": "setWithdrawalFeeRatio",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "bytes4",
           "name": "interfaceId",
           "type": "bytes4"
@@ -1224,6 +1537,13 @@
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "unpauseDeposits",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -1243,6 +1563,45 @@
       "outputs": [],
       "stateMutability": "payable",
       "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "internalType": "uint32[]",
+          "name": "tokenIndices",
+          "type": "uint32[]"
+        }
+      ],
+      "name": "withdrawCollectedFees",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "name": "withdrawalFeeRatio",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     }
-  ]
+  ],
+  "linkReferences": {},
+  "deployedLinkReferences": {}
 }
