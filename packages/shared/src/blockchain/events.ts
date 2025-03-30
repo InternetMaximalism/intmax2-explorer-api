@@ -2,7 +2,7 @@ import { type AbiEvent, parseAbiItem } from "abitype";
 import type { PublicClient } from "viem";
 
 export const depositedEvent = parseAbiItem(
-  "event Deposited(uint256 indexed depositId, address indexed sender, bytes32 indexed recipientSaltHash, uint32 tokenIndex, uint256 amount, uint256 depositedAt)",
+  "event Deposited(uint256 indexed depositId, address indexed sender, bytes32 indexed recipientSaltHash, uint32 tokenIndex, uint256 amount, bool isEligible, uint256 requestedAt)",
 );
 
 export const directWithdrawalSuccessedEvent = parseAbiItem(
