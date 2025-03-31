@@ -24,7 +24,6 @@ import {
 import { type Hex, type PublicClient, decodeFunctionData } from "viem";
 import {
   BLOCK_BATCH_SIZE,
-  LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
   ROLLUP_CONTRACT_ADDRESS,
   ROLLUP_CONTRACT_DEPLOYED_BLOCK,
 } from "../constants";
