@@ -26,6 +26,7 @@ import {
   BLOCK_BATCH_SIZE,
   LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
   ROLLUP_CONTRACT_ADDRESS,
+  ROLLUP_CONTRACT_DEPLOYED_BLOCK,
 } from "../constants";
 import { calculateNonRegistrationLength } from "../lib/utils";
 
@@ -106,14 +107,14 @@ const formatBlockTransaction = (
     functionName,
     txRoot: args[0] as `0x${string}`,
     expiry: args[1] as bigint,
-    senderFlags: args[2] as `0x${string}`,
-    aggregatedPublicKey: args[3] as `0x${string}`[],
-    aggregatedSignature: args[4] as `0x${string}`[],
-    messagePoint: args[5] as `0x${string}`[],
+    senderFlags: args[3] as `0x${string}`,
+    aggregatedPublicKey: args[4] as `0x${string}`[],
+    aggregatedSignature: args[5] as `0x${string}`[],
+    messagePoint: args[6] as `0x${string}`[],
   };
 
   if (functionName === "postRegistrationBlock") {
-    const senderPublicKeys = args[6] as bigint[];
+    const senderPublicKeys = args[7] as bigint[];
     return {
       ...baseTransaction,
       senderPublicKeys,
@@ -121,10 +122,10 @@ const formatBlockTransaction = (
     };
   }
 
-  const senderAccountIds = args[7] as `0x${string}`;
+  const senderAccountIds = args[8] as `0x${string}`;
   return {
     ...baseTransaction,
-    publicKeysHash: args[6] as `0x${string}`,
+    publicKeysHash: args[7] as `0x${string}`,
     senderAccountIds,
     transactionCount: calculateNonRegistrationLength(senderAccountIds),
   };
@@ -138,7 +139,7 @@ const getBlockPostedEvent = async (
   try {
     const startBlockNumber = getStartBlockNumber(
       lastProcessedEvent,
-      LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
+      ROLLUP_CONTRACT_DEPLOYED_BLOCK,
     );
     validateBlockRange("blockPostedEvent", startBlockNumber, scrollCurrentBlockNumber);
 
