@@ -62,7 +62,17 @@
     },
     {
       "inputs": [],
+      "name": "InvalidConstants",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "InvalidInitialization",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidNonce",
       "type": "error"
     },
     {
@@ -292,6 +302,31 @@
       "anonymous": false,
       "inputs": [
         {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "thresholdInterval",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "alpha",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "k",
+          "type": "uint256"
+        }
+      ],
+      "name": "RateLimitConstantsSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
           "indexed": true,
           "internalType": "address",
           "name": "implementation",
@@ -322,12 +357,12 @@
           "type": "uint256"
         }
       ],
-      "name": "blockBuilders",
+      "name": "blockHashes",
       "outputs": [
         {
-          "internalType": "address",
+          "internalType": "bytes32",
           "name": "",
-          "type": "address"
+          "type": "bytes32"
         }
       ],
       "stateMutability": "view",
@@ -336,17 +371,36 @@
     {
       "inputs": [
         {
-          "internalType": "uint256",
+          "internalType": "address",
           "name": "",
-          "type": "uint256"
+          "type": "address"
         }
       ],
-      "name": "blockHashes",
+      "name": "builderNonRegistrationNonce",
       "outputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint32",
           "name": "",
-          "type": "bytes32"
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "builderRegistrationNonce",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
         }
       ],
       "stateMutability": "view",
@@ -386,25 +440,6 @@
           "type": "uint32"
         }
       ],
-      "name": "getBlockBuilder",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint32",
-          "name": "blockNumber",
-          "type": "uint32"
-        }
-      ],
       "name": "getBlockHash",
       "outputs": [
         {
@@ -424,6 +459,19 @@
           "internalType": "uint32",
           "name": "",
           "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getPenalty",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -450,6 +498,21 @@
           "internalType": "address",
           "name": "_contribution",
           "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_rateLimitThresholdInterval",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_rateLimitAlpha",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_rateLimitK",
+          "type": "uint256"
         }
       ],
       "name": "initialize",
@@ -494,6 +557,11 @@
           "internalType": "uint64",
           "name": "expiry",
           "type": "uint64"
+        },
+        {
+          "internalType": "uint32",
+          "name": "builderNonce",
+          "type": "uint32"
         },
         {
           "internalType": "bytes16",
@@ -542,6 +610,11 @@
           "internalType": "uint64",
           "name": "expiry",
           "type": "uint64"
+        },
+        {
+          "internalType": "uint32",
+          "name": "builderNonce",
+          "type": "uint32"
         },
         {
           "internalType": "bytes16",
@@ -608,6 +681,29 @@
     {
       "inputs": [],
       "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "targetInterval",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "alpha",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "k",
+          "type": "uint256"
+        }
+      ],
+      "name": "setRateLimitConstants",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
