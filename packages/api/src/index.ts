@@ -19,7 +19,6 @@ const app = new Hono({ strict: true });
 app.use("*", corsMiddleware);
 app.use(secureHeaders());
 app.use(limiter);
-// app.use(geoIPRestriction);
 
 app.use(timeout(APP_TIMEOUT));
 app.use(requestMiddleware);
