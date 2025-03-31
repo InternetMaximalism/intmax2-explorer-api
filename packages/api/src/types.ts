@@ -4,10 +4,8 @@ export interface AsyncLocalStorageStore {
   requestId: string;
 }
 
-export interface IndexerResponse {
-  url: string;
-  fee: number;
-  speed: number;
+export interface BlockBuilderMetaResponse {
+  total: number;
 }
 
 export interface TokenPriceResponse {
