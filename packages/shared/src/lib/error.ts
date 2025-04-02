@@ -94,7 +94,7 @@ export const handleError = (err: unknown, c: Context) => {
     return c.json({ code: err.code, message: err.message }, err.statusCode as ContentfulStatusCode);
   }
 
-  logger.error("Unhandled error:", err);
+  logger.error(`Unhandled error: ${(err as Error).stack}`);
 
   const statusCode = err instanceof Error ? 500 : 400;
   const code = err instanceof Error ? "INTERNAL_SERVER_ERROR" : "BAD_REQUEST";

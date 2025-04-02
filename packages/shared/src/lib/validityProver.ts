@@ -25,7 +25,7 @@ export const fetchBlockValidityProof = async (blockNumber: number) => {
     }
 
     throw new Error(
-      "Unexpected error while fetching block validity proof",
+      `Unexpected error while fetching block validity proof: ${error instanceof Error ? error.message : "Unknown error"}`,
       error instanceof Error ? error : undefined,
     );
   }
@@ -54,7 +54,7 @@ export const fetchValidityPis = async (blockNumber: number) => {
     }
 
     throw new Error(
-      "Unexpected error while fetching validity pis",
+      `Unexpected error while fetching validity pis: ${error instanceof Error ? error.message : "Unknown error"}`,
       error instanceof Error ? error : undefined,
     );
   }
