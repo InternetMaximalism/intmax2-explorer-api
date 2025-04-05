@@ -118,8 +118,8 @@ const processQueueEvents = async (
     );
   }
 
-  const currentStartBlockNumber = startQueueBlockNumber - BLOCK_RANGE_MOST_RECENT;
-  const attempts = 0;
+  let currentStartBlockNumber = startQueueBlockNumber - BLOCK_RANGE_MOST_RECENT;
+  let attempts = 0;
   const MAX_ATTEMPTS = 10;
 
   const withdrawalMap = new Map(
@@ -142,14 +142,7 @@ const processQueueEvents = async (
 
     logger.info(`processQueueEvents found ${events.length}/${withdrawalEvents.length} events`);
 
-    const eventMaps = events.map((event) => ({
-      ...event,
-      liquidityTransactionHash: withdrawalMap.get(event.args.withdrawalHash),
-    }));
-    return eventMaps;
-
     // FIXME: There are cases where events.length !== withdrawalEvents.length => This is because the same withdrawal request is registered multiple times.
-    /*
     if (events.length === withdrawalEvents.length) {
       const eventMaps = events.map((event) => ({
         ...event,
@@ -161,10 +154,13 @@ const processQueueEvents = async (
     currentStartBlockNumber -= BLOCK_RANGE_MOST_RECENT;
     attempts++;
 
-    if (currentStartBlockNumber <= 0n) {
-      throw new Error("Start block number would become negative");
+    if (currentStartBlockNumber <= 0n || MAX_ATTEMPTS === attempts) {
+      const eventMaps = events.map((event) => ({
+        ...event,
+        liquidityTransactionHash: withdrawalMap.get(event.args.withdrawalHash),
+      }));
+      return eventMaps;
     }
-    */
   }
 
   throw new Error("Failed to fetch all withdrawal events");
