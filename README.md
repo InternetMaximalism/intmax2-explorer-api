@@ -24,3 +24,7 @@ yarn workspace watcher dev
 gcloud emulators firestore start
 export FIRESTORE_EMULATOR_HOST="HOST:PORT"
 ```
+
+## Docs
+
+- [API Usage](./docs/api.md)
