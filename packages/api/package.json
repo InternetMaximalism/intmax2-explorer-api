@@ -5,7 +5,6 @@
     "@hono/node-server": "^1.14.0",
     "@intmax2-explorer-api/shared": "workspace:*",
     "axios": "^1.8.4",
-    "geoip-lite": "^1.4.10",
     "hono": "^4.7.5",
     "hono-rate-limiter": "^0.4.2",
     "viem": "^2.26.0"
@@ -17,7 +16,6 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/geoip-lite": "^1.4.4",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3"
   }
