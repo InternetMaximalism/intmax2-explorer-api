@@ -3,7 +3,6 @@ import { HTTPException } from "hono/http-exception";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { ZodError } from "zod";
 import { isProduction } from "../config";
-import { getIP } from "./ip";
 import { logger } from "./logger";
 
 export enum ErrorCode {
@@ -61,8 +60,6 @@ export class InternalServerError extends AppError {
   }
 }
 
-const IP_LIMITED_PATHS = ["/v1/ip/block-check"];
-
 export const handleError = (err: unknown, c: Context) => {
   if (err instanceof HTTPException) {
     return c.json({ code: `HTTP_${err.status}`, message: err.message }, err.status);
@@ -76,17 +73,6 @@ export const handleError = (err: unknown, c: Context) => {
         errors: err.errors.map((e) => ({ path: e.path.join("."), message: e.message })),
       },
       400,
-    );
-  }
-
-  if (err instanceof ForbiddenError && IP_LIMITED_PATHS.includes(c.req.path)) {
-    return c.json(
-      {
-        ip: getIP(c),
-        blocked: true,
-        reason: err.message,
-      },
-      200,
     );
   }
 
