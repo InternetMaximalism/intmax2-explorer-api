@@ -25,6 +25,13 @@ gcloud emulators firestore start
 export FIRESTORE_EMULATOR_HOST="HOST:PORT"
 ```
 
+## Docker
+
+```sh
+docker build -f docker/Dockerfile -t intmax2-explorer-api .
+docker run --rm -p 3000:3000 --env-file .env intmax2-explorer-api workspace api start
+```
+
 ## Docs
 
 - [API Usage](./docs/api.md)
