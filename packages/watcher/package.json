@@ -4,6 +4,7 @@
   "dependencies": {
     "@google-cloud/firestore": "^7.11.0",
     "@intmax2-explorer-api/shared": "workspace:*",
+    "abitype": "^1.0.8",
     "viem": "^2.26.3"
   },
   "scripts": {
