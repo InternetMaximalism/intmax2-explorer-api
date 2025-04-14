@@ -933,7 +933,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^22.14.1":
+"@types/node@npm:*, @types/node@npm:>=13.7.0":
   version: 22.14.1
   resolution: "@types/node@npm:22.14.1"
   dependencies:
@@ -2068,8 +2068,6 @@ __metadata:
   resolution: "intmax2-explorer-api@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^1.9.4"
-    "@types/node": "npm:^22.14.1"
-    tsx: "npm:^4.19.3"
     typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
