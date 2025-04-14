@@ -8,18 +8,19 @@ out
 .git
 .gitignore
 .github
+.gitattributes
 .vscode
 .idea
 *.md
 !README.md
 *.log
 *.local
-.vscode
+.nvmrc
+biome.json
 
 # Environment files
 .env
-.env.development
-.env.staging
+.env.example
 
 # Docker files
 docker
