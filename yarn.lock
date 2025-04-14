@@ -721,6 +721,7 @@ __metadata:
     alchemy-sdk: "npm:^3.5.6"
     axios: "npm:^1.8.4"
     envalid: "npm:^8.0.0"
+    hono: "npm:^4.7.6"
     pino: "npm:^9.6.0"
     pino-pretty: "npm:^13.0.0"
     typescript: "npm:^5.8.3"
@@ -933,7 +934,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0":
+"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^22.14.1":
   version: 22.14.1
   resolution: "@types/node@npm:22.14.1"
   dependencies:
@@ -2068,6 +2069,7 @@ __metadata:
   resolution: "intmax2-explorer-api@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^1.9.4"
+    "@types/node": "npm:^22.14.1"
     typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
@@ -3097,8 +3099,8 @@ __metadata:
   linkType: hard
 
 "viem@npm:^2.26.3":
-  version: 2.26.3
-  resolution: "viem@npm:2.26.3"
+  version: 2.26.4
+  resolution: "viem@npm:2.26.4"
   dependencies:
     "@noble/curves": "npm:1.8.1"
     "@noble/hashes": "npm:1.7.1"
@@ -3113,7 +3115,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/c808c0fb066bd55b6b726e546c3eb809ac3d1d8c163b197927c042579c65966686072607e5baf5a7667050248f332de8c7a44caa321954682ca8576dc1c152c3
+  checksum: 10c0/18bb3917e4c6793f4d760a05918f7f63d2c4a80a78a9c9f88948e2dee6cc3db9e5f5f421be93fdc892294a6645bc2a914b4a2c029e6b95993b9510e74f1e2afe
   languageName: node
   linkType: hard
 
@@ -3123,6 +3125,7 @@ __metadata:
   dependencies:
     "@google-cloud/firestore": "npm:^7.11.0"
     "@intmax2-explorer-api/shared": "workspace:*"
+    abitype: "npm:^1.0.8"
     tsx: "npm:^4.19.3"
     typescript: "npm:^5.8.3"
     viem: "npm:^2.26.3"
