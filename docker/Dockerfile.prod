@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .yarnrc.yml ./
 COPY packages ./packages/
 
 RUN yarn install --immutable
@@ -34,7 +34,6 @@ RUN mkdir -p /tmp/packages && \
 FROM node:22.14.0-bookworm-slim AS production
 
 ENV NODE_ENV=production
-ENV YARN_CACHE_FOLDER=/home/app/.yarn-cache
 ENV NODE_OPTIONS="\
   --max-http-header-size=8192 \
   --max-old-space-size=512 \
@@ -54,24 +53,24 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN useradd --create-home --shell /bin/bash app && \
-    mkdir -p /home/app/.yarn-cache && \
-    chown -R app:app /home/app
+RUN addgroup --system --gid 1001 appuser && \
+    adduser --system --disabled-password --home /home/appuser --uid 1001 --gid 1001 appuser && \
+    mkdir -p /usr/src/app && \
+    chown appuser:appuser /usr/src/app
 
 WORKDIR /usr/src/app
-RUN chown -R app:app /usr/src/app
 
-COPY --chown=app:app --from=builder /usr/src/app/package.json /usr/src/app/yarn.lock ./
-COPY --chown=app:app --from=builder /tmp/packages ./packages/
+COPY --chown=appuser:appuser --from=builder /usr/src/app/package.json /usr/src/app/yarn.lock /usr/src/app/.yarnrc.yml ./
+COPY --chown=appuser:appuser --from=builder /usr/src/app/packages ./packages/
 
 RUN find /usr/src/app -type d -exec chmod 755 {} \; && \
     find /usr/src/app -type f -exec chmod 644 {} \;
 
-USER app
+USER appuser:appuser
 
 RUN yarn workspaces focus --all --production && \
-    rm -rf .yarn/cache && \
-    rm -rf /home/app/tmp/*
+    yarn cache clean && \
+    rm -rf /home/appuser/tmp/*
 
 EXPOSE 3000
 
