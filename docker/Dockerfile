@@ -1,4 +1,4 @@
-FROM node:22.14.0-bookworm-slim AS builder
+FROM node:23.11.0-bookworm-slim AS builder
 
 RUN corepack enable && \
     corepack prepare yarn@4.6.0 --activate && \
@@ -15,7 +15,7 @@ COPY . .
 RUN yarn install --immutable
 RUN yarn build
 
-FROM node:22.14.0-bookworm-slim
+FROM node:23.11.0-bookworm-slim
 
 RUN corepack enable && \
     corepack prepare yarn@4.6.0 --activate && \
