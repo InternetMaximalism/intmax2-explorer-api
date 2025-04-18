@@ -1,4 +1,5 @@
 import { cleanEnv, num, str } from "envalid";
+import { version } from "../../../../package.json";
 
 export const config = cleanEnv(process.env, {
   // app
@@ -11,6 +12,7 @@ export const config = cleanEnv(process.env, {
     choices: ["fatal", "error", "warn", "info", "debug", "trace"],
     default: "debug",
   }),
+  SERVICE_VERSION: str({ default: version }),
   ALLOWED_ORIGINS: str({ default: "*", example: "http://localhost:3000,http://localhost:5173" }),
   RATE_LIMIT: num({ default: 10000 }),
   // gcp

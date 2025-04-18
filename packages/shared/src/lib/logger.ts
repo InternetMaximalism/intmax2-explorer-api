@@ -17,7 +17,8 @@ export const logger = pino(
     base: {
       serviceContext: {
         service: config.K_SERVICE,
-        version: config.K_REVISION,
+        revision: config.K_REVISION,
+        version: config.SERVICE_VERSION,
       },
     },
     timestamp: pino.stdTimeFunctions.isoTime,
