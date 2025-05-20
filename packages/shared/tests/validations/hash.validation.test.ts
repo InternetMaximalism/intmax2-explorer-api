@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { hashValidation, HashValidationType } from "../../src/validations/hash.validation";
+import { describe, expect, it } from "vitest";
+import { HashValidationType, hashValidation } from "../../src/validations/hash.validation";
 
 describe("Hash Validation Object Schema", () => {
   it("should validate a valid hash object", () => {

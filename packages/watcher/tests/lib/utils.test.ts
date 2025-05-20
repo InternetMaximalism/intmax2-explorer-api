@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { pointToString, calculateNonRegistrationLength } from "../../src/lib/utils";
 import type { Hex } from "viem";
+import { describe, expect, it } from "vitest";
+import { calculateNonRegistrationLength, pointToString } from "../../src/lib/utils";
 
 describe("pointToString", () => {
   it("should concatenate an array of Hex values correctly", () => {
