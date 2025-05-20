@@ -18,7 +18,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
-    "incremental": true
+    "incremental": true,
+    "types": ["vitest/globals"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts", "dist"]

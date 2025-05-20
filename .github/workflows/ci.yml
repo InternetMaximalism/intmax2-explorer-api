@@ -1,10 +1,8 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
-    branches: [main]
+    branches: [dev]
     paths-ignore:
       - '**.md'
 
@@ -56,6 +54,15 @@ jobs:
 
     - name: Check formatting
       run: yarn check
+
+    - name: Build shared packages
+      run: yarn build:shared
+
+    - name: Run tests
+      run: yarn test
+
+    - name: Run tests with coverage
+      run: yarn coverage
 
     - name: Build
       run: yarn build

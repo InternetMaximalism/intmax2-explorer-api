@@ -2,10 +2,10 @@
   "name": "watcher",
   "version": "1.0.0",
   "dependencies": {
-    "@google-cloud/firestore": "^7.11.0",
+    "@google-cloud/firestore": "^7.11.1",
     "@intmax2-explorer-api/shared": "workspace:*",
     "abitype": "^1.0.8",
-    "viem": "^2.28.0"
+    "viem": "^2.29.4"
   },
   "scripts": {
     "start": "node dist/index.js",
@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "tsx": "^4.19.3",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }
 }
