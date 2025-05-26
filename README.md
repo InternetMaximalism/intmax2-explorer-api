@@ -40,4 +40,7 @@ docker run --rm -p 3000:3000 --env-file .env intmax2-explorer-api workspace api 
 
 ## Docs
 
+See the documentation for details on available endpoints and how to use the API.
+This guide will help you integrate INTMAX2 blockchain data into your applications.
+
 - [API Usage](./docs/api.md)

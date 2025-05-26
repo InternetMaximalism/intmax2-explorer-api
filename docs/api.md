@@ -1,5 +1,8 @@
 # API
 
+Here are example commands for accessing the INTMAX2 Explorer API using curl.
+Use these endpoints to check node health, fetch blocks, deposits, withdrawals, and perform searches.
+
 ## API Usage
 
 ```sh
