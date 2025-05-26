@@ -4,6 +4,8 @@ The INTMAX2 Explorer API is designed to support the INTMAX2 Explorer, providing 
 
 ## Development
 
+Start the API or watcher service in development mode:
+
 ```sh
 # install
 yarn
@@ -20,12 +22,16 @@ yarn workspace watcher dev
 
 ## Local Emulator
 
+If your development workflow involves Firestore, you can start a local emulator:
+
 ```sh
 gcloud emulators firestore start
 export FIRESTORE_EMULATOR_HOST="HOST:PORT"
 ```
 
 ## Docker
+
+Build and run the project in a Docker container:
 
 ```sh
 docker build -f docker/Dockerfile -t intmax2-explorer-api .

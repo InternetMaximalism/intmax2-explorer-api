@@ -1,7 +1,26 @@
 {
   "name": "intmax2-explorer-api",
-  "private": true,
   "version": "0.1.7",
+  "license": "MIT",
+  "description": "Explorer API for INTMAX2 blockchain",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/InternetMaximalism/intmax2-explorer-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/InternetMaximalism/intmax2-explorer-api/issues"
+  },
+  "homepage": "https://github.com/InternetMaximalism/intmax2-explorer-api#readme",
+  "keywords": [
+    "intmax2",
+    "blockchain",
+    "explorer",
+    "api"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=4.0.0"
+  },
   "workspaces": [
     "packages/*"
   ],
@@ -22,5 +41,9 @@
     "typescript": "^5.8.3",
     "vitest": "^3.1.4"
   },
-  "packageManager": "yarn@4.9.1"
+  "packageManager": "yarn@4.9.1",
+  "volta": {
+    "node": "24.0.2",
+    "yarn": "4.9.1"
+  }
 }
