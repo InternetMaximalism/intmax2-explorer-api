@@ -963,7 +963,7 @@ __metadata:
     typescript: "npm:^5.8.3"
     viem: "npm:^2.29.4"
     vitest: "npm:^3.1.4"
-    zod: "npm:3.25.7"
+    zod: "npm:3.25.30"
   languageName: unknown
   linkType: soft
 
@@ -4898,9 +4898,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:3.25.7":
-  version: 3.25.7
-  resolution: "zod@npm:3.25.7"
-  checksum: 10c0/9bf497ed9b810d30b84ae032ec7882435d0fb9c94db08427592f56b711227726cfb7551ee7ca9f99135dfaff1fcff5ce261e25a6400f62b651ec23880cb41013
+"zod@npm:3.25.30":
+  version: 3.25.30
+  resolution: "zod@npm:3.25.30"
+  checksum: 10c0/53cc090b949ed1776e241fb882d5de0f66096727aabbfb53ff9c64c875b575c9d3cbd75556bc816bcdd09aff0a26608e1c40d79dd863ab5c31a96331f1e7a4b9
   languageName: node
   linkType: hard
