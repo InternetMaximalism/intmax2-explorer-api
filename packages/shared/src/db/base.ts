@@ -53,10 +53,10 @@ export abstract class BaseRepository<
 
   protected async list(filters: F, buildQuery?: (query: Query) => Query) {
     try {
-      let query = this.collection.orderBy(
-        this.defaultOrderField as string,
-        this.defaultOrderDirection,
-      );
+      const orderField = filters?.orderBy || (this.defaultOrderField as string);
+      const orderDirection = filters?.orderDirection || this.defaultOrderDirection;
+
+      let query = this.collection.orderBy(orderField, orderDirection);
       const perPage = filters?.perPage || DEFAULT_PAGE_SIZE;
 
       if (buildQuery) {
