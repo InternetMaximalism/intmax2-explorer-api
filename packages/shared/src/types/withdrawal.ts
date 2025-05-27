@@ -1,15 +1,19 @@
 import type { Timestamp } from "@google-cloud/firestore";
 import { TransactionStatus } from "./blockchain";
 
+export type WithdrawalType = "direct" | "claimable";
+
 export type WithdrawalInput = {
   recipient: string;
   tokenIndex: number;
   tokenType: number;
   amount: string;
-  blockNumber: number;
   hash: string;
-  timestamp: number;
   liquidityTransactionHash: string;
+  liquidityTimestamp: number;
+  relayerTransactionHash: string;
+  relayerTimestamp: number;
+  type: WithdrawalType;
   status: TransactionStatus;
 };
 
@@ -18,10 +22,13 @@ export type WithdrawalData = {
   tokenIndex: number;
   tokenType: number;
   amount: string;
-  blockNumber: number;
   hash: string;
-  timestamp: number;
+  liquidityTransactionHash: string;
+  liquidityTimestamp: number;
+  relayerTransactionHash: string;
+  relayerTimestamp: number;
   status: TransactionStatus;
+  type: WithdrawalType;
   createdAt: Timestamp;
 };
 
@@ -30,4 +37,6 @@ export type WithdrawalFilters = {
   cursor?: string;
   tokenType?: number;
   status?: TransactionStatus;
+  orderBy?: string;
+  orderDirection?: "asc" | "desc";
 };

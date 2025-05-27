@@ -2,6 +2,8 @@ import {
   BLOCK_RANGE_MINIMUM,
   type DirectWithdrawalSuccessedEvent,
   type EventData,
+  LIQUIDITY_CONTRACT_ADDRESS,
+  LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
   type WithdrawalClaimableEvent,
   directWithdrawalSuccessedEvent,
   fetchEvents,
@@ -11,7 +13,6 @@ import {
 } from "@intmax2-explorer-api/shared";
 import { parseAbiItem } from "abitype";
 import type { PublicClient } from "viem";
-import { LIQUIDITY_CONTRACT_ADDRESS, LIQUIDITY_CONTRACT_DEPLOYED_BLOCK } from "../constants";
 import type { WithdrawalEventType } from "../types";
 
 const handleWithdrawalEvent = async <T extends { args: { withdrawalHash: string } }>(

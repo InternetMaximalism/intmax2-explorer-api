@@ -1,5 +1,5 @@
-import { LiquidityAbi } from "@intmax2-explorer-api/shared";
 import type { Abi, PublicClient } from "viem";
+import { LiquidityAbi } from "../abi";
 import { LIQUIDITY_CONTRACT_ADDRESS, TOKEN_MULTICALL_SIZE } from "../constants";
 import type { TokenInfo, TokenType } from "../types";
 

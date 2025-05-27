@@ -1,25 +1,24 @@
 import {
   BLOCK_RANGE_MINIMUM,
+  DEPOSIT_BATCH_SIZE,
   Deposit,
   type DepositEvent,
   Event,
   type EventData,
+  LIQUIDITY_CONTRACT_ADDRESS,
+  LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
   LiquidityAbi,
+  type TokenInfo,
   TransactionStatus,
   depositedEvent,
   fetchEvents,
+  fetchTokenData,
   getStartBlockNumber,
   logger,
   validateBlockRange,
 } from "@intmax2-explorer-api/shared";
 import type { Abi, PublicClient } from "viem";
-import {
-  DEPOSIT_BATCH_SIZE,
-  LIQUIDITY_CONTRACT_ADDRESS,
-  LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
-} from "../constants";
-import type { GetDepositData, TokenInfo } from "../types";
-import { fetchTokenData } from "./token.service";
+import type { GetDepositData } from "../types";
 
 export const fetchAndStoreDeposits = async (
   ethereumClient: PublicClient,

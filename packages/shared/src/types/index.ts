@@ -7,3 +7,4 @@ export * from "./stats";
 export * from "./utils";
 export * from "./withdrawal";
 export * from "./validityProver";
+export * from "./token";
