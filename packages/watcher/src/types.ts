@@ -1,20 +1,6 @@
 import type { Event, EventData } from "@intmax2-explorer-api/shared";
 import type { PublicClient } from "viem";
 
-// token
-export enum TokenType {
-  NATIVE,
-  ERC20,
-  ERC721,
-  ERC1155,
-}
-
-export interface TokenInfo {
-  tokenType: TokenType;
-  tokenIndex: number;
-  contractAddress: string;
-}
-
 // withdrawal
 export type FetchAndStoreWithdrawalsParams = {
   ethereumClient: PublicClient;

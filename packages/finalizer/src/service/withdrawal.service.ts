@@ -4,25 +4,24 @@ import {
   type ClaimableWithdrawalEvent,
   type DirectWithdrawalQueueEvent,
   type EventData,
+  type TokenInfo,
   type TransactionStatus,
+  WITHDRAWAL_BATCH_SIZE,
+  WITHDRAWAL_CONTRACT_ADDRESS,
+  WITHDRAWAL_CONTRACT_DEPLOYED_BLOCK,
   Withdrawal,
   type WithdrawalInput,
   type WithdrawalType,
   claimableWithdrawalQueuedEvent,
   directWithdrawalQueuedEvent,
   fetchEvents,
+  fetchTokenData,
   getStartBlockNumber,
   logger,
   validateBlockRange,
 } from "@intmax2-explorer-api/shared";
-import type { FetchAndStoreWithdrawalsParams, TokenInfo, IndexedWithdrawal } from "../types";
-import { PublicClient, parseAbiItem } from "viem";
-import {
-  WITHDRAWAL_CONTRACT_DEPLOYED_BLOCK,
-  WITHDRAWAL_CONTRACT_ADDRESS,
-  WITHDRAWAL_BATCH_SIZE,
-} from "../constants";
-import { fetchTokenData } from "./token.service";
+import { type PublicClient, parseAbiItem } from "viem";
+import type { FinalizeIndexedWithdrawalsParams, IndexedWithdrawal } from "../types";
 
 export const finalizeIndexedWithdrawals = async ({
   ethereumClient,
@@ -30,7 +29,7 @@ export const finalizeIndexedWithdrawals = async ({
   scrollCurrentBlockNumber,
   lastWithdrawalQueueProcessedEvent,
   withdrawalQueueEvent,
-}: FetchAndStoreWithdrawalsParams) => {
+}: FinalizeIndexedWithdrawalsParams) => {
   const withdrawal = Withdrawal.getInstance();
   const { directWithdrawals, claimableWithdrawals, totalCount } =
     await getIndexedWithdrawals(withdrawal);

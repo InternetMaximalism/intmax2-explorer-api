@@ -1,5 +1,6 @@
 import type { Transaction } from "@google-cloud/firestore";
 import {
+  BLOCK_BATCH_SIZE,
   BLOCK_RANGE_MINIMUM,
   Block,
   type BlockData,
@@ -10,6 +11,8 @@ import {
   Event,
   type EventData,
   FIRESTORE_DOCUMENT_STATS,
+  ROLLUP_CONTRACT_ADDRESS,
+  ROLLUP_CONTRACT_DEPLOYED_BLOCK,
   RollupAbi,
   Stats,
   type StatsData,
@@ -22,11 +25,6 @@ import {
   validateBlockRange,
 } from "@intmax2-explorer-api/shared";
 import { type Hex, type PublicClient, decodeFunctionData } from "viem";
-import {
-  BLOCK_BATCH_SIZE,
-  ROLLUP_CONTRACT_ADDRESS,
-  ROLLUP_CONTRACT_DEPLOYED_BLOCK,
-} from "../constants";
 import { calculateNonRegistrationLength } from "../lib/utils";
 
 export const fetchAndStoreBlocks = async (

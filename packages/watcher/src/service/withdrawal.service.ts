@@ -1,13 +1,13 @@
 import {
-  TransactionStatus,
   type DirectWithdrawalSuccessedEvent,
-  type WithdrawalClaimableEvent,
+  TransactionStatus,
+  WITHDRAWAL_BATCH_SIZE,
   Withdrawal,
-  logger,
+  type WithdrawalClaimableEvent,
   type WithdrawalInput,
   type WithdrawalType,
+  logger,
 } from "@intmax2-explorer-api/shared";
-import { WITHDRAWAL_BATCH_SIZE } from "../constants";
 import type { FetchAndStoreWithdrawalsParams } from "../types";
 import { handleAllWithdrawalEvents } from "./event.service";
 
