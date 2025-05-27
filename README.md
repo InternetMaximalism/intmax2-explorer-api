@@ -18,6 +18,9 @@ yarn workspace api dev
 
 # watcher
 yarn workspace watcher dev
+
+# finalizer
+yarn workspace finalizer dev
 ```
 
 ## Local Emulator
