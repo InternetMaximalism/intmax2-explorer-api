@@ -1,5 +1,5 @@
 {
-  "name": "watcher",
+  "name": "finalizer",
   "version": "1.0.0",
   "dependencies": {
     "@google-cloud/firestore": "^7.11.1",
