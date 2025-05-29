@@ -5,7 +5,7 @@
     "@google-cloud/firestore": "^7.11.1",
     "@intmax2-explorer-api/shared": "workspace:*",
     "abitype": "^1.0.8",
-    "viem": "^2.29.4"
+    "viem": "^2.30.5"
   },
   "scripts": {
     "start": "node dist/index.js",
