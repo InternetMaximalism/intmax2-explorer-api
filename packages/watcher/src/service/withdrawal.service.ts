@@ -46,8 +46,6 @@ export const fetchAndStoreWithdrawals = async ({
       "claimable",
     ),
   ]);
-  console.log("directWithdrawalQueuedEvents", directWithdrawalQueuedEvents);
-  console.log("claimableWithdrawalEvents", claimableWithdrawalEvents);
 
   const allEvents = [...directWithdrawalQueuedEvents, ...claimableWithdrawalEvents];
   const tokenDetailsMap = await fetchTokenDetailsMap(ethereumClient, allEvents);
@@ -61,7 +59,6 @@ export const fetchAndStoreWithdrawals = async ({
 
   for (let i = 0; i < withdrawalDetails.length; i += WITHDRAWAL_BATCH_SIZE) {
     const batch = withdrawalDetails.slice(i, i + WITHDRAWAL_BATCH_SIZE);
-    console.log("batch", batch);
     await withdrawal.addWithdrawalsBatch(batch);
     logger.info(
       `Processed withdrawal batch ${Math.floor(i / WITHDRAWAL_BATCH_SIZE) + 1} of ${Math.ceil(withdrawalDetails.length / WITHDRAWAL_BATCH_SIZE)}`,

@@ -13,12 +13,11 @@ export type RelayedWithdrawal = {
   liquidityTransactionHash: string;
 };
 
-// withdrawal
 export type FinalizeIndexedWithdrawalsParams = {
   ethereumClient: PublicClient;
   currentBlockNumber: bigint;
   scrollClient: PublicClient;
   scrollCurrentBlockNumber: bigint;
   lastWithdrawalProcessedEvent: EventData | null;
-  withdrawalQueueEvent: Event;
+  withdrawalEvent: Event;
 };
