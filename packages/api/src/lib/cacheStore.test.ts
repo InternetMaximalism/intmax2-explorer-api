@@ -1,6 +1,6 @@
 import { logger } from "@intmax2-explorer-api/shared";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { MemoryCacheStore } from "../../src/lib/cacheStore";
+import { MemoryCacheStore } from "./cacheStore";
 
 vi.mock("@intmax2-explorer-api/shared", () => ({
   logger: {
