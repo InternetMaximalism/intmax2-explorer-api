@@ -65,7 +65,7 @@ export const fetchAndStoreWithdrawals = async ({
     );
   }
 
-  withdrawalQueueEvent.addOrUpdateEvent({
+  await withdrawalQueueEvent.addOrUpdateEvent({
     lastBlockNumber: Number(scrollCurrentBlockNumber),
   });
 
