@@ -7,13 +7,13 @@ import {
 import { finalizeIndexedWithdrawals } from "./withdrawal.service";
 
 export const performJob = async (): Promise<void> => {
-  const withdrawalQueueEvent = new Event(FIRESTORE_DOCUMENT_EVENTS.WITHDRAWAL_QUEUE);
+  const withdrawalEvent = new Event(FIRESTORE_DOCUMENT_EVENTS.WITHDRAWAL);
 
   const [
-    lastWithdrawalQueueProcessedEvent,
+    lastWithdrawalProcessedEvent,
     { ethereumClient, currentBlockNumber, scrollClient, scrollCurrentBlockNumber },
   ] = await Promise.all([
-    withdrawalQueueEvent.getLatestEvent<EventData>(),
+    withdrawalEvent.getLatestEvent<EventData>(),
     getEthereumAndScrollBlockNumbers(),
   ]);
 
@@ -23,12 +23,11 @@ export const performJob = async (): Promise<void> => {
       currentBlockNumber,
       scrollClient,
       scrollCurrentBlockNumber,
-      lastWithdrawalQueueProcessedEvent,
-      withdrawalQueueEvent,
+      lastWithdrawalProcessedEvent,
+      withdrawalEvent,
     }),
   ]);
 };
-
 const getEthereumAndScrollBlockNumbers = async () => {
   const ethereumClient = createNetworkClient("ethereum");
   const scrollClient = createNetworkClient("scroll");
