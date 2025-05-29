@@ -11,8 +11,8 @@ export type WithdrawalInput = {
   hash: string;
   liquidityTransactionHash: string;
   liquidityTimestamp: number;
-  relayerTransactionHash: string;
-  relayerTimestamp: number;
+  relayedTransactionHash: string;
+  relayedTimestamp: number;
   type: WithdrawalType;
   status: TransactionStatus;
 };
@@ -25,8 +25,8 @@ export type WithdrawalData = {
   hash: string;
   liquidityTransactionHash: string;
   liquidityTimestamp: number;
-  relayerTransactionHash: string;
-  relayerTimestamp: number;
+  relayedTransactionHash: string;
+  relayedTimestamp: number;
   status: TransactionStatus;
   type: WithdrawalType;
   createdAt: Timestamp;

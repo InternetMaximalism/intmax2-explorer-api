@@ -1,85 +1,59 @@
 import {
-  Alchemy,
-  BLOCK_RANGE_MOST_RECENT,
-  type ClaimableWithdrawalEvent,
+  Withdrawal,
   type DirectWithdrawalQueueEvent,
   type EventData,
-  type TokenInfo,
-  type TransactionStatus,
-  WITHDRAWAL_BATCH_SIZE,
-  WITHDRAWAL_CONTRACT_ADDRESS,
-  WITHDRAWAL_CONTRACT_DEPLOYED_BLOCK,
-  Withdrawal,
-  type WithdrawalInput,
-  type WithdrawalType,
-  claimableWithdrawalQueuedEvent,
-  directWithdrawalQueuedEvent,
+  LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
   fetchEvents,
-  fetchTokenData,
   getStartBlockNumber,
-  logger,
   validateBlockRange,
+  BLOCK_RANGE_MINIMUM,
+  LIQUIDITY_CONTRACT_ADDRESS,
+  directWithdrawalSuccessedEvent,
+  withdrawalClaimableEvent,
 } from "@intmax2-explorer-api/shared";
 import { type PublicClient, parseAbiItem } from "viem";
-import type { FinalizeIndexedWithdrawalsParams, IndexedWithdrawal } from "../types";
+import type { FinalizeIndexedWithdrawalsParams, RelayedWithdrawal } from "../types";
 
 export const finalizeIndexedWithdrawals = async ({
   ethereumClient,
-  scrollClient,
-  scrollCurrentBlockNumber,
-  lastWithdrawalQueueProcessedEvent,
-  withdrawalQueueEvent,
+  currentBlockNumber,
+  lastWithdrawalProcessedEvent,
 }: FinalizeIndexedWithdrawalsParams) => {
   const withdrawal = Withdrawal.getInstance();
   const { directWithdrawals, claimableWithdrawals, totalCount } =
-    await getIndexedWithdrawals(withdrawal);
+    await getRelayedWithdrawals(withdrawal);
 
-  const [directWithdrawalQueuedEvents, claimableWithdrawalEvents] = await Promise.all([
-    processQueueEvents(
-      scrollClient,
-      lastWithdrawalQueueProcessedEvent,
-      scrollCurrentBlockNumber,
-      directWithdrawalQueuedEvent,
+  console.log("Total relayed withdrawals:", directWithdrawals);
+  console.log("Total relayed withdrawals:", claimableWithdrawals);
+  console.log("Total relayed withdrawals:", totalCount);
+
+  const withdrawalDetails = await Promise.all([
+    fetchWithdrawalEvents(
+      ethereumClient,
+      lastWithdrawalProcessedEvent,
+      currentBlockNumber,
       directWithdrawals,
-      "direct",
+      directWithdrawalSuccessedEvent,
+      "DirectWithdrawalSuccessed",
     ),
-    processQueueEvents(
-      scrollClient,
-      lastWithdrawalQueueProcessedEvent,
-      scrollCurrentBlockNumber,
-      claimableWithdrawalQueuedEvent,
+    fetchWithdrawalEvents(
+      ethereumClient,
+      lastWithdrawalProcessedEvent,
+      currentBlockNumber,
       claimableWithdrawals,
-      "claimable",
+      withdrawalClaimableEvent,
+      "WithdrawalClaimable",
     ),
-  ]);
+  ]).then((processed) => processed.flat());
 
-  const allEvents = [...directWithdrawalQueuedEvents, ...claimableWithdrawalEvents];
-  const tokenDetailsMap = await fetchTokenDetailsMap(ethereumClient, allEvents);
-
-  const withdrawalDetails = await processWithdrawalEvents(
-    [...directWithdrawalQueuedEvents, ...claimableWithdrawalEvents],
-    tokenDetailsMap,
-  );
-
-  for (let i = 0; i < withdrawalDetails.length; i += WITHDRAWAL_BATCH_SIZE) {
-    const batch = withdrawalDetails.slice(i, i + WITHDRAWAL_BATCH_SIZE);
-    await withdrawal.updateWithdrawalsBatch(batch);
-    logger.info(
-      `Processed withdrawal batch ${Math.floor(i / WITHDRAWAL_BATCH_SIZE) + 1} of ${Math.ceil(withdrawalDetails.length / WITHDRAWAL_BATCH_SIZE)}`,
-    );
-  }
-
-  withdrawalQueueEvent.addOrUpdateEvent({
-    lastBlockNumber: Number(scrollCurrentBlockNumber),
-  });
-
-  logger.info(
-    `Completed processing withdrawals: ${withdrawalDetails.length} updated out of ${totalCount} total withdrawals`,
-  );
+  console.log(withdrawalDetails.length);
 };
 
-const getIndexedWithdrawals = async (withdrawal: Withdrawal) => {
-  const { items: indexingWithdrawals, totalCount } = await withdrawal.getAll({ orderBy: "hash" });
+const getRelayedWithdrawals = async (withdrawal: Withdrawal) => {
+  const { items: indexingWithdrawals, totalCount } = await withdrawal.getAll({
+    status: "Relayed",
+    orderBy: "relayedTimestamp",
+  });
 
   return {
     directWithdrawals: indexingWithdrawals.filter((w) => w.type === "direct"),
@@ -88,31 +62,27 @@ const getIndexedWithdrawals = async (withdrawal: Withdrawal) => {
   };
 };
 
-const processQueueEvents = async (
-  scrollClient: PublicClient,
-  lastWithdrawalQueueProcessedEvent: EventData | null,
-  scrollCurrentBlockNumber: bigint,
+const fetchWithdrawalEvents = async (
+  ethereumClient: PublicClient,
+  lastWithdrawalProcessedEvent: EventData | null,
+  currentBlockNumber: bigint,
+  withdrawals: RelayedWithdrawal[],
   eventInterface: ReturnType<typeof parseAbiItem>,
-  withdrawals: IndexedWithdrawal[],
-  type: WithdrawalType,
+  eventName: "DirectWithdrawalSuccessed" | "WithdrawalClaimable",
 ) => {
-  if (withdrawals.length === 0) {
-    return [];
-  }
-
   const startBlockNumber = getStartBlockNumber(
-    lastWithdrawalQueueProcessedEvent,
-    WITHDRAWAL_CONTRACT_DEPLOYED_BLOCK,
+    lastWithdrawalProcessedEvent,
+    LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
   );
-  validateBlockRange(`${type}WithdrawalQueueEvent`, startBlockNumber, scrollCurrentBlockNumber);
+  validateBlockRange(eventName, startBlockNumber, currentBlockNumber);
 
   const withdrawalHashes = withdrawals.map(({ hash }) => hash);
 
-  const events = await fetchEvents<DirectWithdrawalQueueEvent>(scrollClient, {
+  const events = await fetchEvents<DirectWithdrawalQueueEvent>(ethereumClient, {
     startBlockNumber: startBlockNumber,
-    endBlockNumber: scrollCurrentBlockNumber,
-    blockRange: BLOCK_RANGE_MOST_RECENT,
-    contractAddress: WITHDRAWAL_CONTRACT_ADDRESS,
+    endBlockNumber: currentBlockNumber,
+    blockRange: BLOCK_RANGE_MINIMUM,
+    contractAddress: LIQUIDITY_CONTRACT_ADDRESS,
     eventInterface: eventInterface,
     args: {
       withdrawalHash: withdrawalHashes,
@@ -120,78 +90,4 @@ const processQueueEvents = async (
   });
 
   return events;
-};
-
-const processWithdrawalEvents = async (
-  events: ClaimableWithdrawalEvent[] | DirectWithdrawalQueueEvent[],
-  tokenDetailsMap: Map<number, TokenInfo>,
-) => {
-  if (events.length === 0) {
-    return [];
-  }
-
-  const blockNumbers = [...new Set(events.map((event) => event.blockNumber))];
-  const blocks = await fetchBlocksInBatches(blockNumbers);
-  const blockMap = new Map(blockNumbers.map((blockNumber, index) => [blockNumber, blocks[index]]));
-
-  return events.map((event) => {
-    const block = blockMap.get(event.blockNumber);
-    if (!block) {
-      throw new Error(`Block not found for block number: ${event.blockNumber}`);
-    }
-
-    const tokenDetail = tokenDetailsMap.get(event.args.withdrawal.tokenIndex);
-    if (!tokenDetail) {
-      throw new Error(
-        `Token detail is not found for token index: ${event.args.withdrawal.tokenIndex}`,
-      );
-    }
-
-    return {
-      hash: event.args.withdrawalHash,
-      recipient: event.args.recipient,
-      tokenIndex: event.args.withdrawal.tokenIndex,
-      tokenType: Number(tokenDetail.tokenType),
-      amount: String(event.args.withdrawal.amount),
-      relayerTimestamp: block.timestamp,
-      relayerTransactionHash: event.transactionHash,
-      status: "Completed" as TransactionStatus,
-    };
-  }) as WithdrawalInput[];
-};
-
-const fetchTokenDetailsMap = async (
-  ethereumClient: PublicClient,
-  events: ClaimableWithdrawalEvent[] | DirectWithdrawalQueueEvent[],
-) => {
-  const tokenIndexes = events.map(({ args }) => args.withdrawal.tokenIndex);
-  const uniqueTokenIndexes = [...new Set(tokenIndexes)];
-
-  const tokenDetails = await fetchTokenData(ethereumClient, uniqueTokenIndexes);
-  return new Map(tokenDetails.map((token) => [token.tokenIndex, token]));
-};
-
-const fetchBlocksInBatches = async (blockNumbers: bigint[], batchSize = 100) => {
-  const batches = [];
-  for (let i = 0; i < blockNumbers.length; i += batchSize) {
-    batches.push(blockNumbers.slice(i, i + batchSize));
-  }
-
-  const blocks = [];
-  for (const batch of batches) {
-    const batchPromises = batch.map((blockNumber) =>
-      Alchemy.getInstance("scroll").getBlock(blockNumber),
-    );
-
-    if (blocks.length > 0) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-
-    const batchResults = await Promise.all(batchPromises);
-    blocks.push(...batchResults);
-
-    logger.info(`Processed batch of ${batch.length} blocks. Total blocks so far: ${blocks.length}`);
-  }
-
-  return blocks;
 };

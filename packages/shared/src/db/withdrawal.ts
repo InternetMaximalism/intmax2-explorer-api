@@ -7,7 +7,7 @@ import { db } from "./firestore";
 export class Withdrawal extends BaseRepository<WithdrawalData, WithdrawalFilters, WithdrawalInput> {
   private static instance: Withdrawal | null = null;
   protected readonly collection: CollectionReference;
-  protected readonly defaultOrderField = "liquidityTimestamp";
+  protected readonly defaultOrderField = "relayedTimestamp";
   protected readonly defaultOrderDirection = "desc";
 
   private constructor() {

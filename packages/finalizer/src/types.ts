@@ -6,7 +6,7 @@ import type {
 } from "@intmax2-explorer-api/shared";
 import type { PublicClient } from "viem";
 
-export type IndexedWithdrawal = {
+export type RelayedWithdrawal = {
   hash: string;
   status: TransactionStatus;
   type: WithdrawalType;
@@ -19,6 +19,6 @@ export type FinalizeIndexedWithdrawalsParams = {
   currentBlockNumber: bigint;
   scrollClient: PublicClient;
   scrollCurrentBlockNumber: bigint;
-  lastWithdrawalQueueProcessedEvent: EventData | null;
+  lastWithdrawalProcessedEvent: EventData | null;
   withdrawalQueueEvent: Event;
 };
