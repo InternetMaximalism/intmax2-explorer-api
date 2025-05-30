@@ -7,9 +7,7 @@ export type FetchAndStoreWithdrawalsParams = {
   currentBlockNumber: bigint;
   scrollClient: PublicClient;
   scrollCurrentBlockNumber: bigint;
-  lastWithdrawalProcessedEvent: EventData | null;
   lastWithdrawalQueueProcessedEvent: EventData | null;
-  withdrawalEvent: Event;
   withdrawalQueueEvent: Event;
 };
 

@@ -11,19 +11,16 @@ import { fetchAndStoreWithdrawals } from "./withdrawal.service";
 export const performJob = async (): Promise<void> => {
   const blockEvent = new Event(FIRESTORE_DOCUMENT_EVENTS.BLOCK);
   const depositEvent = new Event(FIRESTORE_DOCUMENT_EVENTS.DEPOSIT);
-  const withdrawalEvent = new Event(FIRESTORE_DOCUMENT_EVENTS.WITHDRAWAL);
   const withdrawalQueueEvent = new Event(FIRESTORE_DOCUMENT_EVENTS.WITHDRAWAL_QUEUE);
 
   const [
     lastBlockProcessedEvent,
     lastDepositProcessedEvent,
-    lastWithdrawalProcessedEvent,
     lastWithdrawalQueueProcessedEvent,
     { ethereumClient, currentBlockNumber, scrollClient, scrollCurrentBlockNumber },
   ] = await Promise.all([
     blockEvent.getLatestEvent<EventData>(),
     depositEvent.getLatestEvent<EventData>(),
-    withdrawalEvent.getLatestEvent<EventData>(),
     withdrawalQueueEvent.getLatestEvent<EventData>(),
     getEthereumAndScrollBlockNumbers(),
   ]);
@@ -46,9 +43,7 @@ export const performJob = async (): Promise<void> => {
       currentBlockNumber,
       scrollClient,
       scrollCurrentBlockNumber,
-      lastWithdrawalProcessedEvent,
       lastWithdrawalQueueProcessedEvent,
-      withdrawalEvent,
       withdrawalQueueEvent,
     }),
   ]);
