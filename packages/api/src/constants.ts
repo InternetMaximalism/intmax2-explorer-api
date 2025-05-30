@@ -17,6 +17,7 @@ export type LogEventName = (typeof LOG_EVENT_NAMES)[keyof typeof LOG_EVENT_NAMES
 export const CACHE_TIMEOUTS = {
   LIST: 15 * 1000, // 15 seconds
   DETAIL: 180 * 1000, // 180 seconds
+  MODIFIED_DETAIL: 20 * 1000, // 20 seconds
 } as const;
 
 // token
