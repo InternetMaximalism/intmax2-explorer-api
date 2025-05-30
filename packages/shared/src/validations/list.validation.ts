@@ -16,7 +16,7 @@ export const depositPaginationValidation = z
       .enum(["0", "1", "2", "3"])
       .transform((v) => parseInt(v, 10))
       .optional(),
-    status: z.enum(["Indexing", "Pending", "Rejected", "Completed", "Finalized"]).optional(),
+    status: z.enum(["Indexing", "Relayed", "Rejected", "Completed"]).optional(),
   })
   .merge(paginationValidation);
 

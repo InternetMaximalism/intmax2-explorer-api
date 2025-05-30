@@ -99,13 +99,7 @@ interface Withdrawal {
   nullifier: string;
 }
 
-export type TransactionStatus =
-  | "Indexing"
-  | "Relayed"
-  | "Pending"
-  | "Rejected"
-  | "Completed"
-  | "Finalized";
+export type TransactionStatus = "Indexing" | "Relayed" | "Rejected" | "Completed";
 export type TokenType = 0 | 1 | 2 | 3;
 
 export type BlockType = "Registration" | "NonRegistration";
