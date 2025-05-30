@@ -50,7 +50,8 @@ export const fetchValidityPis = async (blockNumber: number) => {
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      throw new Error(`Failed to fetch validity pis: ${error.message}`, error);
+      const errorMessage = error.response?.data || error.message;
+      throw new Error(`Failed to fetch validity pis: ${errorMessage}`, error);
     }
 
     throw new Error(
