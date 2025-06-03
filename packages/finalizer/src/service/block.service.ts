@@ -1,6 +1,5 @@
 import type { Transaction } from "@google-cloud/firestore";
 import {
-  BLOCK_BATCH_SIZE,
   BLOCK_BATCH_SIZE_LARGE,
   Block,
   BlockData,
@@ -9,9 +8,9 @@ import {
   type ProcessingPendingBlockData,
   Stats,
   type StatsData,
-  VALIDITY_PROVER_API_SLEEP_TIME,
   calculateNextAccountId,
   calculateTotalTransactions,
+  config,
   db,
   fetchLatestValidityProofBlockNumber,
   fetchValidityPis,
@@ -35,11 +34,11 @@ export const finalizePendingBlocks = async () => {
   ]);
 
   const processedIndexingBlocks: ProcessingPendingBlockData[] = [];
-  for (let i = 0; i < indexingBlocks.length; i += BLOCK_BATCH_SIZE) {
-    const batch = indexingBlocks.slice(i, i + BLOCK_BATCH_SIZE);
+  for (let i = 0; i < indexingBlocks.length; i += config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE) {
+    const batch = indexingBlocks.slice(i, i + config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE);
     const blockDetail = await processIndexingBlockBatch(batch, latestValidityBlockNumber);
     processedIndexingBlocks.push(...blockDetail);
-    await sleep(VALIDITY_PROVER_API_SLEEP_TIME);
+    await sleep(config.VALIDITY_PROVER_API_SLEEP_TIME);
   }
   const processedProvingBlocks = processProvingBlockBatch(provingBlocks, latestValidityBlockNumber);
 
