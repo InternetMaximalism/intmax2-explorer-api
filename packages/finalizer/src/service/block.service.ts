@@ -28,7 +28,7 @@ export const finalizePendingBlocks = async () => {
     { items: provingBlocks, totalCount: provingCount },
     { blockNumber: latestValidityBlockNumber },
   ] = await Promise.all([
-    block.listAllBlocks({
+    block.listBlocks({
       status: "Indexing",
       perPage: config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE,
     }),
