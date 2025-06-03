@@ -4,7 +4,7 @@ import { paginationValidation } from "./pagination.validation";
 export const blockPaginationValidation = z
   .strictObject({
     blockType: z.enum(["Type0", "Type1", "Type2"]).optional(),
-    blockValidity: z.enum(["Valid", "Invalid"]).optional(),
+    blockValidity: z.enum(["Valid", "Invalid", "Empty"]).optional(),
   })
   .merge(paginationValidation);
 
