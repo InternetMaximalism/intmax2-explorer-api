@@ -1,15 +1,21 @@
+import type { Transaction } from "@google-cloud/firestore";
 import {
   BLOCK_RANGE_MINIMUM,
   DEPOSIT_BATCH_SIZE,
   Deposit,
   type DepositEvent,
+  DepositInput,
   Event,
   type EventData,
+  FIRESTORE_DOCUMENT_STATS,
   LIQUIDITY_CONTRACT_ADDRESS,
   LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
   LiquidityAbi,
+  Stats,
+  type StatsData,
   type TokenInfo,
   TransactionStatus,
+  db,
   depositedEvent,
   fetchEvents,
   fetchTokenData,
@@ -42,11 +48,41 @@ export const fetchAndStoreDeposits = async (
     );
   }
 
-  await depositEvent.addOrUpdateEvent({
-    lastBlockNumber: Number(currentBlockNumber),
+  await db.runTransaction(async (transaction) => {
+    if (depositDetails.length > 0) {
+      await aggregateAndSaveStats(transaction, depositDetails);
+    }
+
+    await depositEvent.addOrUpdateEventWithTransaction(transaction, {
+      lastBlockNumber: Number(currentBlockNumber),
+    });
   });
 
   logger.info(`Completed processing deposits for ${depositDetails.length} deposits`);
+};
+
+const aggregateAndSaveStats = async (transaction: Transaction, depositDetails: DepositInput[]) => {
+  const stats = new Stats(FIRESTORE_DOCUMENT_STATS.summary);
+  const currentStats = await stats.getLatestStatsWithTransaction<StatsData>(transaction);
+  const newL1WalletCount = depositDetails.length;
+
+  if (!currentStats) {
+    await stats.addOrUpdateStatsWithTransaction(transaction, {
+      totalL1WalletCount: newL1WalletCount,
+    });
+    return;
+  }
+
+  const newTotalL1WalletCount = currentStats.totalL1WalletCount + newL1WalletCount;
+
+  await stats.addOrUpdateStatsWithTransaction(transaction, {
+    totalL1WalletCount: newTotalL1WalletCount,
+  });
+
+  logger.info(
+    `Updated summary stats - Previous L1 wallet count: ${currentStats.totalL1WalletCount}, ` +
+      `Added: ${newL1WalletCount}, New total: ${newTotalL1WalletCount}`,
+  );
 };
 
 export const getDepositedEvent = async (

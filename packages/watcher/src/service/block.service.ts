@@ -87,7 +87,7 @@ const aggregateAndSaveStats = async (
 
   const stats = new Stats(FIRESTORE_DOCUMENT_STATS.summary);
   const currentStats = await stats.getLatestStatsWithTransaction<StatsData>(transaction);
-  const totalL2WalletCount = Math.max(maxNextAccountId, currentStats?.totalWalletCount ?? 0);
+  const totalL2WalletCount = Math.max(maxNextAccountId, currentStats?.totalL2WalletCount ?? 0);
 
   if (!currentStats) {
     await stats.addOrUpdateStatsWithTransaction(transaction, {

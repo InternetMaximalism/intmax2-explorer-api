@@ -2,5 +2,6 @@ export type StatsData = {
   id: string;
   latestBlockNumber: number;
   totalTransactionCount: number;
-  totalWalletCount: number;
+  totalL1WalletCount: number;
+  totalL2WalletCount: number;
 };

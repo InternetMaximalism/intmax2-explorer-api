@@ -21,5 +21,6 @@ export const getStats = async () => {
 const initialStatsData = {
   latestBlockNumber: 0,
   totalTransactionCount: 0,
-  totalWalletCount: 0,
+  totalL1WalletCount: 0,
+  totalL2WalletCount: 0,
 };
