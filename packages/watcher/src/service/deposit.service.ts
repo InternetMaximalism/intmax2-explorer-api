@@ -39,6 +39,8 @@ export const fetchAndStoreDeposits = async (
   );
   const depositDetails = await getDepositDetails(ethereumClient, currentBlockNumber, depositEvents);
   const deposit = Deposit.getInstance();
+  const stats = new Stats(FIRESTORE_DOCUMENT_STATS.summary);
+  const currentStats = await stats.getLatestStats<StatsData>();
 
   for (let i = 0; i < depositDetails.length; i += DEPOSIT_BATCH_SIZE) {
     const batch = depositDetails.slice(i, i + DEPOSIT_BATCH_SIZE);
@@ -50,7 +52,7 @@ export const fetchAndStoreDeposits = async (
 
   await db.runTransaction(async (transaction) => {
     if (depositDetails.length > 0) {
-      await aggregateAndSaveStats(transaction, depositDetails);
+      await aggregateAndSaveStats(transaction, stats, currentStats, depositDetails);
     }
 
     await depositEvent.addOrUpdateEventWithTransaction(transaction, {
@@ -61,9 +63,12 @@ export const fetchAndStoreDeposits = async (
   logger.info(`Completed processing deposits for ${depositDetails.length} deposits`);
 };
 
-const aggregateAndSaveStats = async (transaction: Transaction, depositDetails: DepositInput[]) => {
-  const stats = new Stats(FIRESTORE_DOCUMENT_STATS.summary);
-  const currentStats = await stats.getLatestStatsWithTransaction<StatsData>(transaction);
+const aggregateAndSaveStats = async (
+  transaction: Transaction,
+  stats: Stats,
+  currentStats: StatsData | null,
+  depositDetails: DepositInput[],
+) => {
   const deposit = Deposit.getInstance();
 
   const uniqueDepositAddresses = new Set(depositDetails.map((deposit) => deposit.sender));
