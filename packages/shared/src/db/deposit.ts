@@ -1,5 +1,5 @@
 import type { CollectionReference, Query } from "@google-cloud/firestore";
-import { FIRESTORE_COLLECTIONS, FIRESTORE_MAX_BATCH_SIZE } from "../constants";
+import { FIRESTORE_COLLECTIONS } from "../constants";
 import { logger } from "../lib";
 import type { DepositData, DepositFilters, DepositInput } from "../types";
 import { BaseRepository } from "./base";
@@ -50,34 +50,27 @@ export class Deposit extends BaseRepository<DepositData, DepositFilters, Deposit
     if (!addresses.length) return 0;
 
     const normalizedAddresses = [...new Set(addresses.map((addr) => addr.toLowerCase()))];
-    const existingSet = new Set<string>();
 
-    const batchPromises = [];
+    const countPromises = normalizedAddresses.map(async (address) => {
+      try {
+        const snapshot = await this.collection.where("sender", "==", address).count().get();
+        return snapshot.data().count > 0 ? 1 : 0;
+      } catch (error) {
+        logger.error(error);
+        throw new Error(
+          error instanceof Error
+            ? error.message
+            : "Unknown error occurred while checking address existence",
+        );
+      }
+    });
 
-    for (let i = 0; i < normalizedAddresses.length; i += FIRESTORE_MAX_BATCH_SIZE) {
-      const batch = normalizedAddresses.slice(i, i + FIRESTORE_MAX_BATCH_SIZE);
+    const results: number[] = await Promise.all(countPromises);
+    const existingCount: number = results.reduce(
+      (sum: number, exists: number): number => sum + exists,
+      0,
+    );
 
-      const batchPromise = this.collection
-        .where("sender", "in", batch)
-        .select("sender")
-        .get()
-        .then((snapshot) => {
-          snapshot.docs.forEach((doc) => {
-            const data = doc.data();
-            console.log("data", data);
-            if (data?.sender) {
-              existingSet.add(data.sender.toLowerCase());
-            }
-          });
-        })
-        .catch((error) => {
-          logger.error(`Error fetching existing addresses in batch: ${error.message}`);
-        });
-
-      batchPromises.push(batchPromise);
-    }
-
-    await Promise.all(batchPromises);
-    return existingSet.size;
+    return existingCount;
   }
 }
