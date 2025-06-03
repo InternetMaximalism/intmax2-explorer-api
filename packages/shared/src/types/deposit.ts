@@ -30,4 +30,5 @@ export type DepositFilters = {
   cursor?: string;
   tokenType?: number;
   status?: TransactionStatus;
+  orderDirection?: "asc" | "desc";
 };
