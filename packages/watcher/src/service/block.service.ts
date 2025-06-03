@@ -1,6 +1,5 @@
 import type { Transaction } from "@google-cloud/firestore";
 import {
-  BLOCK_BATCH_SIZE,
   BLOCK_BATCH_SIZE_LARGE,
   BLOCK_RANGE_MINIMUM,
   Block,
@@ -14,11 +13,11 @@ import {
   RollupAbi,
   Stats,
   type StatsData,
-  VALIDITY_PROVER_API_SLEEP_TIME,
   blockPostedEvent,
   calcBlockHash,
   calculateNextAccountId,
   calculateTotalTransactions,
+  config,
   db,
   fetchEvents,
   fetchLatestValidityProofBlockNumber,
@@ -48,11 +47,11 @@ export const fetchAndStoreBlocks = async (
   ]);
 
   const blockDetails: ProcessingBlockData[] = [];
-  for (let i = 0; i < blockPostedEvents.length; i += BLOCK_BATCH_SIZE) {
-    const batch = blockPostedEvents.slice(i, i + BLOCK_BATCH_SIZE);
+  for (let i = 0; i < blockPostedEvents.length; i += config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE) {
+    const batch = blockPostedEvents.slice(i, i + config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE);
     const blockDetail = await processBlockBatch(batch, scrollClient, latestValidityBlockNumber);
     blockDetails.push(...blockDetail);
-    await sleep(VALIDITY_PROVER_API_SLEEP_TIME);
+    await sleep(config.VALIDITY_PROVER_API_SLEEP_TIME);
   }
 
   const block = Block.getInstance();
