@@ -102,7 +102,7 @@ const aggregateAndSaveStats = async (
 
   await stats.addOrUpdateStatsWithTransaction(transaction, {
     ...(latestBlock !== null && { latestBlockNumber: latestBlock }),
-    totalTransactionCount: currentStats.totalTransactionCount + newTransactions,
+    totalTransactionCount: (currentStats.totalTransactionCount ?? 0) + newTransactions,
     totalL2WalletCount,
   });
 
