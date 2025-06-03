@@ -31,6 +31,7 @@ export const finalizePendingBlocks = async () => {
     block.listBlocks({
       status: "Indexing",
       perPage: config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE,
+      orderDirection: "asc",
     }),
     block.listAllBlocks({ status: "Proving" }),
     fetchLatestValidityProofBlockNumber(),

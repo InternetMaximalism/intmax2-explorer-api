@@ -43,6 +43,7 @@ export type BlockFilters = {
   blockType?: BlockDisplayType;
   blockValidity?: BlockValidity;
   status?: BlockStatus;
+  orderDirection?: "asc" | "desc";
 };
 
 /**
