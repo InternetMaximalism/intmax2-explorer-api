@@ -49,7 +49,12 @@ export const fetchAndStoreBlocks = async (
   const blockDetails: ProcessingBlockData[] = [];
   for (let i = 0; i < blockPostedEvents.length; i += config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE) {
     const batch = blockPostedEvents.slice(i, i + config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE);
-    const blockDetail = await processBlockBatch(batch, scrollClient, latestValidityBlockNumber);
+    const blockDetail = await processBlockBatch(
+      batch,
+      scrollClient,
+      latestValidityBlockNumber,
+      i === 0,
+    );
     blockDetails.push(...blockDetail);
     await sleep(config.VALIDITY_PROVER_API_SLEEP_TIME);
   }
@@ -173,13 +178,14 @@ const processBlockBatch = async (
   blockPostedEvents: BlockPostedEvent[],
   scrollClient: PublicClient,
   latestValidityBlockNumber: number,
+  isInitialBatch: boolean,
 ) => {
   const promises = blockPostedEvents.map(async (blockPostedEvent) => {
     const results = await Promise.allSettled([
       scrollClient.getTransaction({
         hash: blockPostedEvent.transactionHash as `0x${string}`,
       }),
-      fetchValidityPis(blockPostedEvent.args.blockNumber),
+      fetchValidityProof(blockPostedEvent, isInitialBatch),
     ]);
     const transaction = results[0].status === "fulfilled" ? results[0].value : null;
     const validityProof = results[1].status === "fulfilled" ? results[1].value : null;
@@ -235,4 +241,14 @@ const processBlockBatch = async (
   });
 
   return Promise.all(promises);
+};
+
+export const fetchValidityProof = async (
+  blockPostedEvent: BlockPostedEvent,
+  isInitialBatch: boolean,
+) => {
+  if (isInitialBatch) {
+    return await fetchValidityPis(blockPostedEvent.args.blockNumber);
+  }
+  return null;
 };
