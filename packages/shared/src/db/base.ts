@@ -4,14 +4,21 @@ import { AppError, ErrorCode, logger } from "../lib";
 import type { BaseData, BaseFilters } from "../types";
 import { db } from "./firestore";
 
+interface IFilterBuilder<F extends BaseFilters> {
+  buildFilterQuery(query: Query, filters: F): Query;
+}
+
 export abstract class BaseRepository<
   T extends BaseData,
   F extends BaseFilters,
   I extends Omit<T, "createdAt">,
-> {
+> implements IFilterBuilder<F>
+{
   protected abstract readonly collection: CollectionReference;
   protected abstract readonly defaultOrderField: keyof T;
   protected abstract readonly defaultOrderDirection: "asc" | "desc";
+
+  abstract buildFilterQuery(query: Query, filters: F): Query;
 
   protected async addBatch(inputs: I[], options: { merge?: boolean } = { merge: false }) {
     const batches = [];
@@ -59,6 +66,8 @@ export abstract class BaseRepository<
       let query = this.collection.orderBy(orderField, orderDirection);
       const perPage = filters?.perPage || DEFAULT_PAGE_SIZE;
 
+      query = this.buildFilterQuery(query, filters);
+
       if (buildQuery) {
         query = buildQuery(query);
       }
@@ -97,6 +106,30 @@ export abstract class BaseRepository<
         `Failed to list ${this.constructor.name.toLowerCase()}s`,
       );
     }
+  }
+
+  protected async listAll(filters: F) {
+    const allItems = [];
+    let cursor: string | undefined = undefined;
+    let hasMore = true;
+
+    while (hasMore) {
+      const paginatedFilters = {
+        ...filters,
+        cursor,
+        perPage: FIRESTORE_MAX_BATCH_SIZE,
+      } as F;
+
+      const result = await this.list(paginatedFilters);
+      allItems.push(...result.items);
+      hasMore = result.hasMore;
+      cursor = result.nextCursor ?? undefined;
+    }
+
+    return {
+      items: allItems,
+      totalCount: allItems.length,
+    };
   }
 
   protected async getByHash(hash: string) {

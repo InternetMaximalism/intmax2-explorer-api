@@ -1,4 +1,5 @@
 import type { CollectionReference } from "@google-cloud/firestore";
+import type { Query } from "@google-cloud/firestore";
 import { FIRESTORE_COLLECTIONS } from "../constants";
 import { AppError, ErrorCode, logger } from "../lib";
 import {
@@ -6,8 +7,7 @@ import {
   BlockDisplayType,
   BlockFilters,
   BlockInput,
-  BlockType,
-  DISPLAY_TO_INTERNAL_TYPE_MAP,
+  DisplayTypeToBlock,
 } from "../types";
 import { BaseRepository } from "./base";
 import { db } from "./firestore";
@@ -34,31 +34,31 @@ export class Block extends BaseRepository<BlockData, BlockFilters, BlockInput> {
     return this.addBatch(inputs);
   }
 
-  async listBlocks(filters: BlockFilters) {
-    return this.list(filters, (query) => {
-      let modified = query;
-      if (filters?.blockType) {
-        modified = this.applyBlockTypeFilter(modified, filters.blockType);
-      }
-      if (filters?.blockValidity) {
-        modified = modified.where("blockValidity", "==", filters.blockValidity);
-      }
-      return modified;
-    });
+  async updateBlocksBatch(inputs: BlockInput[]) {
+    return this.addBatch(inputs, { merge: true });
   }
 
-  applyBlockTypeFilter(
-    query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>,
-    displayType: BlockDisplayType,
-  ) {
-    if (displayType === BlockDisplayType.NoTransaction) {
-      return query.where("transactionCount", "==", 0);
+  buildFilterQuery(query: Query, filters: BlockFilters) {
+    let modified = query;
+    if (filters?.blockType) {
+      const blockType = DisplayTypeToBlock[filters.blockType as BlockDisplayType];
+      modified = modified.where("blockType", "==", blockType);
     }
+    if (filters?.blockValidity) {
+      modified = modified.where("blockValidity", "==", filters.blockValidity);
+    }
+    if (filters?.status) {
+      modified = modified.where("status", "==", filters.status);
+    }
+    return modified;
+  }
 
-    query = query.where("transactionCount", ">", 0);
+  async listBlocks(filters: BlockFilters) {
+    return this.list(filters);
+  }
 
-    const internalType = this.toInternalType(displayType);
-    return query.where("blockType", "==", internalType);
+  async listAllBlocks(filters: BlockFilters) {
+    return this.listAll(filters);
   }
 
   async getBlockByBlockHash(hash: string) {
@@ -80,22 +80,5 @@ export class Block extends BaseRepository<BlockData, BlockFilters, BlockInput> {
         "Failed to get block by block number",
       );
     }
-  }
-
-  toInternalType(displayType: BlockDisplayType): BlockType {
-    if (displayType === BlockDisplayType.NoTransaction) {
-      throw new AppError(
-        400,
-        ErrorCode.BAD_REQUEST,
-        "Cannot convert empty block type to internal type",
-      );
-    }
-
-    const internalType = DISPLAY_TO_INTERNAL_TYPE_MAP[displayType];
-    if (!internalType) {
-      throw new AppError(400, ErrorCode.BAD_REQUEST, `Invalid block type: ${displayType}`);
-    }
-
-    return internalType;
   }
 }

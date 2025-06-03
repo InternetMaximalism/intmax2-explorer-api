@@ -1,4 +1,4 @@
-import type { CollectionReference } from "@google-cloud/firestore";
+import type { CollectionReference, Query } from "@google-cloud/firestore";
 import { FIRESTORE_COLLECTIONS } from "../constants";
 import type { DepositData, DepositFilters, DepositInput } from "../types";
 import { BaseRepository } from "./base";
@@ -26,17 +26,19 @@ export class Deposit extends BaseRepository<DepositData, DepositFilters, Deposit
     return this.addBatch(inputs);
   }
 
+  buildFilterQuery(query: Query, filters: DepositFilters) {
+    let modified = query;
+    if (filters?.tokenType != null) {
+      modified = modified.where("tokenType", "==", filters.tokenType);
+    }
+    if (filters?.status) {
+      modified = modified.where("status", "==", filters.status);
+    }
+    return modified;
+  }
+
   async listDeposits(filters: DepositFilters) {
-    return this.list(filters, (query) => {
-      let modified = query;
-      if (filters?.tokenType != null) {
-        modified = modified.where("tokenType", "==", filters.tokenType);
-      }
-      if (filters?.status) {
-        modified = modified.where("status", "==", filters.status);
-      }
-      return modified;
-    });
+    return this.list(filters);
   }
 
   async getDepositByDepositHash(hash: string) {

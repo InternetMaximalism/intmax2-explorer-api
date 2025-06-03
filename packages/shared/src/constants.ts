@@ -34,6 +34,7 @@ export const FIRESTORE_IN_MAX_BATCH_SIZE = 30;
 
 // request
 export const API_TIMEOUT = 10 * 1000;
+export const VALIDITY_PROVER_API_SLEEP_TIME = 1000; // 1 second
 
 // rollup
 export const ROLLUP_CONTRACT_ADDRESS = config.ROLLUP_CONTRACT_ADDRESS as `0x${string}`;
@@ -54,7 +55,8 @@ export const WITHDRAWAL_CONTRACT_DEPLOYED_BLOCK = BigInt(
 ) as bigint;
 
 // batch size
-export const BLOCK_BATCH_SIZE = 100;
+export const BLOCK_BATCH_SIZE = 30;
+export const BLOCK_BATCH_SIZE_LARGE = 100;
 export const DEPOSIT_BATCH_SIZE = 100;
 export const WITHDRAWAL_BATCH_SIZE = 100;
 

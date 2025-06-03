@@ -6,3 +6,5 @@ export * from "./operation";
 export * from "./utils";
 export * from "./validityProver";
 export * from "./token";
+export * from "./network";
+export * from "./stats";

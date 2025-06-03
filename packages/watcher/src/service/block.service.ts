@@ -1,27 +1,36 @@
 import type { Transaction } from "@google-cloud/firestore";
 import {
   BLOCK_BATCH_SIZE,
+  BLOCK_BATCH_SIZE_LARGE,
   BLOCK_RANGE_MINIMUM,
   Block,
-  type BlockData,
-  type BlockInput,
   type BlockPostedEvent,
-  BlockType,
-  BlockValidity,
   Event,
   type EventData,
   FIRESTORE_DOCUMENT_STATS,
+  type ProcessingBlockData,
   ROLLUP_CONTRACT_ADDRESS,
   ROLLUP_CONTRACT_DEPLOYED_BLOCK,
   RollupAbi,
   Stats,
   type StatsData,
+  VALIDITY_PROVER_API_SLEEP_TIME,
   blockPostedEvent,
   calcBlockHash,
+  calculateNextAccountId,
+  calculateTotalTransactions,
   db,
   fetchEvents,
+  fetchLatestValidityProofBlockNumber,
+  fetchValidityPis,
+  getBlockStatusFromValidityProof,
+  getBlockType,
+  getBlockValidity,
+  getInternalBlockType,
+  getLatestBlockNumber,
   getStartBlockNumber,
   logger,
+  sleep,
   validateBlockRange,
 } from "@intmax2-explorer-api/shared";
 import { type Hex, type PublicClient, decodeFunctionData } from "viem";
@@ -33,31 +42,31 @@ export const fetchAndStoreBlocks = async (
   blockEvent: Event,
   lastBlockProcessedEvent: EventData | null,
 ) => {
-  const blockPostedEvents = await getBlockPostedEvent(
-    scrollClient,
-    scrollCurrentBlockNumber,
-    lastBlockProcessedEvent,
-  );
+  const [blockPostedEvents, { blockNumber: latestValidityBlockNumber }] = await Promise.all([
+    fetchBlockPostedEvent(scrollClient, scrollCurrentBlockNumber, lastBlockProcessedEvent),
+    fetchLatestValidityProofBlockNumber(),
+  ]);
 
-  const blockDetails: BlockInput[] = [];
+  const blockDetails: ProcessingBlockData[] = [];
   for (let i = 0; i < blockPostedEvents.length; i += BLOCK_BATCH_SIZE) {
     const batch = blockPostedEvents.slice(i, i + BLOCK_BATCH_SIZE);
-    const blockDetail = await processBlockBatch(batch, scrollClient);
+    const blockDetail = await processBlockBatch(batch, scrollClient, latestValidityBlockNumber);
     blockDetails.push(...blockDetail);
+    await sleep(VALIDITY_PROVER_API_SLEEP_TIME);
   }
 
   const block = Block.getInstance();
-  for (let i = 0; i < blockDetails.length; i += BLOCK_BATCH_SIZE) {
-    const batch = blockDetails.slice(i, i + BLOCK_BATCH_SIZE);
+  for (let i = 0; i < blockDetails.length; i += BLOCK_BATCH_SIZE_LARGE) {
+    const batch = blockDetails.slice(i, i + BLOCK_BATCH_SIZE_LARGE);
     await block.addBlocksBatch(batch);
     logger.info(
-      `Processed block batch ${Math.floor(i / BLOCK_BATCH_SIZE) + 1} of ${Math.ceil(blockDetails.length / BLOCK_BATCH_SIZE)}`,
+      `Processed block batch ${Math.floor(i / BLOCK_BATCH_SIZE_LARGE) + 1} of ${Math.ceil(blockDetails.length / BLOCK_BATCH_SIZE_LARGE)}`,
     );
   }
 
   await db.runTransaction(async (transaction) => {
     if (blockDetails.length > 0) {
-      await fetchAndStoreStats(transaction, blockDetails);
+      await aggregateAndSaveStats(transaction, blockDetails);
     }
 
     await blockEvent.addOrUpdateEventWithTransaction(transaction, {
@@ -68,31 +77,35 @@ export const fetchAndStoreBlocks = async (
   logger.info(`Completed processing blocks for ${blockDetails.length} blocks`);
 };
 
-const fetchAndStoreStats = async (transaction: Transaction, blockDetails: BlockData[]) => {
-  const latestBlock = findLatestBlockNumber(blockDetails);
+const aggregateAndSaveStats = async (
+  transaction: Transaction,
+  blockDetails: ProcessingBlockData[],
+) => {
+  const latestBlock = getLatestBlockNumber(blockDetails);
   const newTransactions = calculateTotalTransactions(blockDetails);
-  const newWallets = calculateNewWallets(blockDetails);
+  const maxNextAccountId = calculateNextAccountId(blockDetails);
 
   const stats = new Stats(FIRESTORE_DOCUMENT_STATS.summary);
-  const currentStats = await stats.getLatestStats<StatsData>();
+  const currentStats = await stats.getLatestStatsWithTransaction<StatsData>(transaction);
+  const totalL2WalletCount = Math.max(maxNextAccountId, currentStats?.totalWalletCount ?? 0);
 
   if (!currentStats) {
-    stats.addOrUpdateStatsWithTransaction(transaction, {
+    await stats.addOrUpdateStatsWithTransaction(transaction, {
       latestBlockNumber: latestBlock ?? 0,
       totalTransactionCount: newTransactions,
-      totalWalletCount: newWallets,
+      totalL2WalletCount,
     });
     return;
   }
 
-  stats.addOrUpdateStats({
+  await stats.addOrUpdateStatsWithTransaction(transaction, {
     ...(latestBlock !== null && { latestBlockNumber: latestBlock }),
     totalTransactionCount: currentStats.totalTransactionCount + newTransactions,
-    totalWalletCount: currentStats.totalWalletCount + newWallets,
+    totalL2WalletCount,
   });
 
   logger.info(
-    `Saved summary stats for latest block number ${latestBlock} and increase transaction count ${newTransactions}`,
+    `Saved summary stats for latest block number ${latestBlock} and increase transaction count ${newTransactions} and total L2 wallet count ${totalL2WalletCount}`,
   );
 };
 
@@ -128,7 +141,7 @@ const formatBlockTransaction = (
   };
 };
 
-const getBlockPostedEvent = async (
+const fetchBlockPostedEvent = async (
   scrollClient: PublicClient,
   scrollCurrentBlockNumber: bigint,
   lastProcessedEvent: EventData | null,
@@ -160,14 +173,21 @@ const getBlockPostedEvent = async (
 const processBlockBatch = async (
   blockPostedEvents: BlockPostedEvent[],
   scrollClient: PublicClient,
+  latestValidityBlockNumber: number,
 ) => {
   const promises = blockPostedEvents.map(async (blockPostedEvent) => {
-    const [transaction] = await Promise.all([
+    const results = await Promise.allSettled([
       scrollClient.getTransaction({
         hash: blockPostedEvent.transactionHash as `0x${string}`,
       }),
-      // fetchValidityPis(blockPostedEvent.args.blockNumber)
+      fetchValidityPis(blockPostedEvent.args.blockNumber),
     ]);
+    const transaction = results[0].status === "fulfilled" ? results[0].value : null;
+    const validityProof = results[1].status === "fulfilled" ? results[1].value : null;
+
+    if (!transaction) {
+      throw new Error(`Failed to fetch transaction for block ${blockPostedEvent.args.blockNumber}`);
+    }
 
     const { functionName, args } = decodeFunctionData({
       abi: RollupAbi,
@@ -186,45 +206,34 @@ const processBlockBatch = async (
       blockPostedEvent.args.blockNumber,
     );
 
+    const blockNumber = blockPostedEvent.args.blockNumber;
+    const internalBlockType = getInternalBlockType(functionName);
+    const transactionCount = formattedBlockTransaction.transactionCount;
+    const blockType = getBlockType(transactionCount, internalBlockType);
+    const blockValidity = getBlockValidity(validityProof, blockType);
+    const nextAccountId = validityProof?.publicState.nextAccountId || null;
+    const status = getBlockStatusFromValidityProof(
+      validityProof,
+      latestValidityBlockNumber,
+      blockNumber,
+    );
+
     return {
       blockNumber: blockPostedEvent.args.blockNumber,
       hash: blockHash,
       transactionCount: formattedBlockTransaction.transactionCount,
       builderAddress: blockPostedEvent.args.blockBuilder,
-      blockType:
-        functionName === "postRegistrationBlock"
-          ? "Registration"
-          : ("NonRegistration" as BlockType),
-      blockValidity: "Valid" as BlockValidity,
+      status,
+      internalBlockType,
+      blockType,
+      blockValidity,
       timestamp: blockPostedEvent.args.timestamp,
       rollupTransactionHash: blockPostedEvent.transactionHash,
       transactionDigest: formattedBlockTransaction.txRoot,
       blockAggregatorSignature: formattedBlockTransaction.aggregatedSignature,
-      // nextAccountId // NOTE: nextAccountId is for stats
+      nextAccountId,
     };
   });
 
   return Promise.all(promises);
-};
-
-const findLatestBlockNumber = (blockDetails: BlockData[]) => {
-  if (blockDetails.length === 0) {
-    return null;
-  }
-  return blockDetails.reduce((acc, detail) => Math.max(acc, Number(detail.blockNumber)), 0);
-};
-
-const calculateTotalTransactions = (blockDetails: BlockData[]) => {
-  if (blockDetails.length === 0) {
-    return 0;
-  }
-  return blockDetails.reduce((acc, detail) => acc + Number(detail.transactionCount), 0);
-};
-
-const calculateNewWallets = (blockDetails: BlockData[]) => {
-  if (blockDetails.length === 0) {
-    return 0;
-  }
-  const registrationBlocks = blockDetails.filter((detail) => detail.blockType === "Registration");
-  return registrationBlocks.reduce((acc, detail) => acc + detail.transactionCount, 0);
 };
