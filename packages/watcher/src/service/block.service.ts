@@ -56,7 +56,6 @@ export const fetchAndStoreBlocks = async (
       i === 0,
     );
     blockDetails.push(...blockDetail);
-    await sleep(config.VALIDITY_PROVER_API_SLEEP_TIME);
   }
 
   const block = Block.getInstance();
