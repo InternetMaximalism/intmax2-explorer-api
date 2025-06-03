@@ -33,6 +33,11 @@ export const config = cleanEnv(process.env, {
     default: "sepolia",
   }),
   ALCHEMY_API_KEY: str(),
+  // block
+  VALIDITY_PROVER_API_BLOCK_BATCH_SIZE: num({ default: 10 }),
+  VALIDITY_PROVER_API_SLEEP_TIME: num({
+    default: 5000,
+  }),
   // contracts
   ROLLUP_CONTRACT_ADDRESS: str({ devDefault: "0x" }),
   ROLLUP_CONTRACT_DEPLOYED_BLOCK: num({ devDefault: 0 }),
