@@ -34,9 +34,9 @@ export const config = cleanEnv(process.env, {
   }),
   ALCHEMY_API_KEY: str(),
   // block
-  VALIDITY_PROVER_API_BLOCK_BATCH_SIZE: num({ default: 10 }),
+  VALIDITY_PROVER_API_BLOCK_BATCH_SIZE: num({ default: 30 }),
   VALIDITY_PROVER_API_SLEEP_TIME: num({
-    default: 5000,
+    default: 1000,
   }),
   // contracts
   ROLLUP_CONTRACT_ADDRESS: str({ devDefault: "0x" }),
