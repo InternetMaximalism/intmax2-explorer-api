@@ -64,12 +64,19 @@ export const fetchAndStoreDeposits = async (
 const aggregateAndSaveStats = async (transaction: Transaction, depositDetails: DepositInput[]) => {
   const stats = new Stats(FIRESTORE_DOCUMENT_STATS.summary);
   const currentStats = await stats.getLatestStatsWithTransaction<StatsData>(transaction);
-  const newL1WalletCount = depositDetails.length;
+  const deposit = Deposit.getInstance();
+
+  const uniqueDepositAddresses = new Set(depositDetails.map((deposit) => deposit.sender));
+  const uniqueAddressesArray = Array.from(uniqueDepositAddresses);
+  const existingAddressCount = await deposit.getExistingAddressCount(uniqueAddressesArray);
+  const newL1WalletCount = uniqueAddressesArray.length - existingAddressCount;
 
   if (!currentStats) {
     await stats.addOrUpdateStatsWithTransaction(transaction, {
       totalL1WalletCount: newL1WalletCount,
     });
+
+    logger.info(`Initialized summary stats - New L1 wallet count: ${newL1WalletCount}`);
     return;
   }
 
