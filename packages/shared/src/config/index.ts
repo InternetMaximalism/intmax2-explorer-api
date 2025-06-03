@@ -34,7 +34,7 @@ export const config = cleanEnv(process.env, {
   }),
   ALCHEMY_API_KEY: str(),
   // block
-  VALIDITY_PROVER_API_BLOCK_BATCH_SIZE: num({ default: 30 }),
+  VALIDITY_PROVER_API_BLOCK_BATCH_SIZE: num({ default: 15 }),
   VALIDITY_PROVER_API_SLEEP_TIME: num({
     default: 1000,
   }),
