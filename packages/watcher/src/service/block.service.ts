@@ -29,7 +29,6 @@ import {
   getLatestBlockNumber,
   getStartBlockNumber,
   logger,
-  sleep,
   validateBlockRange,
 } from "@intmax2-explorer-api/shared";
 import { type Hex, type PublicClient, decodeFunctionData } from "viem";
