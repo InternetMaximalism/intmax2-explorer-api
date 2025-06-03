@@ -38,3 +38,7 @@ export interface ValidityPisResponse {
   senderTreeRoot: string;
   isValidBlock: boolean;
 }
+
+export interface ValidityProofBlockNumberResponse {
+  blockNumber: number;
+}

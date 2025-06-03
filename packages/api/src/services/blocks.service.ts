@@ -4,7 +4,6 @@ import {
   BlockDisplayType,
   type BlockPaginationValidationType,
   type HashValidationType,
-  INTERNAL_TO_DISPLAY_TYPE_MAP,
   NotFoundError,
   fetchBlockValidityProof,
   formatValidityProof,
@@ -39,17 +38,11 @@ export const getBlockByBlockNumber = async (blockNumber: number) => {
   return block.getBlockByBlockNumber(blockNumber);
 };
 
-const determineBlockType = ({ transactionCount, blockType }: BlockData) => {
-  if (transactionCount === 0) {
-    return BlockDisplayType.NoTransaction;
-  }
-  return INTERNAL_TO_DISPLAY_TYPE_MAP[blockType];
-};
-
 const formatBlock = (block: BlockData) => {
+  const { internalBlockType, nextAccountId, ...rest } = block;
   return {
-    ...block,
-    blockType: determineBlockType(block),
+    ...rest,
+    blockType: BlockDisplayType[block.blockType],
   };
 };
 

@@ -4,6 +4,7 @@ import {
   FIRESTORE_DOCUMENT_EVENTS,
   createNetworkClient,
 } from "@intmax2-explorer-api/shared";
+import { finalizePendingBlocks } from "./block.service";
 import { finalizeIndexedWithdrawals } from "./withdrawal.service";
 
 export const performJob = async (): Promise<void> => {
@@ -18,6 +19,7 @@ export const performJob = async (): Promise<void> => {
   ]);
 
   await Promise.all([
+    finalizePendingBlocks(),
     finalizeIndexedWithdrawals({
       ethereumClient,
       currentBlockNumber,

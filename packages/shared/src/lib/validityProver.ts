@@ -1,7 +1,12 @@
 import axios, { AxiosError } from "axios";
 import { config } from "../config";
 import { API_TIMEOUT } from "../constants";
-import type { BlockValidityProofResponse, ValidityPisResponse, ValidityProof } from "../types";
+import type {
+  BlockValidityProofResponse,
+  ValidityPisResponse,
+  ValidityProof,
+  ValidityProofBlockNumberResponse,
+} from "../types";
 
 export const fetchBlockValidityProof = async (blockNumber: number) => {
   try {
@@ -31,10 +36,6 @@ export const fetchBlockValidityProof = async (blockNumber: number) => {
   }
 };
 
-export const formatValidityProof = (blockValidityProof: BlockValidityProofResponse) => {
-  return blockValidityProof.updateWitness.validityProof as ValidityProof;
-};
-
 export const fetchValidityPis = async (blockNumber: number) => {
   try {
     const response = await axios.get<ValidityPisResponse>(
@@ -50,7 +51,8 @@ export const fetchValidityPis = async (blockNumber: number) => {
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      throw new Error(`Failed to fetch validity pis: ${error.message}`, error);
+      const errorMessage = error.response?.data || error.message;
+      throw new Error(`Failed to fetch validity pis: ${errorMessage}`, error);
     }
 
     throw new Error(
@@ -58,4 +60,30 @@ export const fetchValidityPis = async (blockNumber: number) => {
       error instanceof Error ? error : undefined,
     );
   }
+};
+
+export const fetchLatestValidityProofBlockNumber = async () => {
+  try {
+    const response = await axios.get<ValidityProofBlockNumberResponse>(
+      `${config.API_VALIDITY_PROVER_BASE_URL}/validity-prover/validity-proof-block-number`,
+      {
+        timeout: API_TIMEOUT,
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      const errorMessage = error.response?.data || error.message;
+      throw new Error(`Failed to fetch latest validity proof block number: ${errorMessage}`, error);
+    }
+
+    throw new Error(
+      `Unexpected error while fetching latest validity proof block number: ${error instanceof Error ? error.message : "Unknown error"}`,
+      error instanceof Error ? error : undefined,
+    );
+  }
+};
+export const formatValidityProof = (blockValidityProof: BlockValidityProofResponse) => {
+  return blockValidityProof.updateWitness.validityProof as ValidityProof;
 };

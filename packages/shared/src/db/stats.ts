@@ -54,4 +54,21 @@ export class Stats {
       throw new AppError(500, ErrorCode.INTERNAL_SERVER_ERROR, "Failed to get stats");
     }
   }
+
+  async getLatestStatsWithTransaction<T>(transaction: Transaction) {
+    try {
+      const doc = await transaction.get(this.statsDocRef);
+      if (!doc.exists) {
+        return null;
+      }
+      return doc.data() as T;
+    } catch (error) {
+      logger.error(error);
+      throw new AppError(
+        500,
+        ErrorCode.INTERNAL_SERVER_ERROR,
+        "Failed to get stats in transaction",
+      );
+    }
+  }
 }

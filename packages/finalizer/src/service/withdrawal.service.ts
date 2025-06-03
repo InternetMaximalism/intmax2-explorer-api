@@ -96,7 +96,7 @@ export const finalizeIndexedWithdrawals = async ({
 };
 
 const getRelayedWithdrawals = async (withdrawal: Withdrawal) => {
-  const { items: indexingWithdrawals, totalCount } = await withdrawal.getAll({
+  const { items: indexingWithdrawals, totalCount } = await withdrawal.listAllWithdrawals({
     status: "Relayed",
     orderBy: "relayedTimestamp",
   });
