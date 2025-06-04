@@ -13,11 +13,9 @@ export type RelayedWithdrawal = {
   liquidityTransactionHash: string;
 };
 
-export type FinalizeIndexedWithdrawalsParams = {
+export type FinalizeRelayedWithdrawalsParams = {
   ethereumClient: PublicClient;
   currentBlockNumber: bigint;
-  scrollClient: PublicClient;
-  scrollCurrentBlockNumber: bigint;
-  lastWithdrawalProcessedEvent: EventData | null;
   withdrawalEvent: Event;
+  lastWithdrawalProcessedEvent: EventData | null;
 };
