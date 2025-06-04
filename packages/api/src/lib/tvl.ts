@@ -1,4 +1,9 @@
-import { API_TIMEOUT, config, createNetworkClient } from "@intmax2-explorer-api/shared";
+import {
+  API_TIMEOUT,
+  LIQUIDITY_CONTRACT_ADDRESS,
+  config,
+  createNetworkClient,
+} from "@intmax2-explorer-api/shared";
 import axios, { AxiosError } from "axios";
 import { formatEther } from "viem";
 import { ETHEREUM_ADDRESS } from "../constants";
@@ -8,12 +13,12 @@ export const getTVL = async () => {
   const ethereumClient = createNetworkClient("ethereum");
   const [balance, ethPrice] = await Promise.all([
     ethereumClient.getBalance({
-      address: config.LIQUIDITY_CONTRACT_ADDRESS as `0x${string}`,
+      address: LIQUIDITY_CONTRACT_ADDRESS,
     }),
     getETHPrice(),
   ]);
-
-  return Number(formatEther(balance)) * ethPrice;
+  const tvl = Number(formatEther(balance)) * ethPrice;
+  return tvl;
 };
 
 const getETHPrice = async () => {

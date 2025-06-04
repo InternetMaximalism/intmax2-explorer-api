@@ -1,5 +1,3 @@
-import { RESTRICTED_COUNTRY_CODES } from "./constants";
-
 export interface AsyncLocalStorageStore {
   requestId: string;
 }
@@ -20,5 +18,3 @@ export interface TokenPriceResponse {
   nextCursor: string | null;
   total: number;
 }
-
-export type RestrictedCountryCode = keyof typeof RESTRICTED_COUNTRY_CODES;

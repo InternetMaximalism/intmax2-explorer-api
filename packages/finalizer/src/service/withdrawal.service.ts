@@ -5,10 +5,9 @@ import {
   type EventData,
   LIQUIDITY_CONTRACT_ADDRESS,
   LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
-  TransactionStatus,
   WITHDRAWAL_BATCH_SIZE,
   Withdrawal,
-  WithdrawalInput,
+  type WithdrawalInput,
   directWithdrawalSuccessedEvent,
   fetchEvents,
   getStartBlockNumber,
@@ -17,19 +16,19 @@ import {
   withdrawalClaimableEvent,
 } from "@intmax2-explorer-api/shared";
 import { type PublicClient, fromHex, parseAbiItem } from "viem";
-import type { FinalizeIndexedWithdrawalsParams, RelayedWithdrawal } from "../types";
+import type { FinalizeRelayedWithdrawalsParams, RelayedWithdrawal } from "../types";
 
-export const finalizeIndexedWithdrawals = async ({
+export const finalizeRelayedWithdrawals = async ({
   ethereumClient,
   currentBlockNumber,
-  lastWithdrawalProcessedEvent,
   withdrawalEvent,
-}: FinalizeIndexedWithdrawalsParams) => {
-  const withdrawal = Withdrawal.getInstance();
+  lastWithdrawalProcessedEvent,
+}: FinalizeRelayedWithdrawalsParams) => {
+  const withdrawalInstance = Withdrawal.getInstance();
   const { directWithdrawals, claimableWithdrawals, totalCount } =
-    await getRelayedWithdrawals(withdrawal);
+    await getRelayedWithdrawals(withdrawalInstance);
 
-  const withdrawalDetails = await Promise.all([
+  const withdrawalEvents = await Promise.all([
     fetchWithdrawalEvents<DirectWithdrawalQueueEvent>(
       ethereumClient,
       lastWithdrawalProcessedEvent,
@@ -52,7 +51,7 @@ export const finalizeIndexedWithdrawals = async ({
     string,
     DirectWithdrawalQueueEvent | ClaimableWithdrawalEvent
   >();
-  withdrawalDetails.forEach((event) => {
+  withdrawalEvents.forEach((event) => {
     withdrawalEventMap.set(event.args.withdrawalHash, event);
   });
 
@@ -65,38 +64,38 @@ export const finalizeIndexedWithdrawals = async ({
     const batchUpdates = batch.map((withdrawal) => {
       const event = withdrawalEventMap.get(withdrawal.hash);
       if (!event) {
-        logger.warn(`No event found for withdrawal hash: ${withdrawal.hash}`);
+        logger.error(`No event found for withdrawal hash: ${withdrawal.hash}`);
         return null;
       }
 
       return {
         hash: withdrawal.hash,
-        status: "Completed" as TransactionStatus,
+        status: "Completed",
         liquidityTransactionHash: event.transactionHash,
         liquidityTimestamp: fromHex(event.blockTimestamp as `0x${string}`, "number"),
       };
     });
 
-    await withdrawal.updateWithdrawalsBatch(
+    await withdrawalInstance.updateWithdrawalsBatch(
       batchUpdates.filter((update): update is WithdrawalInput => update !== null),
     );
 
     logger.info(
-      `Processed withdrawal batch ${Math.floor(i / WITHDRAWAL_BATCH_SIZE) + 1} of ${Math.ceil(withdrawalDetails.length / WITHDRAWAL_BATCH_SIZE)}`,
+      `Processed withdrawal batch ${Math.floor(i / WITHDRAWAL_BATCH_SIZE) + 1} of ${Math.ceil(withdrawalEvents.length / WITHDRAWAL_BATCH_SIZE)}`,
     );
   }
 
-  withdrawalEvent.addOrUpdateEvent({
+  await withdrawalEvent.addOrUpdateEvent({
     lastBlockNumber: Number(currentBlockNumber),
   });
 
   logger.info(
-    `Completed completed withdrawals: ${withdrawalDetails.length} / ${totalCount} added total withdrawals`,
+    `Completed completed withdrawals: ${withdrawalEvents.length} / ${totalCount} added total withdrawals`,
   );
 };
 
-const getRelayedWithdrawals = async (withdrawal: Withdrawal) => {
-  const { items: indexingWithdrawals, totalCount } = await withdrawal.listAllWithdrawals({
+const getRelayedWithdrawals = async (withdrawalInstance: Withdrawal) => {
+  const { items: indexingWithdrawals, totalCount } = await withdrawalInstance.listAllWithdrawals({
     status: "Relayed",
     orderBy: "relayedTimestamp",
   });

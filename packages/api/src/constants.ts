@@ -22,17 +22,3 @@ export const CACHE_TIMEOUTS = {
 
 // token
 export const ETHEREUM_ADDRESS = "0x0000000000000000000000000000000000000000";
-
-// restricted countries
-export const RESTRICTED_COUNTRY_CODES = {
-  US: "United States",
-  KP: "North Korea",
-  IR: "Iran",
-  SY: "Syria",
-  CU: "Cuba",
-  RU: "Russia",
-  MM: "Myanmar",
-  SD: "Sudan",
-  YE: "Yemen",
-  BY: "Belarus",
-} as const;
