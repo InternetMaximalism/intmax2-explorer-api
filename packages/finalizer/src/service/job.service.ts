@@ -5,44 +5,34 @@ import {
   createNetworkClient,
 } from "@intmax2-explorer-api/shared";
 import { finalizePendingBlocks } from "./block.service";
-import { finalizeIndexedWithdrawals } from "./withdrawal.service";
+import { finalizeRelayedWithdrawals } from "./withdrawal.service";
 
 export const performJob = async (): Promise<void> => {
   const withdrawalEvent = new Event(FIRESTORE_DOCUMENT_EVENTS.WITHDRAWAL);
 
-  const [
-    lastWithdrawalProcessedEvent,
-    { ethereumClient, currentBlockNumber, scrollClient, scrollCurrentBlockNumber },
-  ] = await Promise.all([
+  const [lastWithdrawalProcessedEvent, { ethereumClient, currentBlockNumber }] = await Promise.all([
     withdrawalEvent.getLatestEvent<EventData>(),
     getEthereumAndScrollBlockNumbers(),
   ]);
 
   await Promise.all([
     finalizePendingBlocks(),
-    finalizeIndexedWithdrawals({
+    finalizeRelayedWithdrawals({
       ethereumClient,
       currentBlockNumber,
-      scrollClient,
-      scrollCurrentBlockNumber,
-      lastWithdrawalProcessedEvent,
       withdrawalEvent,
+      lastWithdrawalProcessedEvent,
     }),
   ]);
 };
+
 const getEthereumAndScrollBlockNumbers = async () => {
   const ethereumClient = createNetworkClient("ethereum");
-  const scrollClient = createNetworkClient("scroll");
 
-  const [currentBlockNumber, scrollCurrentBlockNumber] = await Promise.all([
-    ethereumClient.getBlockNumber(),
-    scrollClient.getBlockNumber(),
-  ]);
+  const currentBlockNumber = await ethereumClient.getBlockNumber();
 
   return {
     ethereumClient,
-    scrollClient,
     currentBlockNumber,
-    scrollCurrentBlockNumber,
   };
 };

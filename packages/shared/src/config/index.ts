@@ -38,7 +38,7 @@ export const config = cleanEnv(process.env, {
   VALIDITY_PROVER_API_SLEEP_TIME: num({
     default: 1000,
   }),
-  // contracts
+  // contract
   ROLLUP_CONTRACT_ADDRESS: str({ devDefault: "0x" }),
   ROLLUP_CONTRACT_DEPLOYED_BLOCK: num({ devDefault: 0 }),
   LIQUIDITY_CONTRACT_ADDRESS: str({ devDefault: "0x" }),

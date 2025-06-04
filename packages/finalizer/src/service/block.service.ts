@@ -22,51 +22,35 @@ import {
 } from "@intmax2-explorer-api/shared";
 
 export const finalizePendingBlocks = async () => {
-  const block = Block.getInstance();
-  const [
-    { items: indexingBlocks, totalCount: indexingCount },
-    { items: provingBlocks, totalCount: provingCount },
-    { blockNumber: latestValidityBlockNumber },
-  ] = await Promise.all([
-    block.listBlocks({
-      status: "Indexing",
-      perPage: config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE,
-      orderDirection: "asc",
-    }),
-    block.listAllBlocks({ status: "Proving" }),
-    fetchLatestValidityProofBlockNumber(),
-  ]);
+  const blockInstance = Block.getInstance();
+  const { indexingBlocks, provingBlocks, latestValidityBlockNumber, counts } =
+    await fetchBlocksAndMetadata(blockInstance);
 
-  const processedIndexingBlocks: ProcessingPendingBlockData[] = [];
-  for (let i = 0; i < indexingBlocks.length; i += config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE) {
-    const batch = indexingBlocks.slice(i, i + config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE);
-    const blockDetail = await processIndexingBlockBatch(batch, latestValidityBlockNumber);
-    processedIndexingBlocks.push(...blockDetail);
-    await sleep(config.VALIDITY_PROVER_API_SLEEP_TIME);
+  const { processedIndexingBlocks, processedProvingBlocks, finalizedBlocks } =
+    await processAllBlocks(indexingBlocks, provingBlocks, latestValidityBlockNumber);
+
+  if (finalizedBlocks.length === 0) {
+    logger.info("No finalized blocks to process.");
+    return;
   }
-  const processedProvingBlocks = processProvingBlockBatch(provingBlocks, latestValidityBlockNumber);
-
-  const finalizedBlocks = [...processedIndexingBlocks, ...processedProvingBlocks];
 
   for (let i = 0; i < finalizedBlocks.length; i += BLOCK_BATCH_SIZE_LARGE) {
     const batch = finalizedBlocks.slice(i, i + BLOCK_BATCH_SIZE_LARGE);
-    await block.updateBlocksBatch(batch as BlockInput[]);
+    await blockInstance.updateBlocksBatch(batch as BlockInput[]);
     logger.info(
       `Processed block batch ${Math.floor(i / BLOCK_BATCH_SIZE_LARGE) + 1} of ${Math.ceil(finalizedBlocks.length / BLOCK_BATCH_SIZE_LARGE)}`,
     );
   }
 
-  if (finalizedBlocks.length) {
-    await db.runTransaction(async (transaction) => {
-      await aggregateAndSaveStats(transaction, processedIndexingBlocks, processedProvingBlocks);
-    });
-  }
+  await db.runTransaction(async (transaction) => {
+    await aggregateAndSaveStats(transaction, processedIndexingBlocks, processedProvingBlocks);
+  });
 
   logger.info(
     `finalizePendingBlocks completed successfully:
     - Total blocks processed: ${finalizedBlocks.length}
-    - Indexing blocks: ${processedIndexingBlocks.length}/${indexingCount}
-    - Proving blocks: ${processedProvingBlocks.length}/${provingCount}
+    - Indexing blocks: ${processedIndexingBlocks.length}/${counts.indexingCount}
+    - Proving blocks: ${processedProvingBlocks.length}/${counts.provingCount}
     - Latest validity block number: ${latestValidityBlockNumber}`,
   );
 };
@@ -160,4 +144,52 @@ const processProvingBlockBatch = (blocks: BlockData[], latestValidityBlockNumber
   });
 
   return results.filter((result) => result !== null) satisfies ProcessingPendingBlockData[];
+};
+
+const fetchBlocksAndMetadata = async (blockInstance: Block) => {
+  const [
+    { items: indexingBlocks, totalCount: indexingCount },
+    { items: provingBlocks, totalCount: provingCount },
+    { blockNumber: latestValidityBlockNumber },
+  ] = await Promise.all([
+    blockInstance.listBlocks({
+      status: "Indexing",
+      perPage: config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE,
+      orderDirection: "asc",
+    }),
+    blockInstance.listAllBlocks({ status: "Proving" }),
+    fetchLatestValidityProofBlockNumber(),
+  ]);
+
+  return {
+    indexingBlocks,
+    provingBlocks,
+    latestValidityBlockNumber,
+    counts: { indexingCount, provingCount },
+  };
+};
+
+const processAllBlocks = async (
+  indexingBlocks: BlockData[],
+  provingBlocks: BlockData[],
+  latestValidityBlockNumber: number,
+) => {
+  const processedIndexingBlocks: ProcessingPendingBlockData[] = [];
+
+  for (let i = 0; i < indexingBlocks.length; i += config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE) {
+    const batch = indexingBlocks.slice(i, i + config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE);
+    const blockDetail = await processIndexingBlockBatch(batch, latestValidityBlockNumber);
+    processedIndexingBlocks.push(...blockDetail);
+    await sleep(config.VALIDITY_PROVER_API_SLEEP_TIME);
+  }
+
+  const processedProvingBlocks = processProvingBlockBatch(provingBlocks, latestValidityBlockNumber);
+
+  const finalizedBlocks = [...processedIndexingBlocks, ...processedProvingBlocks];
+
+  return {
+    processedIndexingBlocks,
+    processedProvingBlocks,
+    finalizedBlocks,
+  };
 };
