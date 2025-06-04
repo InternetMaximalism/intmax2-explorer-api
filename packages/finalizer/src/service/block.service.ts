@@ -66,19 +66,19 @@ const aggregateAndSaveStats = async (
     ...processedProvingBlocks,
   ]);
 
-  const stats = new Stats(FIRESTORE_DOCUMENT_STATS.summary);
-  const currentStats = await stats.getLatestStatsWithTransaction<StatsData>(transaction);
+  const statsInstance = new Stats(FIRESTORE_DOCUMENT_STATS.summary);
+  const currentStats = await statsInstance.getLatestStatsWithTransaction<StatsData>(transaction);
   const totalL2WalletCount = Math.max(maxNextAccountId, currentStats?.totalL2WalletCount ?? 0);
 
   if (!currentStats) {
-    await stats.addOrUpdateStatsWithTransaction(transaction, {
+    await statsInstance.addOrUpdateStatsWithTransaction(transaction, {
       totalTransactionCount: newTransactions,
       totalL2WalletCount,
     });
     return;
   }
 
-  await stats.addOrUpdateStatsWithTransaction(transaction, {
+  await statsInstance.addOrUpdateStatsWithTransaction(transaction, {
     totalTransactionCount: currentStats.totalTransactionCount + newTransactions,
     totalL2WalletCount,
   });
