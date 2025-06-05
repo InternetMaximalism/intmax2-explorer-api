@@ -141,12 +141,15 @@ export const validateBlockRange = (
   eventName: string,
   startBlockNumber: bigint,
   endBlockNumber: bigint,
-) => {
+): boolean => {
   logger.info(`Fetching ${eventName} from block ${startBlockNumber} to ${endBlockNumber}`);
 
   if (startBlockNumber > endBlockNumber) {
-    throw new Error(
+    logger.warn(
       `startBlockNumber ${startBlockNumber} is greater than currentBlockNumber ${endBlockNumber}`,
     );
+    return false;
   }
+
+  return true;
 };

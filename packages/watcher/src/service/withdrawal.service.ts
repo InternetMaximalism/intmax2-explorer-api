@@ -3,7 +3,6 @@ import {
   BLOCK_RANGE_MOST_RECENT,
   type ClaimableWithdrawalEvent,
   type DirectWithdrawalQueueEvent,
-  type EventData,
   type TokenInfo,
   type TransactionStatus,
   WITHDRAWAL_BATCH_SIZE,
@@ -30,20 +29,32 @@ export const fetchAndStoreWithdrawals = async ({
   lastWithdrawalQueueProcessedEvent,
   withdrawalQueueEvent,
 }: FetchAndStoreWithdrawalsParams) => {
+  const startBlockNumber = getStartBlockNumber(
+    lastWithdrawalQueueProcessedEvent,
+    WITHDRAWAL_CONTRACT_DEPLOYED_BLOCK,
+  );
+  const isValid = validateBlockRange(
+    "fetchAndStoreWithdrawals",
+    startBlockNumber,
+    scrollCurrentBlockNumber,
+  );
+  if (!isValid) {
+    logger.info("Skipping fetchAndStoreWithdrawals due to invalid block range.");
+    return;
+  }
+
   const [directWithdrawalQueuedEvents, claimableWithdrawalEvents] = await Promise.all([
     fetchWithdrawalQueueEvents(
       scrollClient,
-      lastWithdrawalQueueProcessedEvent,
+      startBlockNumber,
       scrollCurrentBlockNumber,
       directWithdrawalQueuedEvent,
-      "direct",
     ),
     fetchWithdrawalQueueEvents(
       scrollClient,
-      lastWithdrawalQueueProcessedEvent,
+      startBlockNumber,
       scrollCurrentBlockNumber,
       claimableWithdrawalQueuedEvent,
-      "claimable",
     ),
   ]);
 
@@ -74,19 +85,12 @@ export const fetchAndStoreWithdrawals = async ({
 
 const fetchWithdrawalQueueEvents = async (
   scrollClient: PublicClient,
-  lastWithdrawalQueueProcessedEvent: EventData | null,
+  startBlockNumber: bigint,
   scrollCurrentBlockNumber: bigint,
   eventInterface: ReturnType<typeof parseAbiItem>,
-  type: WithdrawalType,
 ) => {
-  const startBlockNumber = getStartBlockNumber(
-    lastWithdrawalQueueProcessedEvent,
-    WITHDRAWAL_CONTRACT_DEPLOYED_BLOCK,
-  );
-  validateBlockRange(`${type}WithdrawalQueueEvent`, startBlockNumber, scrollCurrentBlockNumber);
-
   const events = await fetchEvents<DirectWithdrawalQueueEvent>(scrollClient, {
-    startBlockNumber: startBlockNumber,
+    startBlockNumber,
     endBlockNumber: scrollCurrentBlockNumber,
     blockRange: BLOCK_RANGE_MOST_RECENT,
     contractAddress: WITHDRAWAL_CONTRACT_ADDRESS,

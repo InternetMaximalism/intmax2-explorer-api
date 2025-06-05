@@ -8,12 +8,10 @@ import {
   directWithdrawalSuccessedEvent,
   fetchEvents,
   getStartBlockNumber,
-  validateBlockRange,
   withdrawalClaimableEvent,
 } from "@intmax2-explorer-api/shared";
 import { parseAbiItem } from "abitype";
 import type { PublicClient } from "viem";
-import type { WithdrawalEventType } from "../types";
 
 const handleWithdrawalEvent = async <T extends { args: { withdrawalHash: string } }>(
   ethereumClient: PublicClient,
@@ -21,11 +19,9 @@ const handleWithdrawalEvent = async <T extends { args: { withdrawalHash: string 
     startBlockNumber: bigint;
     endBlockNumber: bigint;
     eventInterface: ReturnType<typeof parseAbiItem>;
-    eventName: WithdrawalEventType;
   },
 ) => {
-  const { eventName, startBlockNumber, endBlockNumber } = params;
-  validateBlockRange(eventName, startBlockNumber, endBlockNumber);
+  const { startBlockNumber, endBlockNumber } = params;
 
   const events = await fetchEvents<T>(ethereumClient, {
     startBlockNumber,
@@ -53,13 +49,11 @@ export const handleAllWithdrawalEvents = async (
       startBlockNumber,
       endBlockNumber: currentBlockNumber,
       eventInterface: directWithdrawalSuccessedEvent,
-      eventName: "DirectWithdrawalSuccessed",
     }),
     handleWithdrawalEvent<WithdrawalClaimableEvent>(ethereumClient, {
       startBlockNumber,
       endBlockNumber: currentBlockNumber,
       eventInterface: withdrawalClaimableEvent,
-      eventName: "WithdrawalClaimable",
     }),
   ]);
 

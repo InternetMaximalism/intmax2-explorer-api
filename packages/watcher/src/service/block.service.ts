@@ -40,8 +40,22 @@ export const fetchAndStoreBlocks = async (
   blockEvent: Event,
   lastBlockProcessedEvent: EventData | null,
 ) => {
+  const startBlockNumber = getStartBlockNumber(
+    lastBlockProcessedEvent,
+    ROLLUP_CONTRACT_DEPLOYED_BLOCK,
+  );
+  const isValid = validateBlockRange(
+    "fetchAndStoreBlocks",
+    startBlockNumber,
+    scrollCurrentBlockNumber,
+  );
+  if (!isValid) {
+    logger.info("Skipping fetchAndStoreBlocks due to invalid block range.");
+    return;
+  }
+
   const [blockPostedEvents, { blockNumber: latestValidityBlockNumber }] = await Promise.all([
-    fetchBlockPostedEvent(scrollClient, scrollCurrentBlockNumber, lastBlockProcessedEvent),
+    fetchBlockPostedEvent(scrollClient, startBlockNumber, scrollCurrentBlockNumber),
     fetchLatestValidityProofBlockNumber(),
   ]);
 
@@ -145,16 +159,10 @@ const formatBlockTransaction = (
 
 const fetchBlockPostedEvent = async (
   scrollClient: PublicClient,
+  startBlockNumber: bigint,
   scrollCurrentBlockNumber: bigint,
-  lastProcessedEvent: EventData | null,
 ) => {
   try {
-    const startBlockNumber = getStartBlockNumber(
-      lastProcessedEvent,
-      ROLLUP_CONTRACT_DEPLOYED_BLOCK,
-    );
-    validateBlockRange("blockPostedEvent", startBlockNumber, scrollCurrentBlockNumber);
-
     const blockPostedEvents = await fetchEvents<BlockPostedEvent>(scrollClient, {
       startBlockNumber,
       endBlockNumber: scrollCurrentBlockNumber,
