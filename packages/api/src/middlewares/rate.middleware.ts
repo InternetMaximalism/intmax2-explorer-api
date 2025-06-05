@@ -18,10 +18,10 @@ export const limiter = rateLimiter({
     const ip = getClientIP(c);
     return ip;
   },
-  skip: (c) => {
-    const url = new URL(c.req.url);
-    return url.pathname.startsWith("/v1/aml/score");
-  },
+  // skip: (c) => {
+  //   const url = new URL(c.req.url);
+  //   return url.pathname.startsWith("/v1");
+  // },
   handler: (c) => {
     const ip = getClientIP(c);
     logger.warn(`Rate limit exceeded for IP: ${ip}`);

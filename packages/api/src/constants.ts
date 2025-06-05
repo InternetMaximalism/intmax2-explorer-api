@@ -1,6 +1,6 @@
 // app
 export const BASE_PATH = "v1";
-export const APP_TIMEOUT = 30_000;
+export const APP_TIMEOUT = 10_000;
 export const RATE_LIMIT = 1000;
 export const SHUTDOWN_TIMEOUT = 2000;
 

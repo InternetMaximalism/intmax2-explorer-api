@@ -6,8 +6,8 @@ import {
 } from "@intmax2-explorer-api/shared";
 
 export const listDeposits = async (depositPaginationOptions: DepositPaginationValidationType) => {
-  const deposit = Deposit.getInstance();
-  return deposit.listDeposits(depositPaginationOptions);
+  const depositInstance = Deposit.getInstance();
+  return depositInstance.listDeposits(depositPaginationOptions);
 };
 
 export const getDeposit = async ({ hash }: HashValidationType) => {
