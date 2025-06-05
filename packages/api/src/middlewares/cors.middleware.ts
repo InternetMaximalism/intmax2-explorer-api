@@ -11,5 +11,5 @@ export const corsMiddleware = cors({
   origin: getAllowedOrigins(),
   allowMethods: ["GET", "OPTIONS"] as const,
   allowHeaders: ["Content-Type"] as const,
-  maxAge: 7200,
+  maxAge: config.CORS_MAX_AGE,
 });

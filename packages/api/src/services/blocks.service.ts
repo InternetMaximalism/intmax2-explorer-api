@@ -10,8 +10,8 @@ import {
 } from "@intmax2-explorer-api/shared";
 
 export const listBlocks = async (blockPaginationOptions: BlockPaginationValidationType) => {
-  const block = Block.getInstance();
-  const blocks = await block.listBlocks(blockPaginationOptions);
+  const blockInstance = Block.getInstance();
+  const blocks = await blockInstance.listBlocks(blockPaginationOptions);
   return {
     ...blocks,
     items: formatBlockBulk(blocks.items),
@@ -34,8 +34,8 @@ export const getBlockValidityProof = async ({ hash }: HashValidationType) => {
 };
 
 export const getBlockByBlockNumber = async (blockNumber: number) => {
-  const block = Block.getInstance();
-  return block.getBlockByBlockNumber(blockNumber);
+  const blockInstance = Block.getInstance();
+  return blockInstance.getBlockByBlockNumber(blockNumber);
 };
 
 const formatBlock = (block: BlockData) => {

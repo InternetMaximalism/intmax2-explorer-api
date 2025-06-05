@@ -46,8 +46,7 @@ const getETHPrice = async () => {
     }
 
     throw new Error(
-      "Unexpected error while fetching eth price",
-      error instanceof Error ? error : undefined,
+      error instanceof Error ? error.message : "Unknown error while fetching eth price",
     );
   }
 };

@@ -14,7 +14,9 @@ export const config = cleanEnv(process.env, {
   }),
   SERVICE_VERSION: str({ default: version }),
   ALLOWED_ORIGINS: str({ default: "*", example: "http://localhost:3000,http://localhost:5173" }),
-  RATE_LIMIT: num({ default: 10000 }),
+  RATE_LIMIT: num({ default: 1000 }),
+  CORS_MAX_AGE: num({ default: 7200 }),
+  X_API_KEY: str({ default: "dummy" }),
   // gcp
   K_SERVICE: str({ default: process.env.CLOUD_RUN_JOB || "default-service" }),
   K_REVISION: str({

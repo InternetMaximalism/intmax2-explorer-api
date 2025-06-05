@@ -23,21 +23,6 @@ yarn workspace watcher dev
 yarn workspace finalizer dev
 ```
 
-## Testing
-
-The project uses Vitest for testing. Run tests with the following commands:
-
-```sh
-# Run all tests
-yarn test
-
-# Run tests in watch mode
-yarn test --watch
-
-# Run tests with coverage report
-yarn coverage
-```
-
 ## Local Emulator
 
 If your development workflow involves Firestore, you can start a local emulator:
@@ -56,6 +41,28 @@ docker build -f docker/Dockerfile -t intmax2-explorer-api .
 docker run --rm -p 3000:3000 --env-file .env intmax2-explorer-api workspace api start
 ```
 
+## Testing
+
+The project uses Vitest for testing. Run tests with the following commands:
+
+```sh
+# Run all tests
+yarn test
+
+# Run tests in watch mode
+yarn test --watch
+
+# Run tests with coverage report
+yarn coverage
+```
+
+## X-API-KEY
+
+The API uses API keys for authentication and rate limiting. To generate a secure API key for development or production use:
+
+```sh
+node -e "console.log('ak_' + require('crypto').randomBytes(32).toString('base64url'))"
+```
 
 ## Docs
 
