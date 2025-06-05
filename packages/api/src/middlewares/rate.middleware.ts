@@ -18,10 +18,10 @@ export const limiter = rateLimiter({
     const ip = getClientIP(c);
     return ip;
   },
-  // skip: (c) => {
-  //   const url = new URL(c.req.url);
-  //   return url.pathname.startsWith("/v1");
-  // },
+  skip: (c) => {
+    const xApiKey = c.req.header("X-API-KEY");
+    return xApiKey === config.X_API_KEY;
+  },
   handler: (c) => {
     const ip = getClientIP(c);
     logger.warn(`Rate limit exceeded for IP: ${ip}`);

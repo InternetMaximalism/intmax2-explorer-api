@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach, type MockedFunction } from "vitest";
 import type { QueryValidationType } from "@intmax2-explorer-api/shared";
-import { getSearch } from "./search.service";
+import { type MockedFunction, beforeEach, describe, expect, it, vi } from "vitest";
 import { getBlock, getBlockByBlockNumber } from "./blocks.service";
 import { getDeposit } from "./deposits.service";
+import { getSearch } from "./search.service";
 import { getWithdrawal } from "./withdrawals.service";
 
 vi.mock("./blocks.service", () => ({

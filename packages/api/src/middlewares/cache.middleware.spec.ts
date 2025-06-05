@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach, type MockedFunction } from "vitest";
 import type { Context, Next } from "hono";
-import { cacheMiddleware } from "./cache.middleware";
+import { type MockedFunction, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MemoryCacheStore } from "../lib/cacheStore";
+import { cacheMiddleware } from "./cache.middleware";
 
 vi.mock("../lib/cacheStore", () => ({
   MemoryCacheStore: {

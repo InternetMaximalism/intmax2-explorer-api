@@ -1,8 +1,8 @@
 import { Hono } from "hono";
+import { etag } from "hono/etag";
 import { CACHE_TIMEOUTS } from "../constants";
 import * as statsController from "../controllers/stats.controller";
 import { cacheMiddleware } from "../middlewares";
-import { etag } from "hono/etag";
 
 export const statsRoute = new Hono();
 
