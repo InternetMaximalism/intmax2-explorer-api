@@ -2,7 +2,6 @@ import {
   BLOCK_RANGE_MINIMUM,
   type ClaimableWithdrawalEvent,
   type DirectWithdrawalQueueEvent,
-  type EventData,
   LIQUIDITY_CONTRACT_ADDRESS,
   LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
   WITHDRAWAL_BATCH_SIZE,
@@ -24,6 +23,20 @@ export const finalizeRelayedWithdrawals = async ({
   withdrawalEvent,
   lastWithdrawalProcessedEvent,
 }: FinalizeRelayedWithdrawalsParams) => {
+  const startBlockNumber = getStartBlockNumber(
+    lastWithdrawalProcessedEvent,
+    LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
+  );
+  const isValid = validateBlockRange(
+    "finalizeRelayedWithdrawals",
+    startBlockNumber,
+    currentBlockNumber,
+  );
+  if (!isValid) {
+    logger.info("Skipping finalizeRelayedWithdrawals due to invalid block range.");
+    return;
+  }
+
   const withdrawalInstance = Withdrawal.getInstance();
   const { directWithdrawals, claimableWithdrawals, totalCount } =
     await getRelayedWithdrawals(withdrawalInstance);
@@ -31,19 +44,17 @@ export const finalizeRelayedWithdrawals = async ({
   const withdrawalEvents = await Promise.all([
     fetchWithdrawalEvents<DirectWithdrawalQueueEvent>(
       ethereumClient,
-      lastWithdrawalProcessedEvent,
+      startBlockNumber,
       currentBlockNumber,
       directWithdrawals,
       directWithdrawalSuccessedEvent,
-      "DirectWithdrawalSuccessed",
     ),
     fetchWithdrawalEvents<ClaimableWithdrawalEvent>(
       ethereumClient,
-      lastWithdrawalProcessedEvent,
+      startBlockNumber,
       currentBlockNumber,
       claimableWithdrawals,
       withdrawalClaimableEvent,
-      "WithdrawalClaimable",
     ),
   ]).then((processed) => processed.flat());
 
@@ -109,18 +120,11 @@ const getRelayedWithdrawals = async (withdrawalInstance: Withdrawal) => {
 
 const fetchWithdrawalEvents = async <T>(
   ethereumClient: PublicClient,
-  lastWithdrawalProcessedEvent: EventData | null,
+  startBlockNumber: bigint,
   currentBlockNumber: bigint,
   withdrawals: RelayedWithdrawal[],
   eventInterface: ReturnType<typeof parseAbiItem>,
-  eventName: "DirectWithdrawalSuccessed" | "WithdrawalClaimable",
 ) => {
-  const startBlockNumber = getStartBlockNumber(
-    lastWithdrawalProcessedEvent,
-    LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
-  );
-  validateBlockRange(eventName, startBlockNumber, currentBlockNumber);
-
   const withdrawalHashes = withdrawals.map(({ hash }) => hash);
 
   const events = await fetchEvents<T>(ethereumClient, {

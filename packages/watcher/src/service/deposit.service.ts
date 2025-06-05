@@ -32,10 +32,20 @@ export const fetchAndStoreDeposits = async (
   depositEvent: Event,
   lastDepositedProcessedEvent: EventData | null,
 ) => {
+  const startBlockNumber = getStartBlockNumber(
+    lastDepositedProcessedEvent,
+    LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
+  );
+  const isValid = validateBlockRange("fetchAndStoreDeposits", startBlockNumber, currentBlockNumber);
+  if (!isValid) {
+    logger.info("Skipping fetchAndStoreDeposits due to invalid block range.");
+    return;
+  }
+
   const depositEvents = await getDepositedEvent(
     ethereumClient,
+    startBlockNumber,
     currentBlockNumber,
-    lastDepositedProcessedEvent,
   );
   const depositDetails = await getDepositDetails(ethereumClient, currentBlockNumber, depositEvents);
   const deposit = Deposit.getInstance();
@@ -97,16 +107,10 @@ const aggregateAndSaveStats = async (transaction: Transaction, newL1WalletCount:
 
 export const getDepositedEvent = async (
   ethereumClient: PublicClient,
+  startBlockNumber: bigint,
   currentBlockNumber: bigint,
-  lastProcessedEvent: EventData | null,
 ) => {
   try {
-    const startBlockNumber = getStartBlockNumber(
-      lastProcessedEvent,
-      LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
-    );
-    validateBlockRange("depositedEvent", startBlockNumber, currentBlockNumber);
-
     // NOTE: Details: Log response size exceeded. You can make eth_getLogs requests with up to a 2K block range
     const depositEvents = await fetchEvents<DepositEvent>(ethereumClient, {
       startBlockNumber,

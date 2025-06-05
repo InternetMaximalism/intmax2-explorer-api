@@ -6,6 +6,7 @@ import {
   type EventData,
   LIQUIDITY_CONTRACT_ADDRESS,
   LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
+  WITHDRAWAL_BATCH_SIZE,
   Withdrawal,
   directWithdrawalSuccessedEvent,
   fetchEvents,
@@ -114,8 +115,7 @@ describe("withdrawal.service", () => {
 
     (Withdrawal.getInstance as MockedFunction<any>).mockReturnValue(mockWithdrawalInstance);
     (getStartBlockNumber as MockedFunction<any>).mockReturnValue(1000000n);
-    // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
-    (validateBlockRange as MockedFunction<any>).mockImplementation(() => {});
+    (validateBlockRange as MockedFunction<any>).mockReturnValue(true);
     (fromHex as MockedFunction<typeof fromHex>).mockImplementation((hex: string) => {
       const mapping: { [key: string]: number } = {
         "0x64": 100,
@@ -136,6 +136,20 @@ describe("withdrawal.service", () => {
         withdrawalEvent: mockWithdrawalEvent as unknown as Event,
         lastWithdrawalProcessedEvent: null,
       };
+    });
+
+    it("should skip processing when block range is invalid", async () => {
+      (validateBlockRange as MockedFunction<any>).mockReturnValue(false);
+
+      await finalizeRelayedWithdrawals(defaultParams);
+
+      expect(logger.info).toHaveBeenCalledWith(
+        "Skipping finalizeRelayedWithdrawals due to invalid block range.",
+      );
+      expect(mockWithdrawalInstance.listAllWithdrawals).not.toHaveBeenCalled();
+      expect(fetchEvents).not.toHaveBeenCalled();
+      expect(mockWithdrawalInstance.updateWithdrawalsBatch).not.toHaveBeenCalled();
+      expect(mockWithdrawalEvent.addOrUpdateEvent).not.toHaveBeenCalled();
     });
 
     it("should successfully process withdrawals with matching events", async () => {
@@ -240,12 +254,77 @@ describe("withdrawal.service", () => {
       ]);
     });
 
+    it("should handle case when no events are returned", async () => {
+      const withdrawalWithoutEvent: RelayedWithdrawal = {
+        hash: "0xnoEvent",
+        type: "direct",
+        status: "Relayed",
+        liquidityTransactionHash: "0xtx99",
+      };
+
+      mockWithdrawalInstance.listAllWithdrawals.mockResolvedValue({
+        items: [withdrawalWithoutEvent],
+        totalCount: 1,
+      });
+
+      (fetchEvents as MockedFunction<any>)
+        .mockResolvedValueOnce([]) // No matching events
+        .mockResolvedValueOnce([]);
+
+      await finalizeRelayedWithdrawals(defaultParams);
+
+      // Since no events are returned, no withdrawals will be matched
+      // and no batch processing will occur, so no error should be logged
+      expect(logger.error).not.toHaveBeenCalled();
+      expect(mockWithdrawalInstance.updateWithdrawalsBatch).not.toHaveBeenCalled();
+    });
+
+    it("should log error when event is missing during batch processing", async () => {
+      // This test simulates the rare case where a withdrawal passes the filter
+      // but the event is somehow missing from the map during batch processing
+      const withdrawal: RelayedWithdrawal = {
+        hash: "0xmissingEvent",
+        type: "direct",
+        status: "Relayed",
+        liquidityTransactionHash: "0xtx99",
+      };
+
+      mockWithdrawalInstance.listAllWithdrawals.mockResolvedValue({
+        items: [withdrawal],
+        totalCount: 1,
+      });
+
+      const mockEvent = {
+        args: { withdrawalHash: "0xmissingEvent" },
+        transactionHash: "0xtx99",
+        blockTimestamp: "0x64",
+      } as DirectWithdrawalQueueEvent;
+
+      (fetchEvents as MockedFunction<any>)
+        .mockResolvedValueOnce([mockEvent])
+        .mockResolvedValueOnce([]);
+
+      // Mock the Map.get to return undefined even though Map.has returned true
+      const originalMapGet = Map.prototype.get;
+      Map.prototype.get = vi.fn().mockReturnValue(undefined);
+
+      await finalizeRelayedWithdrawals(defaultParams);
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "No event found for withdrawal hash: 0xmissingEvent",
+      );
+      expect(mockWithdrawalInstance.updateWithdrawalsBatch).toHaveBeenCalledWith([]);
+
+      // Restore original Map.get
+      Map.prototype.get = originalMapGet;
+    });
+
     it("should process large batches correctly", async () => {
       const largeWithdrawalList = Array.from({ length: 25 }, (_, i) => ({
         hash: `0xhash${i}`,
         type: "direct" as const,
         status: "Relayed" as const,
-        relayedTimestamp: 1000 + i,
+        liquidityTransactionHash: `0xtx${i}`,
       }));
 
       const largeEventList = largeWithdrawalList.map((w, i) => ({
@@ -294,7 +373,7 @@ describe("withdrawal.service", () => {
       });
     });
 
-    it("should validate block range for both event types", async () => {
+    it("should handle validateBlockRange check", async () => {
       mockWithdrawalInstance.listAllWithdrawals.mockResolvedValue({
         items: [...mockDirectWithdrawals, ...mockClaimableWithdrawals],
         totalCount: 3,
@@ -305,11 +384,10 @@ describe("withdrawal.service", () => {
       await finalizeRelayedWithdrawals(defaultParams);
 
       expect(validateBlockRange).toHaveBeenCalledWith(
-        "DirectWithdrawalSuccessed",
+        "finalizeRelayedWithdrawals",
         1000000n,
         2000000n,
       );
-      expect(validateBlockRange).toHaveBeenCalledWith("WithdrawalClaimable", 1000000n, 2000000n);
     });
 
     it("should use last processed event block number when available", async () => {
