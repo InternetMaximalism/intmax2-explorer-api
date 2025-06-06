@@ -954,7 +954,7 @@ __metadata:
   dependencies:
     "@google-cloud/firestore": "npm:^7.11.1"
     abitype: "npm:^1.0.8"
-    alchemy-sdk: "npm:^3.5.10"
+    alchemy-sdk: "npm:^3.6.0"
     axios: "npm:^1.9.0"
     envalid: "npm:^8.0.0"
     hono: "npm:^4.7.10"
@@ -1753,9 +1753,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"alchemy-sdk@npm:^3.5.10":
-  version: 3.5.10
-  resolution: "alchemy-sdk@npm:3.5.10"
+"alchemy-sdk@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "alchemy-sdk@npm:3.6.0"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/abstract-provider": "npm:^5.7.0"
@@ -1772,7 +1772,7 @@ __metadata:
     axios: "npm:^1.7.4"
     sturdy-websocket: "npm:^0.2.1"
     websocket: "npm:^1.0.34"
-  checksum: 10c0/f5fce33cfc1b7cfdc3288a6fffb0eea80fbc5c65c1a79a435f56332c4947e61f6b1dc213a3c86c2acea763ac0b0c9b33a360ac1b911ce7f882a586a877c42998
+  checksum: 10c0/89bfbd544d8f88f75affb2e98a7686658b93e8382dcd054ad7921d28393daaea51c7591eee3ee1117f1429de24bc50db85cca30f425de509fc9e9eb035cb309b
   languageName: node
   linkType: hard
 
