@@ -2,8 +2,8 @@ import type { Transaction } from "@google-cloud/firestore";
 import {
   BLOCK_BATCH_SIZE_LARGE,
   Block,
-  BlockData,
-  BlockInput,
+  type BlockData,
+  type BlockInput,
   FIRESTORE_DOCUMENT_STATS,
   type ProcessingPendingBlockData,
   Stats,
@@ -93,6 +93,10 @@ const processIndexingBlockBatch = async (
   latestValidityBlockNumber: number,
 ) => {
   const promises = blocks.map(async (block) => {
+    if (block.blockNumber > latestValidityBlockNumber) {
+      return null;
+    }
+
     const validityProof = await fetchValidityPis(block.blockNumber);
 
     const blockValidity = getBlockValidity(validityProof, block.blockType);
