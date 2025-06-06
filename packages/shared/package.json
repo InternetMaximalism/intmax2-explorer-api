@@ -5,7 +5,7 @@
   "dependencies": {
     "@google-cloud/firestore": "^7.11.1",
     "abitype": "^1.0.8",
-    "alchemy-sdk": "^3.5.10",
+    "alchemy-sdk": "^3.6.0",
     "axios": "^1.9.0",
     "envalid": "^8.0.0",
     "hono": "^4.7.10",
