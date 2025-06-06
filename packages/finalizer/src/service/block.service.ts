@@ -2,8 +2,8 @@ import type { Transaction } from "@google-cloud/firestore";
 import {
   BLOCK_BATCH_SIZE_LARGE,
   Block,
-  BlockData,
-  BlockInput,
+  type BlockData,
+  type BlockInput,
   FIRESTORE_DOCUMENT_STATS,
   type ProcessingPendingBlockData,
   Stats,

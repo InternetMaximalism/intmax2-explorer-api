@@ -4,10 +4,12 @@ import {
   type DirectWithdrawalQueueEvent,
   Event,
   type EventData,
+  FIRESTORE_DOCUMENT_EVENTS,
   LIQUIDITY_CONTRACT_ADDRESS,
   LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
   WITHDRAWAL_BATCH_SIZE,
   Withdrawal,
+  createNetworkClient,
   directWithdrawalSuccessedEvent,
   fetchEvents,
   getStartBlockNumber,
@@ -17,17 +19,22 @@ import {
 } from "@intmax2-explorer-api/shared";
 import { type PublicClient, fromHex } from "viem";
 import { type MockedFunction, beforeEach, describe, expect, it, vi } from "vitest";
-import type { FinalizeRelayedWithdrawalsParams, RelayedWithdrawal } from "../types";
+import type { RelayedWithdrawal } from "../types";
 import { finalizeRelayedWithdrawals } from "./withdrawal.service";
 
 vi.mock("@intmax2-explorer-api/shared", () => ({
   BLOCK_RANGE_MINIMUM: 1000,
+  FIRESTORE_DOCUMENT_EVENTS: {
+    WITHDRAWAL: "withdrawal-events",
+  },
   LIQUIDITY_CONTRACT_ADDRESS: "0x123",
   LIQUIDITY_CONTRACT_DEPLOYED_BLOCK: 1000000n,
   WITHDRAWAL_BATCH_SIZE: 10,
+  Event: vi.fn(),
   Withdrawal: {
     getInstance: vi.fn(),
   },
+  createNetworkClient: vi.fn(),
   directWithdrawalSuccessedEvent: { mock: "event" },
   fetchEvents: vi.fn(),
   getStartBlockNumber: vi.fn(),
@@ -51,6 +58,7 @@ describe("withdrawal.service", () => {
     updateWithdrawalsBatch: MockedFunction<any>;
   };
   let mockWithdrawalEvent: {
+    getLatestEvent: MockedFunction<any>;
     addOrUpdateEvent: MockedFunction<any>;
   };
 
@@ -102,7 +110,9 @@ describe("withdrawal.service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    mockEthereumClient = {} as PublicClient;
+    mockEthereumClient = {
+      getBlockNumber: vi.fn().mockResolvedValue(2000000n),
+    } as any;
 
     mockWithdrawalInstance = {
       listAllWithdrawals: vi.fn(),
@@ -110,10 +120,13 @@ describe("withdrawal.service", () => {
     };
 
     mockWithdrawalEvent = {
+      getLatestEvent: vi.fn().mockResolvedValue(null),
       addOrUpdateEvent: vi.fn().mockResolvedValue(undefined),
     };
 
+    (Event as MockedFunction<any>).mockReturnValue(mockWithdrawalEvent);
     (Withdrawal.getInstance as MockedFunction<any>).mockReturnValue(mockWithdrawalInstance);
+    (createNetworkClient as MockedFunction<any>).mockReturnValue(mockEthereumClient);
     (getStartBlockNumber as MockedFunction<any>).mockReturnValue(1000000n);
     (validateBlockRange as MockedFunction<any>).mockReturnValue(true);
     (fromHex as MockedFunction<typeof fromHex>).mockImplementation((hex: string) => {
@@ -127,21 +140,10 @@ describe("withdrawal.service", () => {
   });
 
   describe("finalizeRelayedWithdrawals", () => {
-    let defaultParams: FinalizeRelayedWithdrawalsParams;
-
-    beforeEach(() => {
-      defaultParams = {
-        ethereumClient: mockEthereumClient,
-        currentBlockNumber: 2000000n,
-        withdrawalEvent: mockWithdrawalEvent as unknown as Event,
-        lastWithdrawalProcessedEvent: null,
-      };
-    });
-
     it("should skip processing when block range is invalid", async () => {
       (validateBlockRange as MockedFunction<any>).mockReturnValue(false);
 
-      await finalizeRelayedWithdrawals(defaultParams);
+      await finalizeRelayedWithdrawals();
 
       expect(logger.info).toHaveBeenCalledWith(
         "Skipping finalizeRelayedWithdrawals due to invalid block range.",
@@ -164,7 +166,13 @@ describe("withdrawal.service", () => {
         .mockResolvedValueOnce(mockClaimableWithdrawalEvents);
 
       // Execute
-      await finalizeRelayedWithdrawals(defaultParams);
+      await finalizeRelayedWithdrawals();
+
+      // Verify Event construction
+      expect(Event).toHaveBeenCalledWith(FIRESTORE_DOCUMENT_EVENTS.WITHDRAWAL);
+
+      // Verify network client creation
+      expect(createNetworkClient).toHaveBeenCalledWith("ethereum");
 
       // Verify withdrawal instance calls
       expect(mockWithdrawalInstance.listAllWithdrawals).toHaveBeenCalledWith({
@@ -241,7 +249,7 @@ describe("withdrawal.service", () => {
         .mockResolvedValueOnce([mockDirectWithdrawalEvents[0]]) // Only first event
         .mockResolvedValueOnce([]);
 
-      await finalizeRelayedWithdrawals(defaultParams);
+      await finalizeRelayedWithdrawals();
 
       // Should only update the withdrawal with matching event
       expect(mockWithdrawalInstance.updateWithdrawalsBatch).toHaveBeenCalledWith([
@@ -271,7 +279,7 @@ describe("withdrawal.service", () => {
         .mockResolvedValueOnce([]) // No matching events
         .mockResolvedValueOnce([]);
 
-      await finalizeRelayedWithdrawals(defaultParams);
+      await finalizeRelayedWithdrawals();
 
       // Since no events are returned, no withdrawals will be matched
       // and no batch processing will occur, so no error should be logged
@@ -308,7 +316,7 @@ describe("withdrawal.service", () => {
       const originalMapGet = Map.prototype.get;
       Map.prototype.get = vi.fn().mockReturnValue(undefined);
 
-      await finalizeRelayedWithdrawals(defaultParams);
+      await finalizeRelayedWithdrawals();
 
       expect(logger.error).toHaveBeenCalledWith(
         "No event found for withdrawal hash: 0xmissingEvent",
@@ -346,7 +354,7 @@ describe("withdrawal.service", () => {
         return parseInt(hex, 16);
       });
 
-      await finalizeRelayedWithdrawals(defaultParams);
+      await finalizeRelayedWithdrawals();
 
       // Should be called 3 times (25 items / 10 batch size = 3 batches)
       expect(mockWithdrawalInstance.updateWithdrawalsBatch).toHaveBeenCalledTimes(3);
@@ -365,7 +373,7 @@ describe("withdrawal.service", () => {
 
       (fetchEvents as MockedFunction<any>).mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 
-      await finalizeRelayedWithdrawals(defaultParams);
+      await finalizeRelayedWithdrawals();
 
       expect(mockWithdrawalInstance.updateWithdrawalsBatch).not.toHaveBeenCalled();
       expect(mockWithdrawalEvent.addOrUpdateEvent).toHaveBeenCalledWith({
@@ -381,7 +389,7 @@ describe("withdrawal.service", () => {
 
       (fetchEvents as MockedFunction<any>).mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 
-      await finalizeRelayedWithdrawals(defaultParams);
+      await finalizeRelayedWithdrawals();
 
       expect(validateBlockRange).toHaveBeenCalledWith(
         "finalizeRelayedWithdrawals",
@@ -396,11 +404,7 @@ describe("withdrawal.service", () => {
         lastBlockNumber: 1500000,
       };
 
-      const paramsWithLastEvent = {
-        ...defaultParams,
-        lastWithdrawalProcessedEvent: lastProcessedEvent,
-      };
-
+      mockWithdrawalEvent.getLatestEvent.mockResolvedValue(lastProcessedEvent);
       (getStartBlockNumber as MockedFunction<any>).mockReturnValue(1500000n);
 
       mockWithdrawalInstance.listAllWithdrawals.mockResolvedValue({
@@ -410,7 +414,7 @@ describe("withdrawal.service", () => {
 
       (fetchEvents as MockedFunction<any>).mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 
-      await finalizeRelayedWithdrawals(paramsWithLastEvent);
+      await finalizeRelayedWithdrawals();
 
       expect(getStartBlockNumber).toHaveBeenCalledWith(
         lastProcessedEvent,

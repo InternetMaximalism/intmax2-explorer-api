@@ -13,20 +13,22 @@ import {
   logger,
   validateBlockRange,
   withdrawalClaimableEvent,
+  createNetworkClient,
+  Event,
+  type EventData,
+  FIRESTORE_DOCUMENT_EVENTS,
 } from "@intmax2-explorer-api/shared";
 import { type PublicClient, fromHex, parseAbiItem } from "viem";
-import type { FinalizeRelayedWithdrawalsParams, RelayedWithdrawal } from "../types";
+import type { RelayedWithdrawal } from "../types";
 
-export const finalizeRelayedWithdrawals = async ({
-  ethereumClient,
-  currentBlockNumber,
-  withdrawalEvent,
-  lastWithdrawalProcessedEvent,
-}: FinalizeRelayedWithdrawalsParams) => {
-  const startBlockNumber = getStartBlockNumber(
-    lastWithdrawalProcessedEvent,
-    LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
-  );
+export const finalizeRelayedWithdrawals = async () => {
+  const withdrawalEvent = new Event(FIRESTORE_DOCUMENT_EVENTS.WITHDRAWAL);
+  const [lastEvent, { ethereumClient, currentBlockNumber }] = await Promise.all([
+    withdrawalEvent.getLatestEvent<EventData>(),
+    getEthereumAndScrollBlockNumbers(),
+  ]);
+
+  const startBlockNumber = getStartBlockNumber(lastEvent, LIQUIDITY_CONTRACT_DEPLOYED_BLOCK);
   const isValid = validateBlockRange(
     "finalizeRelayedWithdrawals",
     startBlockNumber,
@@ -139,4 +141,15 @@ const fetchWithdrawalEvents = async <T>(
   });
 
   return events;
+};
+
+const getEthereumAndScrollBlockNumbers = async () => {
+  const ethereumClient = createNetworkClient("ethereum");
+
+  const currentBlockNumber = await ethereumClient.getBlockNumber();
+
+  return {
+    ethereumClient,
+    currentBlockNumber,
+  };
 };
