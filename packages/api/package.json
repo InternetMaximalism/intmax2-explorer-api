@@ -5,7 +5,7 @@
     "@hono/node-server": "^1.14.3",
     "@intmax2-explorer-api/shared": "workspace:*",
     "axios": "^1.9.0",
-    "hono": "^4.7.10",
+    "hono": "^4.7.11",
     "hono-rate-limiter": "^0.4.2",
     "viem": "^2.30.5"
   },
