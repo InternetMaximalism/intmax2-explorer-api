@@ -93,6 +93,10 @@ const processIndexingBlockBatch = async (
   latestValidityBlockNumber: number,
 ) => {
   const promises = blocks.map(async (block) => {
+    if (block.blockNumber > latestValidityBlockNumber) {
+      return null;
+    }
+
     const validityProof = await fetchValidityPis(block.blockNumber);
 
     const blockValidity = getBlockValidity(validityProof, block.blockType);
