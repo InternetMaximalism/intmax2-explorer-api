@@ -1530,12 +1530,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.15.24":
-  version: 22.15.24
-  resolution: "@types/node@npm:22.15.24"
+"@types/node@npm:^22.15.30":
+  version: 22.15.30
+  resolution: "@types/node@npm:22.15.30"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/16c38e98168fa6c3d2f2b6e95f14f80878d969b39093bc5384385a884d73a7fe361c563b36f14bc27536b337f5baad74321f717b31d2c061b9c48074567eb8c6
+  checksum: 10c0/ca330ac0e7fd502686d6df115fcc606aba46fd334220f749bbba2f639accdadcb23f7900603ceccdc8240be736739cad5c0b87c0fa92c9255a4dff245f07d664
   languageName: node
   linkType: hard
 
@@ -3141,7 +3141,7 @@ __metadata:
   resolution: "intmax2-explorer-api@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^1.9.4"
-    "@types/node": "npm:^22.15.24"
+    "@types/node": "npm:^22.15.30"
     "@vitest/coverage-v8": "npm:3.1.4"
     typescript: "npm:^5.8.3"
     vitest: "npm:^3.1.4"
