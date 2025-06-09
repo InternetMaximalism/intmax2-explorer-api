@@ -7,7 +7,7 @@
     "axios": "^1.9.0",
     "hono": "^4.7.10",
     "hono-rate-limiter": "^0.4.2",
-    "viem": "^2.30.5"
+    "viem": "^2.31.0"
   },
   "scripts": {
     "start": "node dist/index.js",
