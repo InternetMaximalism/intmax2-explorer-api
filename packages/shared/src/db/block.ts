@@ -3,10 +3,10 @@ import type { Query } from "@google-cloud/firestore";
 import { FIRESTORE_COLLECTIONS } from "../constants";
 import { AppError, ErrorCode, logger } from "../lib";
 import {
-  BlockData,
-  BlockDisplayType,
-  BlockFilters,
-  BlockInput,
+  type BlockData,
+  type BlockDisplayType,
+  type BlockFilters,
+  type BlockInput,
   DisplayTypeToBlock,
 } from "../types";
 import { BaseRepository } from "./base";
