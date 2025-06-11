@@ -33,7 +33,7 @@ const getCacheKey = (c: Context) => {
   const keys = Object.keys(c.req.query())
     .filter((key) => validateKeys.includes(key))
     .sort((a, b) => a.localeCompare(b));
-
   const cacheKey = `${path}-${keys.map((key) => `${key}=${c.req.query()[key]}`).join("-")}`;
+
   return cacheKey;
 };

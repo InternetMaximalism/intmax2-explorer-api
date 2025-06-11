@@ -40,13 +40,12 @@ export class MemoryCacheStore {
     return new Response(cachedResponse.body, {
       status: cachedResponse.status,
       statusText: cachedResponse.statusText,
-      headers: new Headers(cachedResponse.headers), // NOTE: check if this works
+      headers: new Headers(cachedResponse.headers),
     });
   }
 
   async set(key: string, value: Response, maxAge: number) {
-    const clonedResponse = value.clone();
-    const body = await clonedResponse.text();
+    const body = await value.text();
     const result = {
       body,
       status: value.status,
