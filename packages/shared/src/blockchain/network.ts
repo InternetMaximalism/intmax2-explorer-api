@@ -33,6 +33,10 @@ export const createNetworkClient = (network: "ethereum" | "scroll") => {
       multicall: true,
     },
     chain: chain as Chain,
-    transport: http(rpcUrl),
+    // TODO: fallback
+    transport: http(rpcUrl, {
+      retryCount: 3,
+      batch: true,
+    }),
   }) as PublicClient;
 };
