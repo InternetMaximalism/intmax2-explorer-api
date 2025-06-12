@@ -40,18 +40,16 @@ export class MemoryCacheStore {
     return new Response(cachedResponse.body, {
       status: cachedResponse.status,
       statusText: cachedResponse.statusText,
-      headers: new Headers(cachedResponse.headers), // NOTE: check if this works
+      headers: new Headers(cachedResponse.headers),
     });
   }
 
-  async set(key: string, value: Response, maxAge: number) {
-    const clonedResponse = value.clone();
-    const body = await clonedResponse.text();
+  async set(key: string, body: string, response: Response, maxAge: number) {
     const result = {
       body,
-      status: value.status,
-      statusText: value.statusText,
-      headers: Array.from(value.headers.entries()),
+      status: response.status,
+      statusText: response.statusText,
+      headers: Array.from(response.headers.entries()),
     };
 
     this.cache.set(key, { response: result, expiry: Date.now() + maxAge });
