@@ -14,6 +14,7 @@ export const getTVL = async () => {
   const [balance, ethPrice] = await Promise.all([
     ethereumClient.getBalance({
       address: LIQUIDITY_CONTRACT_ADDRESS,
+      blockTag: "safe",
     }),
     getETHPrice(),
   ]);
