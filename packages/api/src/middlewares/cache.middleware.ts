@@ -21,11 +21,19 @@ export const cacheMiddleware = async (c: Context, next: Next, expire: number) =>
   }
 
   await next();
-  const res = c.res.clone();
 
-  cacheStore.set(cacheKey, res, expire);
+  const cRes = c.res.clone();
+  const body = await cRes.text();
 
-  return res;
+  const newResponse = new Response(body, {
+    status: cRes.status,
+    statusText: cRes.statusText,
+    headers: cRes.headers,
+  });
+
+  cacheStore.set(cacheKey, body, newResponse, expire);
+
+  return newResponse;
 };
 
 const getCacheKey = (c: Context) => {

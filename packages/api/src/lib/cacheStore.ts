@@ -44,13 +44,12 @@ export class MemoryCacheStore {
     });
   }
 
-  async set(key: string, value: Response, maxAge: number) {
-    const body = await value.text();
+  async set(key: string, body: string, response: Response, maxAge: number) {
     const result = {
       body,
-      status: value.status,
-      statusText: value.statusText,
-      headers: Array.from(value.headers.entries()),
+      status: response.status,
+      statusText: response.statusText,
+      headers: Array.from(response.headers.entries()),
     };
 
     this.cache.set(key, { response: result, expiry: Date.now() + maxAge });
