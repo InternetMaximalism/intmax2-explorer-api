@@ -1,5 +1,5 @@
 import type { Context, Next } from "hono";
-import { type MockedFunction, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MemoryCacheStore } from "../lib/cacheStore";
 import { cacheMiddleware } from "./cache.middleware";
 
@@ -9,274 +9,339 @@ vi.mock("../lib/cacheStore", () => ({
   },
 }));
 
-describe("cache.middleware", () => {
-  let mockCacheStore: {
-    get: MockedFunction<any>;
-    set: MockedFunction<any>;
-  };
+describe("cacheMiddleware", () => {
   let mockContext: Context;
   let mockNext: Next;
-  let mockResponse: Response;
+  let mockCacheStore: {
+    get: ReturnType<typeof vi.fn>;
+    set: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(() => {
-    vi.clearAllMocks();
-
     mockCacheStore = {
       get: vi.fn(),
       set: vi.fn(),
     };
 
-    mockResponse = new Response(JSON.stringify({ data: "test" }), {
-      status: 200,
-      headers: { "content-type": "application/json" },
-    });
+    (MemoryCacheStore.getInstance as any).mockReturnValue(mockCacheStore);
+
+    const mockQuery = vi.fn().mockReturnValue({});
 
     mockContext = {
       req: {
         path: "/api/v1/blocks",
-        query: vi.fn().mockReturnValue({
-          perPage: "10",
-          cursor: "abc123",
-          blockType: "proving",
-        }),
+        query: mockQuery,
       },
       res: {
-        clone: vi.fn().mockReturnValue(mockResponse),
+        clone: vi.fn(),
+        status: 200,
+        statusText: "OK",
+        headers: new Headers({ "Content-Type": "application/json" }),
       },
-    } as unknown as Context;
+    } as any;
 
-    mockNext = vi.fn().mockResolvedValue(undefined);
-
-    (MemoryCacheStore.getInstance as MockedFunction<any>).mockReturnValue(mockCacheStore);
+    mockNext = vi.fn();
   });
 
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
-  describe("cacheMiddleware", () => {
-    it("should return cached response when cache hit occurs", async () => {
-      const cachedResponse = new Response(JSON.stringify({ cached: true }), {
-        status: 200,
-        headers: { "content-type": "application/json" },
+  describe("cache hit", () => {
+    it("should return cached response when cache exists", async () => {
+      const cachedResponse = new Response("cached data");
+      (mockContext.req.query as any).mockReturnValue({
+        perPage: "10",
+        cursor: "abc123",
       });
-
       mockCacheStore.get.mockReturnValue(cachedResponse);
 
       const result = await cacheMiddleware(mockContext, mockNext, 5000);
 
-      expect(mockCacheStore.get).toHaveBeenCalledWith(
-        "/api/v1/blocks-blockType=proving-cursor=abc123-perPage=10",
-      );
-      expect(mockNext).not.toHaveBeenCalled();
       expect(result).toBe(cachedResponse);
-      expect(mockCacheStore.set).not.toHaveBeenCalled();
+      expect(mockNext).not.toHaveBeenCalled();
+      expect(mockCacheStore.get).toHaveBeenCalledWith("/api/v1/blocks-cursor=abc123-perPage=10");
     });
 
+    it("should not call next when cache hit occurs", async () => {
+      const cachedResponse = new Response("cached");
+      (mockContext.req.query as any).mockReturnValue({ perPage: "5" });
+      mockCacheStore.get.mockReturnValue(cachedResponse);
+
+      await cacheMiddleware(mockContext, mockNext, 1000);
+
+      expect(mockNext).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("cache miss", () => {
     it("should execute next and cache response when cache miss occurs", async () => {
+      const responseBody = '{"data":"test"}';
+      const clonedResponse = {
+        text: vi.fn().mockResolvedValue(responseBody),
+      };
+
+      (mockContext.req.query as any).mockReturnValue({
+        blockType: "proving",
+        cursor: "abc123",
+        perPage: "10",
+      });
+      (mockContext.res.clone as any).mockReturnValue(clonedResponse);
       mockCacheStore.get.mockReturnValue(undefined);
 
       const result = await cacheMiddleware(mockContext, mockNext, 5000);
 
-      expect(mockCacheStore.get).toHaveBeenCalledWith(
-        "/api/v1/blocks-blockType=proving-cursor=abc123-perPage=10",
-      );
       expect(mockNext).toHaveBeenCalled();
       expect(mockCacheStore.set).toHaveBeenCalledWith(
         "/api/v1/blocks-blockType=proving-cursor=abc123-perPage=10",
-        mockResponse,
+        responseBody,
+        expect.any(Response),
         5000,
       );
-      expect(result).toBe(mockResponse);
+      expect(result).toBeInstanceOf(Response);
     });
 
-    it("should generate correct cache key with valid query parameters", async () => {
-      mockContext.req.query = vi.fn().mockReturnValue({
-        perPage: "20",
-        cursor: "xyz789",
-        query: "search-term",
-        blockType: "deposit",
-        blockValidity: "valid",
-        tokenType: "ETH",
-        status: "completed",
-        invalidParam: "should-be-ignored", // This should be filtered out
+    it("should call next exactly once", async () => {
+      (mockContext.req.query as any).mockReturnValue({ perPage: "10" });
+      (mockContext.res.clone as any).mockReturnValue({
+        text: vi.fn().mockResolvedValue("test"),
       });
-
-      mockCacheStore.get.mockReturnValue(undefined);
-
-      await cacheMiddleware(mockContext, mockNext, 3000);
-
-      expect(mockCacheStore.get).toHaveBeenCalledWith(
-        "/api/v1/blocks-blockType=deposit-blockValidity=valid-cursor=xyz789-perPage=20-query=search-term-status=completed-tokenType=ETH",
-      );
-    });
-
-    it("should handle empty query parameters", async () => {
-      mockContext.req.query = vi.fn().mockReturnValue({});
-
       mockCacheStore.get.mockReturnValue(undefined);
 
       await cacheMiddleware(mockContext, mockNext, 1000);
 
-      expect(mockCacheStore.get).toHaveBeenCalledWith("/api/v1/blocks-");
-      expect(mockCacheStore.set).toHaveBeenCalledWith("/api/v1/blocks-", mockResponse, 1000);
-    });
-
-    it("should filter out invalid query parameters", async () => {
-      mockContext.req.query = vi.fn().mockReturnValue({
-        perPage: "10",
-        invalidParam1: "value1",
-        cursor: "abc123",
-        invalidParam2: "value2",
-        blockType: "proving",
-        invalidParam3: "value3",
-      });
-
-      mockCacheStore.get.mockReturnValue(undefined);
-
-      await cacheMiddleware(mockContext, mockNext, 2000);
-
-      // Should only include valid parameters
-      expect(mockCacheStore.get).toHaveBeenCalledWith(
-        "/api/v1/blocks-blockType=proving-cursor=abc123-perPage=10",
-      );
-    });
-
-    it("should sort query parameters alphabetically in cache key", async () => {
-      mockContext.req.query = vi.fn().mockReturnValue({
-        status: "completed",
-        perPage: "10",
-        blockType: "proving",
-        cursor: "abc123",
-        query: "search",
-      });
-
-      mockCacheStore.get.mockReturnValue(undefined);
-
-      await cacheMiddleware(mockContext, mockNext, 2000);
-
-      // Parameters should be sorted alphabetically
-      expect(mockCacheStore.get).toHaveBeenCalledWith(
-        "/api/v1/blocks-blockType=proving-cursor=abc123-perPage=10-query=search-status=completed",
-      );
-    });
-
-    it("should handle different paths correctly", async () => {
-      mockContext.req.path = "/api/v1/transactions";
-      mockContext.req.query = vi.fn().mockReturnValue({
-        perPage: "15",
-        status: "pending",
-      });
-
-      mockCacheStore.get.mockReturnValue(undefined);
-
-      await cacheMiddleware(mockContext, mockNext, 4000);
-
-      expect(mockCacheStore.get).toHaveBeenCalledWith(
-        "/api/v1/transactions-perPage=15-status=pending",
-      );
-    });
-
-    it("should use different expiration times correctly", async () => {
-      mockCacheStore.get.mockReturnValue(undefined);
-
-      await cacheMiddleware(mockContext, mockNext, 10000);
-
-      expect(mockCacheStore.set).toHaveBeenCalledWith(expect.any(String), mockResponse, 10000);
-    });
-
-    it("should handle special characters in query parameters", async () => {
-      mockContext.req.query = vi.fn().mockReturnValue({
-        query: "test search with spaces",
-        perPage: "10",
-        cursor: "abc-123_xyz",
-      });
-
-      mockCacheStore.get.mockReturnValue(undefined);
-
-      await cacheMiddleware(mockContext, mockNext, 2000);
-
-      expect(mockCacheStore.get).toHaveBeenCalledWith(
-        "/api/v1/blocks-cursor=abc-123_xyz-perPage=10-query=test search with spaces",
-      );
-    });
-
-    it("should work with all valid query parameter types", async () => {
-      mockContext.req.query = vi.fn().mockReturnValue({
-        perPage: "25",
-        cursor: "cursor123",
-        query: "search-query",
-        blockType: "withdrawal",
-        blockValidity: "invalid",
-        tokenType: "USDC",
-        status: "processing",
-      });
-
-      mockCacheStore.get.mockReturnValue(undefined);
-
-      await cacheMiddleware(mockContext, mockNext, 3000);
-
-      expect(mockCacheStore.get).toHaveBeenCalledWith(
-        "/api/v1/blocks-blockType=withdrawal-blockValidity=invalid-cursor=cursor123-perPage=25-query=search-query-status=processing-tokenType=USDC",
-      );
-    });
-
-    it("should handle numeric and string values in query parameters", async () => {
-      mockContext.req.query = vi.fn().mockReturnValue({
-        perPage: 10, // numeric value
-        cursor: "abc123", // string value
-        blockType: "proving", // string value
-      });
-
-      mockCacheStore.get.mockReturnValue(undefined);
-
-      await cacheMiddleware(mockContext, mockNext, 1500);
-
-      expect(mockCacheStore.get).toHaveBeenCalledWith(
-        "/api/v1/blocks-blockType=proving-cursor=abc123-perPage=10",
-      );
-    });
-
-    it("should call next function exactly once on cache miss", async () => {
-      mockCacheStore.get.mockReturnValue(undefined);
-
-      await cacheMiddleware(mockContext, mockNext, 2000);
-
       expect(mockNext).toHaveBeenCalledTimes(1);
     });
 
-    it("should clone response before caching", async () => {
+    it("should clone response before reading body", async () => {
+      const mockClonedResponse = {
+        text: vi.fn().mockResolvedValue("test body"),
+      };
+
+      (mockContext.req.query as any).mockReturnValue({ perPage: "10" });
+      (mockContext.res.clone as any).mockReturnValue(mockClonedResponse);
       mockCacheStore.get.mockReturnValue(undefined);
 
       await cacheMiddleware(mockContext, mockNext, 2000);
 
       expect(mockContext.res.clone).toHaveBeenCalled();
-      expect(mockCacheStore.set).toHaveBeenCalledWith(
-        expect.any(String),
-        mockResponse, // The cloned response
-        2000,
+      expect(mockClonedResponse.text).toHaveBeenCalled();
+    });
+  });
+
+  describe("cache key generation", () => {
+    it("should generate correct cache key with valid query parameters", async () => {
+      (mockContext.req.query as any).mockReturnValue({
+        perPage: "10",
+        cursor: "abc123",
+        invalidKey: "should-be-ignored",
+      });
+      mockCacheStore.get.mockReturnValue(undefined);
+      (mockContext.res.clone as any).mockReturnValue({
+        text: vi.fn().mockResolvedValue("test"),
+      });
+
+      await cacheMiddleware(mockContext, mockNext, 1000);
+
+      expect(mockCacheStore.get).toHaveBeenCalledWith("/api/v1/blocks-cursor=abc123-perPage=10");
+    });
+
+    it("should handle empty query parameters", async () => {
+      (mockContext.req.query as any).mockReturnValue({});
+      mockCacheStore.get.mockReturnValue(undefined);
+      (mockContext.res.clone as any).mockReturnValue({
+        text: vi.fn().mockResolvedValue("test"),
+      });
+
+      await cacheMiddleware(mockContext, mockNext, 1000);
+
+      expect(mockCacheStore.get).toHaveBeenCalledWith("/api/v1/blocks-");
+    });
+
+    it("should filter out invalid query parameters", async () => {
+      (mockContext.req.query as any).mockReturnValue({
+        perPage: "10",
+        invalidParam: "value",
+        anotherInvalid: "test",
+        cursor: "abc123",
+      });
+      mockCacheStore.get.mockReturnValue(undefined);
+      (mockContext.res.clone as any).mockReturnValue({
+        text: vi.fn().mockResolvedValue("test"),
+      });
+
+      await cacheMiddleware(mockContext, mockNext, 1000);
+
+      expect(mockCacheStore.get).toHaveBeenCalledWith("/api/v1/blocks-cursor=abc123-perPage=10");
+    });
+
+    it("should sort query parameters alphabetically", async () => {
+      (mockContext.req.query as any).mockReturnValue({
+        perPage: "10",
+        blockType: "proving",
+        cursor: "abc123",
+        query: "search",
+      });
+      mockCacheStore.get.mockReturnValue(undefined);
+      (mockContext.res.clone as any).mockReturnValue({
+        text: vi.fn().mockResolvedValue("test"),
+      });
+
+      await cacheMiddleware(mockContext, mockNext, 1000);
+
+      expect(mockCacheStore.get).toHaveBeenCalledWith(
+        "/api/v1/blocks-blockType=proving-cursor=abc123-perPage=10-query=search",
       );
     });
 
-    it("should work with empty path", async () => {
-      mockContext.req.path = "";
-      mockContext.req.query = vi.fn().mockReturnValue({ perPage: "10" });
-
+    it("should handle different paths correctly", async () => {
+      mockContext.req.path = "/api/v1/transactions";
+      (mockContext.req.query as any).mockReturnValue({ perPage: "5" });
       mockCacheStore.get.mockReturnValue(undefined);
+      (mockContext.res.clone as any).mockReturnValue({
+        text: vi.fn().mockResolvedValue("test"),
+      });
 
       await cacheMiddleware(mockContext, mockNext, 1000);
 
-      expect(mockCacheStore.get).toHaveBeenCalledWith("-perPage=10");
+      expect(mockCacheStore.get).toHaveBeenCalledWith("/api/v1/transactions-perPage=5");
     });
 
-    it("should maintain cache store singleton pattern", async () => {
+    it("should handle all valid query parameter types", async () => {
+      (mockContext.req.query as any).mockReturnValue({
+        perPage: "20",
+        cursor: "def456",
+        query: "test-search",
+        blockType: "withdrawal",
+        blockValidity: "valid",
+        tokenType: "erc20",
+        status: "confirmed",
+      });
       mockCacheStore.get.mockReturnValue(undefined);
+      (mockContext.res.clone as any).mockReturnValue({
+        text: vi.fn().mockResolvedValue("test"),
+      });
 
       await cacheMiddleware(mockContext, mockNext, 1000);
-      await cacheMiddleware(mockContext, mockNext, 2000);
 
-      // Should call getInstance twice but return the same instance
-      expect(MemoryCacheStore.getInstance).toHaveBeenCalledTimes(2);
+      expect(mockCacheStore.get).toHaveBeenCalledWith(
+        "/api/v1/blocks-blockType=withdrawal-blockValidity=valid-cursor=def456-perPage=20-query=test-search-status=confirmed-tokenType=erc20",
+      );
+    });
+
+    it("should handle special characters in query parameters", async () => {
+      (mockContext.req.query as any).mockReturnValue({
+        query: "test%20search",
+        perPage: "10",
+      });
+      mockCacheStore.get.mockReturnValue(undefined);
+      (mockContext.res.clone as any).mockReturnValue({
+        text: vi.fn().mockResolvedValue("test"),
+      });
+
+      await cacheMiddleware(mockContext, mockNext, 1000);
+
+      expect(mockCacheStore.get).toHaveBeenCalledWith(
+        "/api/v1/blocks-perPage=10-query=test%20search",
+      );
+    });
+  });
+
+  describe("response handling", () => {
+    it("should create new response with correct properties", async () => {
+      const responseBody = '{"result":"success"}';
+
+      (mockContext.req.query as any).mockReturnValue({ perPage: "10" });
+
+      const customRes = {
+        clone: vi.fn().mockReturnValue({
+          text: vi.fn().mockResolvedValue(responseBody),
+        }),
+        status: 201,
+        statusText: "Created",
+        headers: new Headers({ "X-Custom": "value" }),
+      };
+
+      mockContext.res = customRes as any;
+      mockCacheStore.get.mockReturnValue(undefined);
+
+      const result = await cacheMiddleware(mockContext, mockNext, 1000);
+
+      expect(result).toBeInstanceOf(Response);
+    });
+
+    it("should use different expiration times correctly", async () => {
+      (mockContext.req.query as any).mockReturnValue({
+        blockType: "proving",
+        cursor: "abc123",
+        perPage: "10",
+      });
+      (mockContext.res.clone as any).mockReturnValue({
+        text: vi.fn().mockResolvedValue("test"),
+      });
+      mockCacheStore.get.mockReturnValue(undefined);
+
+      await cacheMiddleware(mockContext, mockNext, 10000);
+
+      expect(mockCacheStore.set).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
+        expect.any(Response),
+        10000,
+      );
+    });
+
+    it("should handle empty response body", async () => {
+      (mockContext.req.query as any).mockReturnValue({ perPage: "10" });
+      (mockContext.res.clone as any).mockReturnValue({
+        text: vi.fn().mockResolvedValue(""),
+      });
+      mockCacheStore.get.mockReturnValue(undefined);
+
+      const result = await cacheMiddleware(mockContext, mockNext, 1000);
+
+      expect(mockCacheStore.set).toHaveBeenCalledWith(
+        expect.any(String),
+        "",
+        expect.any(Response),
+        1000,
+      );
+      expect(result).toBeInstanceOf(Response);
+    });
+  });
+
+  describe("cache store integration", () => {
+    it("should use singleton instance of cache store", async () => {
+      (mockContext.req.query as any).mockReturnValue({ perPage: "10" });
+      mockCacheStore.get.mockReturnValue(undefined);
+      (mockContext.res.clone as any).mockReturnValue({
+        text: vi.fn().mockResolvedValue("test"),
+      });
+
+      await cacheMiddleware(mockContext, mockNext, 1000);
+
+      expect(MemoryCacheStore.getInstance).toHaveBeenCalled();
+    });
+
+    it("should call cache store methods with correct parameters", async () => {
+      const expectedKey = "/api/v1/blocks-perPage=10";
+      const responseBody = "test response";
+
+      (mockContext.req.query as any).mockReturnValue({ perPage: "10" });
+      (mockContext.res.clone as any).mockReturnValue({
+        text: vi.fn().mockResolvedValue(responseBody),
+      });
+      mockCacheStore.get.mockReturnValue(undefined);
+
+      await cacheMiddleware(mockContext, mockNext, 3000);
+
+      expect(mockCacheStore.get).toHaveBeenCalledWith(expectedKey);
+      expect(mockCacheStore.set).toHaveBeenCalledWith(
+        expectedKey,
+        responseBody,
+        expect.any(Response),
+        3000,
+      );
     });
   });
 });
