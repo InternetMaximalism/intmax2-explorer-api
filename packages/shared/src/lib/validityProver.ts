@@ -11,7 +11,7 @@ import type {
 export const fetchBlockValidityProof = async (blockNumber: number) => {
   try {
     const response = await axios.get<BlockValidityProofResponse>(
-      `${config.API_VALIDITY_PROVER_BASE_URL}/validity-prover/get-update-witness`,
+      `${config.API_VALIDITY_PROVER_BASE_URL}/get-update-witness`,
       {
         params: {
           pubkey: 0,
@@ -39,7 +39,7 @@ export const fetchBlockValidityProof = async (blockNumber: number) => {
 export const fetchValidityPis = async (blockNumber: number) => {
   try {
     const response = await axios.get<ValidityPisResponse>(
-      `${config.API_VALIDITY_PROVER_BASE_URL}/validity-prover/get-validity-pis`,
+      `${config.API_VALIDITY_PROVER_BASE_URL}/get-validity-pis`,
       {
         params: {
           blockNumber,
@@ -65,7 +65,7 @@ export const fetchValidityPis = async (blockNumber: number) => {
 export const fetchLatestValidityProofBlockNumber = async () => {
   try {
     const response = await axios.get<ValidityProofBlockNumberResponse>(
-      `${config.API_VALIDITY_PROVER_BASE_URL}/validity-prover/validity-proof-block-number`,
+      `${config.API_VALIDITY_PROVER_BASE_URL}/validity-proof-block-number`,
       {
         timeout: API_TIMEOUT,
       },

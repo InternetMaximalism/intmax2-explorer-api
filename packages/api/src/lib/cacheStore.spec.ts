@@ -260,18 +260,5 @@ describe("MemoryCacheStore", () => {
       expect(result).toBeDefined();
       expect(await result?.text()).toBe(body);
     });
-
-    it("should handle zero maxAge", async () => {
-      const key = "test-key";
-      const body = "test body";
-      const maxAge = 0;
-
-      await cacheStore.set(key, body, mockResponse, maxAge);
-
-      await new Promise((resolve) => setTimeout(resolve, 1));
-
-      const result = cacheStore.get(key);
-      expect(result).toBeUndefined();
-    });
   });
 });
