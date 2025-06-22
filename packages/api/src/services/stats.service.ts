@@ -5,14 +5,18 @@ import { getTVL } from "../lib/tvl";
 export const getStats = async () => {
   const statsInstance = Stats.getInstance(FIRESTORE_DOCUMENT_STATS.summary);
 
-  const [tvl, totalBlockBuilderCount, statsData] = await Promise.all([
+  const [tvl, totalBlockBuilderCount, latestStatsData] = await Promise.all([
     getTVL(),
     getTotalBlockBuilders(),
     statsInstance.getLatestStats(),
   ]);
+  const statsData: StatsData = {
+    ...initialStatsData,
+    ...((latestStatsData as StatsData) || {}),
+  };
 
   return {
-    ...((statsData as StatsData) ?? initialStatsData),
+    ...statsData,
     tvl,
     totalBlockBuilderCount,
   };
