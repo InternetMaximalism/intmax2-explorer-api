@@ -6,13 +6,13 @@
     "@google-cloud/firestore": "^7.11.1",
     "abitype": "^1.0.8",
     "alchemy-sdk": "^3.6.0",
-    "axios": "^1.9.0",
+    "axios": "^1.10.0",
     "envalid": "^8.0.0",
-    "hono": "^4.7.11",
+    "hono": "^4.8.2",
     "pino": "^9.7.0",
     "pino-pretty": "^13.0.0",
-    "viem": "^2.31.0",
-    "zod": "3.25.57"
+    "viem": "^2.31.4",
+    "zod": "3.25.67"
   },
   "scripts": {
     "build": "rm -rf dist tsconfig.tsbuildinfo && tsc",
@@ -20,6 +20,6 @@
   },
   "devDependencies": {
     "typescript": "^5.8.3",
-    "vitest": "^3.2.3"
+    "vitest": "^3.2.4"
   }
 }
