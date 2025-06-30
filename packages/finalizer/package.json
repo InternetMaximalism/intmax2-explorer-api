@@ -2,7 +2,7 @@
   "name": "finalizer",
   "version": "1.0.0",
   "dependencies": {
-    "@google-cloud/firestore": "^7.11.1",
+    "@google-cloud/firestore": "^7.11.2",
     "@intmax2-explorer-api/shared": "workspace:*",
     "abitype": "^1.0.8",
     "viem": "^2.31.4"
