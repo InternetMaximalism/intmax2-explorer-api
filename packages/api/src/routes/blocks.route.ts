@@ -1,6 +1,6 @@
 import { etag } from "hono/etag";
-import * as blocksController from "../controllers/blocks.controller";
 import { CACHE_TIMEOUTS } from "./../constants";
+import * as blocksController from "../controllers/blocks.controller";
 import { createBaseRouter } from "./utils";
 
 export const blocksRoute = createBaseRouter({

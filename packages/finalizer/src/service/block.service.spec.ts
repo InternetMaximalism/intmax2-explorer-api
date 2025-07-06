@@ -5,22 +5,22 @@ import {
   BlockStatus,
   BlockType,
   BlockValidity,
-  FIRESTORE_DOCUMENT_STATS,
-  InternalBlockType,
-  Stats,
   calculateNextAccountId,
   calculateTotalTransactions,
   config,
   db,
+  FIRESTORE_DOCUMENT_STATS,
   fetchLatestValidityProofBlockNumber,
   fetchValidityPis,
   getBlockStatusFromValidityProof,
   getBlockValidity,
   getProvingBlockStatus,
+  InternalBlockType,
   logger,
+  Stats,
   sleep,
 } from "@intmax2-explorer-api/shared";
-import { type MockedFunction, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, type MockedFunction, vi } from "vitest";
 import { finalizePendingBlocks } from "./block.service";
 
 vi.mock("@intmax2-explorer-api/shared", () => ({

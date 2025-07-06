@@ -3,10 +3,10 @@ import {
   BlockData,
   BlockDisplayType,
   type BlockPaginationValidationType,
-  type HashValidationType,
-  NotFoundError,
   fetchBlockValidityProof,
   formatValidityProof,
+  type HashValidationType,
+  NotFoundError,
 } from "@intmax2-explorer-api/shared";
 
 export const listBlocks = async (blockPaginationOptions: BlockPaginationValidationType) => {

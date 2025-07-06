@@ -1,5 +1,5 @@
 import { serve } from "@hono/node-server";
-import { NotFoundError, config, handleError, logger } from "@intmax2-explorer-api/shared";
+import { config, handleError, logger, NotFoundError } from "@intmax2-explorer-api/shared";
 import { Hono } from "hono";
 import { compress } from "hono/compress";
 import { prettyJSON } from "hono/pretty-json";
