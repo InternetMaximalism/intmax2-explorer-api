@@ -1,5 +1,4 @@
-import type { CollectionReference } from "@google-cloud/firestore";
-import type { Query } from "@google-cloud/firestore";
+import type { CollectionReference, Query } from "@google-cloud/firestore";
 import { FIRESTORE_COLLECTIONS } from "../constants";
 import { AppError, ErrorCode, logger } from "../lib";
 import {

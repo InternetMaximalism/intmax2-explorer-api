@@ -1,24 +1,24 @@
 import {
   BLOCK_RANGE_MINIMUM,
   type ClaimableWithdrawalEvent,
+  createNetworkClient,
   type DirectWithdrawalQueueEvent,
+  directWithdrawalSuccessedEvent,
   Event,
   type EventData,
   FIRESTORE_DOCUMENT_EVENTS,
+  fetchEvents,
+  getStartBlockNumber,
   LIQUIDITY_CONTRACT_ADDRESS,
   LIQUIDITY_CONTRACT_DEPLOYED_BLOCK,
+  logger,
+  validateBlockRange,
   WITHDRAWAL_BATCH_SIZE,
   Withdrawal,
   type WithdrawalInput,
-  createNetworkClient,
-  directWithdrawalSuccessedEvent,
-  fetchEvents,
-  getStartBlockNumber,
-  logger,
-  validateBlockRange,
   withdrawalClaimableEvent,
 } from "@intmax2-explorer-api/shared";
-import { type PublicClient, fromHex, parseAbiItem } from "viem";
+import { fromHex, type PublicClient, parseAbiItem } from "viem";
 import type { RelayedWithdrawal } from "../types";
 
 export const finalizeRelayedWithdrawals = async () => {

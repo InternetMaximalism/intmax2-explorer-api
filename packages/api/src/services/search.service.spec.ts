@@ -1,5 +1,5 @@
 import type { QueryValidationType } from "@intmax2-explorer-api/shared";
-import { type MockedFunction, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, type MockedFunction, vi } from "vitest";
 import { getBlock, getBlockByBlockNumber } from "./blocks.service";
 import { getDeposit } from "./deposits.service";
 import { getSearch } from "./search.service";

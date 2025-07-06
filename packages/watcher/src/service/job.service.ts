@@ -1,8 +1,8 @@
 import {
+  createNetworkClient,
   Event,
   type EventData,
   FIRESTORE_DOCUMENT_EVENTS,
-  createNetworkClient,
 } from "@intmax2-explorer-api/shared";
 import { fetchAndStoreBlocks } from "./block.service";
 import { fetchAndStoreDeposits } from "./deposit.service";

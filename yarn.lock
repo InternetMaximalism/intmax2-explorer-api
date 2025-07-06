@@ -73,18 +73,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@biomejs/biome@npm:1.9.4":
-  version: 1.9.4
-  resolution: "@biomejs/biome@npm:1.9.4"
+"@biomejs/biome@npm:2.0.6":
+  version: 2.0.6
+  resolution: "@biomejs/biome@npm:2.0.6"
   dependencies:
-    "@biomejs/cli-darwin-arm64": "npm:1.9.4"
-    "@biomejs/cli-darwin-x64": "npm:1.9.4"
-    "@biomejs/cli-linux-arm64": "npm:1.9.4"
-    "@biomejs/cli-linux-arm64-musl": "npm:1.9.4"
-    "@biomejs/cli-linux-x64": "npm:1.9.4"
-    "@biomejs/cli-linux-x64-musl": "npm:1.9.4"
-    "@biomejs/cli-win32-arm64": "npm:1.9.4"
-    "@biomejs/cli-win32-x64": "npm:1.9.4"
+    "@biomejs/cli-darwin-arm64": "npm:2.0.6"
+    "@biomejs/cli-darwin-x64": "npm:2.0.6"
+    "@biomejs/cli-linux-arm64": "npm:2.0.6"
+    "@biomejs/cli-linux-arm64-musl": "npm:2.0.6"
+    "@biomejs/cli-linux-x64": "npm:2.0.6"
+    "@biomejs/cli-linux-x64-musl": "npm:2.0.6"
+    "@biomejs/cli-win32-arm64": "npm:2.0.6"
+    "@biomejs/cli-win32-x64": "npm:2.0.6"
   dependenciesMeta:
     "@biomejs/cli-darwin-arm64":
       optional: true
@@ -104,62 +104,62 @@ __metadata:
       optional: true
   bin:
     biome: bin/biome
-  checksum: 10c0/b5655c5aed9a6fffe24f7d04f15ba4444389d0e891c9ed9106fab7388ac9b4be63185852cc2a937b22940dac3e550b71032a4afd306925cfea436c33e5646b3e
+  checksum: 10c0/eafaf3981580314c08085542152396f3417637d08d7b8aaee6a5173a978435d7688b1b6b547096e3a9d3573f03cfe526f7342dd341143c322c03d545df126f18
   languageName: node
   linkType: hard
 
-"@biomejs/cli-darwin-arm64@npm:1.9.4":
-  version: 1.9.4
-  resolution: "@biomejs/cli-darwin-arm64@npm:1.9.4"
+"@biomejs/cli-darwin-arm64@npm:2.0.6":
+  version: 2.0.6
+  resolution: "@biomejs/cli-darwin-arm64@npm:2.0.6"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-darwin-x64@npm:1.9.4":
-  version: 1.9.4
-  resolution: "@biomejs/cli-darwin-x64@npm:1.9.4"
+"@biomejs/cli-darwin-x64@npm:2.0.6":
+  version: 2.0.6
+  resolution: "@biomejs/cli-darwin-x64@npm:2.0.6"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-arm64-musl@npm:1.9.4":
-  version: 1.9.4
-  resolution: "@biomejs/cli-linux-arm64-musl@npm:1.9.4"
+"@biomejs/cli-linux-arm64-musl@npm:2.0.6":
+  version: 2.0.6
+  resolution: "@biomejs/cli-linux-arm64-musl@npm:2.0.6"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-arm64@npm:1.9.4":
-  version: 1.9.4
-  resolution: "@biomejs/cli-linux-arm64@npm:1.9.4"
+"@biomejs/cli-linux-arm64@npm:2.0.6":
+  version: 2.0.6
+  resolution: "@biomejs/cli-linux-arm64@npm:2.0.6"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-x64-musl@npm:1.9.4":
-  version: 1.9.4
-  resolution: "@biomejs/cli-linux-x64-musl@npm:1.9.4"
+"@biomejs/cli-linux-x64-musl@npm:2.0.6":
+  version: 2.0.6
+  resolution: "@biomejs/cli-linux-x64-musl@npm:2.0.6"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-x64@npm:1.9.4":
-  version: 1.9.4
-  resolution: "@biomejs/cli-linux-x64@npm:1.9.4"
+"@biomejs/cli-linux-x64@npm:2.0.6":
+  version: 2.0.6
+  resolution: "@biomejs/cli-linux-x64@npm:2.0.6"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@biomejs/cli-win32-arm64@npm:1.9.4":
-  version: 1.9.4
-  resolution: "@biomejs/cli-win32-arm64@npm:1.9.4"
+"@biomejs/cli-win32-arm64@npm:2.0.6":
+  version: 2.0.6
+  resolution: "@biomejs/cli-win32-arm64@npm:2.0.6"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-win32-x64@npm:1.9.4":
-  version: 1.9.4
-  resolution: "@biomejs/cli-win32-x64@npm:1.9.4"
+"@biomejs/cli-win32-x64@npm:2.0.6":
+  version: 2.0.6
+  resolution: "@biomejs/cli-win32-x64@npm:2.0.6"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -902,16 +902,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@google-cloud/firestore@npm:^7.11.1":
-  version: 7.11.1
-  resolution: "@google-cloud/firestore@npm:7.11.1"
+"@google-cloud/firestore@npm:^7.11.2":
+  version: 7.11.2
+  resolution: "@google-cloud/firestore@npm:7.11.2"
   dependencies:
     "@opentelemetry/api": "npm:^1.3.0"
     fast-deep-equal: "npm:^3.1.1"
     functional-red-black-tree: "npm:^1.0.1"
     google-gax: "npm:^4.3.3"
     protobufjs: "npm:^7.2.6"
-  checksum: 10c0/7c5591fd08bbe82bdc939c015be7fea99f516f16567e144d03e0d78071e689e0d1231f3e62ce36fb233078fdf5193a38defc65c00500fb687a5e8444c28170ea
+  checksum: 10c0/8685c841b9014cb8905816a8f5bd39fac3e796cc8f7d2ddce24629e317b992f3a2d2a455bd9deee54b7323305f7198e3ac979b659250dc7e0aaf8085218c81e2
   languageName: node
   linkType: hard
 
@@ -939,12 +939,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hono/node-server@npm:^1.14.4":
-  version: 1.14.4
-  resolution: "@hono/node-server@npm:1.14.4"
+"@hono/node-server@npm:^1.15.0":
+  version: 1.15.0
+  resolution: "@hono/node-server@npm:1.15.0"
   peerDependencies:
     hono: ^4
-  checksum: 10c0/1dc6296ddda0b9708cbafb406e22fb3d937505b80ec991483a5066ffa162da2cb2331b4591e7b4bbc07c62e2bea7b3a751cb0fcff33f9fba870ff95a694261ef
+  checksum: 10c0/e7a93c02a50cff228e049a51f538e9c9182f534b7efcd151a66454fb3ac182e7f61437ba163e17b52954f0e6dde41c53c56efea43c700658979abfa5405cc566
   languageName: node
   linkType: hard
 
@@ -952,18 +952,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@intmax2-explorer-api/shared@workspace:packages/shared"
   dependencies:
-    "@google-cloud/firestore": "npm:^7.11.1"
+    "@google-cloud/firestore": "npm:^7.11.2"
     abitype: "npm:^1.0.8"
-    alchemy-sdk: "npm:^3.6.0"
+    alchemy-sdk: "npm:^3.6.1"
     axios: "npm:^1.10.0"
     envalid: "npm:^8.0.0"
-    hono: "npm:^4.8.2"
+    hono: "npm:^4.8.4"
     pino: "npm:^9.7.0"
     pino-pretty: "npm:^13.0.0"
     typescript: "npm:^5.8.3"
-    viem: "npm:^2.31.4"
+    viem: "npm:^2.31.7"
     vitest: "npm:^3.2.4"
-    zod: "npm:3.25.67"
+    zod: "npm:3.25.74"
   languageName: unknown
   linkType: soft
 
@@ -1511,12 +1511,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24.0.3":
-  version: 24.0.3
-  resolution: "@types/node@npm:24.0.3"
+"@types/node@npm:^24.0.10":
+  version: 24.0.10
+  resolution: "@types/node@npm:24.0.10"
   dependencies:
     undici-types: "npm:~7.8.0"
-  checksum: 10c0/9c3c4e87600d1cf11e291c2fd4bfd806a615455463c30a0ef6dc9c801b3423344d9b82b8084e3ccabce485a7421ebb61a66e9676181bd7d9aea4759998a120d5
+  checksum: 10c0/11dbd869d3e12ee7b7818113588950e538783e45d227122174c763cb05977defbd1e01b44b5ccd4b8997e42c3df7f7b83c6ee05cfa43d924c8882886bc5f6582
   languageName: node
   linkType: hard
 
@@ -1737,9 +1737,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"alchemy-sdk@npm:^3.6.0":
-  version: 3.6.0
-  resolution: "alchemy-sdk@npm:3.6.0"
+"alchemy-sdk@npm:^3.6.1":
+  version: 3.6.1
+  resolution: "alchemy-sdk@npm:3.6.1"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/abstract-provider": "npm:^5.7.0"
@@ -1756,7 +1756,7 @@ __metadata:
     axios: "npm:^1.7.4"
     sturdy-websocket: "npm:^0.2.1"
     websocket: "npm:^1.0.34"
-  checksum: 10c0/89bfbd544d8f88f75affb2e98a7686658b93e8382dcd054ad7921d28393daaea51c7591eee3ee1117f1429de24bc50db85cca30f425de509fc9e9eb035cb309b
+  checksum: 10c0/44c169ba36ae15a3129cdd6cb9b460d9c1251366de8e64598e24b9a88c7bb9acbf467bd2caca5b7ad77c4311a70d16dda38b3157d34780c17b4579d60c90ba4a
   languageName: node
   linkType: hard
 
@@ -1794,14 +1794,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "api@workspace:packages/api"
   dependencies:
-    "@hono/node-server": "npm:^1.14.4"
+    "@hono/node-server": "npm:^1.15.0"
     "@intmax2-explorer-api/shared": "workspace:*"
     axios: "npm:^1.10.0"
-    hono: "npm:^4.8.2"
+    hono: "npm:^4.8.4"
     hono-rate-limiter: "npm:^0.4.2"
     tsx: "npm:^4.20.3"
     typescript: "npm:^5.8.3"
-    viem: "npm:^2.31.4"
+    viem: "npm:^2.31.7"
     vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
@@ -2727,12 +2727,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "finalizer@workspace:packages/finalizer"
   dependencies:
-    "@google-cloud/firestore": "npm:^7.11.1"
+    "@google-cloud/firestore": "npm:^7.11.2"
     "@intmax2-explorer-api/shared": "workspace:*"
     abitype: "npm:^1.0.8"
     tsx: "npm:^4.20.3"
     typescript: "npm:^5.8.3"
-    viem: "npm:^2.31.4"
+    viem: "npm:^2.31.7"
     vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
@@ -3042,10 +3042,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono@npm:^4.8.2":
-  version: 4.8.2
-  resolution: "hono@npm:4.8.2"
-  checksum: 10c0/371092393238fa9628efc9aaf41e3f6da33db242aabec858fd1bf9509b0b3b74883f7ca724cc41143ccdbc03617f2606911a97a0a0632f97c14731769412ef31
+"hono@npm:^4.8.4":
+  version: 4.8.4
+  resolution: "hono@npm:4.8.4"
+  checksum: 10c0/3712bbb4f7d24b5f4f30d75730ae30111cafdb92132728c92e83c257008cfd64e234a6c0657807cb4dd7bc001e3e1daf2e4dd5eb0a73a32ef3a70eff0415d3b7
   languageName: node
   linkType: hard
 
@@ -3147,8 +3147,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "intmax2-explorer-api@workspace:."
   dependencies:
-    "@biomejs/biome": "npm:1.9.4"
-    "@types/node": "npm:^24.0.3"
+    "@biomejs/biome": "npm:2.0.6"
+    "@types/node": "npm:^24.0.10"
     "@vitest/coverage-v8": "npm:3.2.4"
     typescript: "npm:^5.8.3"
     vitest: "npm:^3.2.4"
@@ -4616,9 +4616,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.31.4":
-  version: 2.31.4
-  resolution: "viem@npm:2.31.4"
+"viem@npm:^2.31.7":
+  version: 2.31.7
+  resolution: "viem@npm:2.31.7"
   dependencies:
     "@noble/curves": "npm:1.9.2"
     "@noble/hashes": "npm:1.8.0"
@@ -4633,7 +4633,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/cffc1c91b322a683758877c8a39916e984809847082343a297d3d637474b711c30e69fad2547f8e4617e6961797811a628d0fd6c3b4d105a7669d89e205edebc
+  checksum: 10c0/b75d83e2af264bb4274dad6f6382db035d3231d1e1ae1d8ff9874d0368754f632124f486a76e6bf0a22236608f53292a55c3a57675e742b7c2f89e54fee60c8c
   languageName: node
   linkType: hard
 
@@ -4767,12 +4767,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "watcher@workspace:packages/watcher"
   dependencies:
-    "@google-cloud/firestore": "npm:^7.11.1"
+    "@google-cloud/firestore": "npm:^7.11.2"
     "@intmax2-explorer-api/shared": "workspace:*"
     abitype: "npm:^1.0.8"
     tsx: "npm:^4.20.3"
     typescript: "npm:^5.8.3"
-    viem: "npm:^2.31.4"
+    viem: "npm:^2.31.7"
     vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
@@ -4981,9 +4981,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:3.25.67":
-  version: 3.25.67
-  resolution: "zod@npm:3.25.67"
-  checksum: 10c0/80a0cab3033272c4ab9312198081f0c4ea88e9673c059aa36dc32024906363729db54bdb78f3dc9d5529bd1601f74974d5a56c0a23e40c6f04a9270c9ff22336
+"zod@npm:3.25.74":
+  version: 3.25.74
+  resolution: "zod@npm:3.25.74"
+  checksum: 10c0/59e38b046ac333b5bd1ba325a83b6798721227cbfb1e69dfc7159bd7824b904241ab923026edb714fafefec3624265ae374a70aee9a5a45b365bd31781ffa105
   languageName: node
   linkType: hard

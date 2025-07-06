@@ -4,21 +4,15 @@ import {
   BLOCK_RANGE_MINIMUM,
   Block,
   type BlockPostedEvent,
-  Event,
-  type EventData,
-  FIRESTORE_DOCUMENT_STATS,
-  type ProcessingBlockData,
-  ROLLUP_CONTRACT_ADDRESS,
-  ROLLUP_CONTRACT_DEPLOYED_BLOCK,
-  RollupAbi,
-  Stats,
-  type StatsData,
   blockPostedEvent,
   calcBlockHash,
   calculateNextAccountId,
   calculateTotalTransactions,
   config,
   db,
+  Event,
+  type EventData,
+  FIRESTORE_DOCUMENT_STATS,
   fetchEvents,
   fetchLatestValidityProofBlockNumber,
   fetchValidityPis,
@@ -29,9 +23,15 @@ import {
   getLatestBlockNumber,
   getStartBlockNumber,
   logger,
+  type ProcessingBlockData,
+  ROLLUP_CONTRACT_ADDRESS,
+  ROLLUP_CONTRACT_DEPLOYED_BLOCK,
+  RollupAbi,
+  Stats,
+  type StatsData,
   validateBlockRange,
 } from "@intmax2-explorer-api/shared";
-import { type Hex, type PublicClient, decodeFunctionData } from "viem";
+import { decodeFunctionData, type Hex, type PublicClient } from "viem";
 import { calculateNonRegistrationLength } from "../lib/utils";
 
 export const fetchAndStoreBlocks = async (

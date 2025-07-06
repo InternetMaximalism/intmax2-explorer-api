@@ -1,4 +1,4 @@
-import { type Hex, encodePacked, keccak256 } from "viem";
+import { encodePacked, type Hex, keccak256 } from "viem";
 
 export const calcBlockHash = (
   prevBlockHash: Hex,

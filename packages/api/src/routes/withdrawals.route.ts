@@ -1,5 +1,5 @@
-import * as withdrawalsController from "../controllers/withdrawals.controller";
 import { CACHE_TIMEOUTS } from "./../constants";
+import * as withdrawalsController from "../controllers/withdrawals.controller";
 import { createBaseRouter } from "./utils";
 
 export const withdrawalsRoute = createBaseRouter({

@@ -1,8 +1,8 @@
 import {
   API_TIMEOUT,
-  LIQUIDITY_CONTRACT_ADDRESS,
   config,
   createNetworkClient,
+  LIQUIDITY_CONTRACT_ADDRESS,
 } from "@intmax2-explorer-api/shared";
 import axios, { AxiosError } from "axios";
 import { formatEther } from "viem";
