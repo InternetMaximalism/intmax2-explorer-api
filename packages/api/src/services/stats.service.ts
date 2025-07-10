@@ -27,4 +27,5 @@ const initialStatsData = {
   totalTransactionCount: 0,
   totalL1WalletCount: 0,
   totalL2WalletCount: 0,
+  totalEthDepositAmount: "0",
 };
