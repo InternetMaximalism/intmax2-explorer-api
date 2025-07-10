@@ -50,6 +50,13 @@ export const fetchAndStoreDeposits = async (
   const depositDetails = await getDepositDetails(ethereumClient, currentBlockNumber, depositEvents);
   const deposit = Deposit.getInstance();
   const newL1WalletCount = await getL1WalletCount(deposit, depositDetails);
+  const newEthDepositAmount = depositDetails.reduce((sum, deposit) => {
+    if (deposit.status === "Rejected") {
+      return sum;
+    }
+
+    return sum + BigInt(deposit.amount);
+  }, BigInt(0));
 
   for (let i = 0; i < depositDetails.length; i += DEPOSIT_BATCH_SIZE) {
     const batch = depositDetails.slice(i, i + DEPOSIT_BATCH_SIZE);
@@ -61,7 +68,7 @@ export const fetchAndStoreDeposits = async (
 
   await db.runTransaction(async (transaction) => {
     if (depositDetails.length > 0) {
-      await aggregateAndSaveStats(transaction, newL1WalletCount);
+      await aggregateAndSaveStats(transaction, newL1WalletCount, newEthDepositAmount);
     }
 
     await depositEvent.addOrUpdateEventWithTransaction(transaction, {
@@ -80,13 +87,18 @@ const getL1WalletCount = async (deposit: Deposit, depositDetails: DepositInput[]
   return newL1WalletCount;
 };
 
-const aggregateAndSaveStats = async (transaction: Transaction, newL1WalletCount: number) => {
+const aggregateAndSaveStats = async (
+  transaction: Transaction,
+  newL1WalletCount: number,
+  newEthDepositAmount: bigint,
+) => {
   const stats = new Stats(FIRESTORE_DOCUMENT_STATS.summary);
   const currentStats = await stats.getLatestStatsWithTransaction<StatsData>(transaction);
 
   if (!currentStats) {
     await stats.addOrUpdateStatsWithTransaction(transaction, {
       totalL1WalletCount: newL1WalletCount,
+      totalEthDepositAmount: newEthDepositAmount.toString(),
     });
 
     logger.info(`Initialized summary stats - New L1 wallet count: ${newL1WalletCount}`);
@@ -94,9 +106,12 @@ const aggregateAndSaveStats = async (transaction: Transaction, newL1WalletCount:
   }
 
   const newTotalL1WalletCount = currentStats.totalL1WalletCount + newL1WalletCount;
+  const newTotalEthDepositAmount =
+    BigInt(currentStats.totalEthDepositAmount ?? 0) + newEthDepositAmount;
 
   await stats.addOrUpdateStatsWithTransaction(transaction, {
     totalL1WalletCount: newTotalL1WalletCount,
+    totalEthDepositAmount: newTotalEthDepositAmount.toString(),
   });
 
   logger.info(
