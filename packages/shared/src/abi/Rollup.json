@@ -26,6 +26,11 @@
     },
     {
       "inputs": [],
+      "name": "AlreadyMigrated",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "BlockNumberOutOfRange",
       "type": "error"
     },
@@ -68,6 +73,11 @@
     {
       "inputs": [],
       "name": "InvalidInitialization",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidInput",
       "type": "error"
     },
     {
@@ -281,6 +291,12 @@
     },
     {
       "anonymous": false,
+      "inputs": [],
+      "name": "MigrationCompleted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
       "inputs": [
         {
           "indexed": true,
@@ -335,6 +351,32 @@
       ],
       "name": "Upgraded",
       "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "FULL_ACCOUNT_IDS_BYTES",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "NUM_SENDERS_IN_BLOCK",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "inputs": [],
@@ -408,6 +450,19 @@
     },
     {
       "inputs": [],
+      "name": "contribution",
+      "outputs": [
+        {
+          "internalType": "contract IContribution",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
       "name": "depositIndex",
       "outputs": [
         {
@@ -430,6 +485,13 @@
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "finishMigration",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -522,6 +584,32 @@
     },
     {
       "inputs": [],
+      "name": "isMigrationCompleted",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "l2ScrollMessenger",
+      "outputs": [
+        {
+          "internalType": "contract IL2ScrollMessenger",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
       "name": "lastProcessedDepositId",
       "outputs": [
         {
@@ -531,6 +619,111 @@
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "liquidity",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "_builder",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint32[]",
+          "name": "_registrationNonces",
+          "type": "uint32[]"
+        },
+        {
+          "internalType": "uint32[]",
+          "name": "_nonRegistrationNonces",
+          "type": "uint32[]"
+        }
+      ],
+      "name": "migrateBlockBuilderNonce",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_prevBlockHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "_sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint64",
+          "name": "_timestamp",
+          "type": "uint64"
+        },
+        {
+          "internalType": "uint32",
+          "name": "_blockNumber",
+          "type": "uint32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_depositTreeRoot",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_signatureHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes",
+          "name": "_originalCallData",
+          "type": "bytes"
+        }
+      ],
+      "name": "migrateBlockPost",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32[]",
+          "name": "_depositHashes",
+          "type": "bytes32[]"
+        }
+      ],
+      "name": "migrateDeposits",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_lastProcessedDepositId",
+          "type": "uint256"
+        }
+      ],
+      "name": "migrateLastProcessedDepositId",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
