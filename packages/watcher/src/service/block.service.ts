@@ -27,7 +27,6 @@ import {
   ROLLUP_CONTRACT_ADDRESS,
   ROLLUP_CONTRACT_DEPLOYED_BLOCK,
   RollupAbi,
-  RollupTestnetAbi,
   Stats,
   type StatsData,
   validateBlockRange,
@@ -202,7 +201,7 @@ const processBlockBatch = async (
     }
 
     const { functionName, args } = decodeFunctionData({
-      abi: config.USE_MIGRATED_ROLLUP_ABI ? RollupAbi : RollupTestnetAbi,
+      abi: RollupAbi,
       data: transaction.input,
     });
 
