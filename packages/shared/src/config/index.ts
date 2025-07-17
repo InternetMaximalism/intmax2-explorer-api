@@ -35,7 +35,7 @@ export const config = cleanEnv(process.env, {
     default: "sepolia",
   }),
   ALCHEMY_API_KEY: str(),
-  USE_MIGRATED_ROLLUP_ABI: bool({ default: false }),
+  USE_MIGRATED_ABI: bool({ default: false }),
   // block
   VALIDITY_PROVER_API_BLOCK_BATCH_SIZE: num({ default: 15 }),
   VALIDITY_PROVER_API_SLEEP_TIME: num({
