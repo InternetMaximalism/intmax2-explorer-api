@@ -3,23 +3,42 @@ import {
   config,
   createNetworkClient,
   LIQUIDITY_CONTRACT_ADDRESS,
+  logger,
 } from "@intmax2-explorer-api/shared";
 import axios, { AxiosError } from "axios";
 import { formatEther } from "viem";
-import { ETHEREUM_ADDRESS } from "../constants";
+import { CACHE_KEYS, CACHE_TIMEOUTS, ETHEREUM_ADDRESS } from "../constants";
 import type { TokenPriceResponse } from "../types";
+import { cache } from "./nodeCache";
 
 export const getTVL = async () => {
-  const ethereumClient = createNetworkClient("ethereum");
-  const [balance, ethPrice] = await Promise.all([
-    ethereumClient.getBalance({
-      address: LIQUIDITY_CONTRACT_ADDRESS,
-      blockTag: "safe",
-    }),
-    getETHPrice(),
-  ]);
+  const [balance, ethPrice] = await Promise.all([getEthBalance(), getETHPrice()]);
   const tvl = Number(formatEther(balance)) * ethPrice;
   return tvl;
+};
+
+const getEthBalance = async () => {
+  try {
+    const ethereumClient = createNetworkClient("ethereum");
+    const balance = await ethereumClient.getBalance({
+      address: LIQUIDITY_CONTRACT_ADDRESS,
+      blockTag: "safe",
+    });
+    cache.set(CACHE_KEYS.ETH_BALANCE, balance.toString(), CACHE_TIMEOUTS.ETH_BALANCE);
+
+    return balance;
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Unknown error while fetching eth balance";
+
+    const cached = cache.get(CACHE_KEYS.ETH_BALANCE);
+    if (cached) {
+      logger.warn(`Using cached balance due to error: ${message}`);
+      return BigInt(cached as string);
+    }
+
+    throw new Error(message);
+  }
 };
 
 const getETHPrice = async () => {

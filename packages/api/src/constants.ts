@@ -18,7 +18,13 @@ export const CACHE_TIMEOUTS = {
   LIST: 15 * 1000, // 15 seconds
   DETAIL: 180 * 1000, // 180 seconds
   MODIFIED_DETAIL: 20 * 1000, // 20 seconds
+  // node cache
+  ETH_BALANCE: 300,
 } as const;
+
+export const CACHE_KEYS = {
+  ETH_BALANCE: "ethBalance",
+};
 
 // token
 export const ETHEREUM_ADDRESS = "0x0000000000000000000000000000000000000000";
