@@ -13,10 +13,10 @@ export const shutdown = (server: ServerType) => {
   isShuttingDown = true;
   logger.info("Shutting down server...");
 
-  server.close(() => {
+  server.close(async () => {
     logger.info("Server closed for new connections");
     try {
-      cache.flushAll();
+      await cache.flushAll();
       process.exit(0);
     } catch (error) {
       logger.error(`Shutdown failed: ${error instanceof Error ? error.message : "Unknown error"}`);

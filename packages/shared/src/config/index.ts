@@ -25,6 +25,9 @@ export const config = cleanEnv(process.env, {
   GOOGLE_CLOUD_PROJECT: str({ devDefault: "local-project" }),
   // firestore
   FIRESTORE_DATABASE_ID: str({ devDefault: "(default)" }),
+  // redis
+  REDIS_ENABLED: bool({ default: false }),
+  REDIS_URL: str({ default: "redis://localhost:6379" }),
   // blockchain
   NETWORK_TYPE: str({
     choices: ["ethereum", "scroll"],

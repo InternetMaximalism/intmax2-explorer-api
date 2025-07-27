@@ -41,6 +41,16 @@ docker build -f docker/Dockerfile -t intmax2-explorer-api .
 docker run --rm -p 3000:3000 --env-file .env intmax2-explorer-api workspace api start
 ```
 
+## Redis
+
+```sh
+docker run -d --rm \
+  --name redis \
+  -p 6379:6379 \
+  -v redis-data:/data \
+  redis redis-server --appendonly yes
+```
+
 ## Testing
 
 The project uses Vitest for testing. Run tests with the following commands:
