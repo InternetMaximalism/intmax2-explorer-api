@@ -9,7 +9,7 @@ import axios, { AxiosError } from "axios";
 import { formatEther } from "viem";
 import { CACHE_KEYS, CACHE_TIMEOUTS, ETHEREUM_ADDRESS } from "../constants";
 import type { TokenPriceResponse } from "../types";
-import { cache } from "./nodeCache";
+import { cache } from "./cache";
 
 export const getTVL = async () => {
   const [balance, ethPrice] = await Promise.all([getEthBalance(), getETHPrice()]);
