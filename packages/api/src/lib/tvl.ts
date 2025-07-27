@@ -24,14 +24,14 @@ const getEthBalance = async () => {
       address: LIQUIDITY_CONTRACT_ADDRESS,
       blockTag: "safe",
     });
-    cache.set(CACHE_KEYS.ETH_BALANCE, balance.toString(), CACHE_TIMEOUTS.ETH_BALANCE);
+    await cache.set(CACHE_KEYS.ETH_BALANCE, balance.toString(), CACHE_TIMEOUTS.ETH_BALANCE);
 
     return balance;
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Unknown error while fetching eth balance";
 
-    const cached = cache.get(CACHE_KEYS.ETH_BALANCE);
+    const cached = await cache.get(CACHE_KEYS.ETH_BALANCE);
     if (cached) {
       logger.warn(`Using cached balance due to error: ${message}`);
       return BigInt(cached as string);

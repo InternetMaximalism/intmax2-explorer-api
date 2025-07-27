@@ -1,6 +1,12 @@
 import { Context, Next } from "hono";
 import { cache } from "../lib/cache";
 
+type CachedResponse = {
+  body: string;
+  headers: Record<string, string>;
+  status: number;
+};
+
 const validateKeys = [
   "perPage",
   "cursor",
@@ -18,13 +24,8 @@ export const cacheMiddleware = async (c: Context, next: Next, expire: number) =>
   }
 
   const cacheKey = getCacheKey(c);
-  const cachedResponse = cache.get<{
-    body: string;
-    headers: Record<string, string>;
-    status: number;
-  }>(cacheKey);
+  const cachedResponse = await cache.get<CachedResponse>(cacheKey);
   if (cachedResponse) {
-    console.log("Cache hit for:", cacheKey);
     c.header("X-Cache", "HIT");
 
     const response = new Response(cachedResponse.body, {
@@ -43,11 +44,7 @@ export const cacheMiddleware = async (c: Context, next: Next, expire: number) =>
   if (status >= 200 && status < 300) {
     const originalResponse = c.res.clone();
     const responseBody = await originalResponse.text();
-    const cacheResponse: {
-      body: string;
-      headers: Record<string, string>;
-      status: number;
-    } = {
+    const cacheResponse: CachedResponse = {
       body: responseBody,
       headers: {},
       status: originalResponse.status,
@@ -59,7 +56,7 @@ export const cacheMiddleware = async (c: Context, next: Next, expire: number) =>
 
     c.header("X-Cache", "MISS");
 
-    cache.set(cacheKey, cacheResponse, expire);
+    await cache.set(cacheKey, cacheResponse, expire);
   }
   return;
 };

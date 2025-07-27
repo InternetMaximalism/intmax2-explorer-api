@@ -1,7 +1,5 @@
-import NodeCache from "node-cache";
-import { CACHE_DEFAULT_CLEANUP_INTERVAL, CACHE_DEFAULT_STD_TTL } from "../constants";
+import { config } from "@intmax2-explorer-api/shared";
+import { nodeCache } from "./nodeCache";
+import { RedisClient } from "./redis";
 
-export const cache = new NodeCache({
-  stdTTL: CACHE_DEFAULT_STD_TTL,
-  checkperiod: CACHE_DEFAULT_CLEANUP_INTERVAL,
-});
+export const cache = config.REDIS_ENABLED ? RedisClient.getInstance() : nodeCache;
