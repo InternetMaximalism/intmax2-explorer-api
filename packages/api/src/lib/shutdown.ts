@@ -1,7 +1,7 @@
 import type { ServerType } from "@hono/node-server";
 import { logger } from "@intmax2-explorer-api/shared";
 import { SHUTDOWN_TIMEOUT } from "../constants";
-import { MemoryCacheStore } from "./cacheStore";
+import { cache } from "./cache";
 
 let isShuttingDown = false;
 
@@ -16,8 +16,7 @@ export const shutdown = (server: ServerType) => {
   server.close(() => {
     logger.info("Server closed for new connections");
     try {
-      const cache = MemoryCacheStore.getInstance();
-      cache.dispose();
+      cache.flushAll();
       process.exit(0);
     } catch (error) {
       logger.error(`Shutdown failed: ${error instanceof Error ? error.message : "Unknown error"}`);

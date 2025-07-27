@@ -15,12 +15,17 @@ export type LogEventName = (typeof LOG_EVENT_NAMES)[keyof typeof LOG_EVENT_NAMES
 
 // timeout
 export const CACHE_TIMEOUTS = {
-  LIST: 15 * 1000, // 15 seconds
-  DETAIL: 180 * 1000, // 180 seconds
-  MODIFIED_DETAIL: 20 * 1000, // 20 seconds
+  LIST: 15, // 15 seconds
+  DETAIL: 180, // 180 seconds
+  MODIFIED_DETAIL: 20, // 20 seconds
   // node cache
-  ETH_BALANCE: 300,
+  DEFAULT_STD_TTL: 300, // 5 minutes
+  CHECK_PERIOD: 120, // 2 minutes
+  ETH_BALANCE: 300, // 5 minutes
 } as const;
+
+export const CACHE_DEFAULT_STD_TTL = 300; // 5 minutes
+export const CACHE_DEFAULT_CLEANUP_INTERVAL = 120; // 2 minutes
 
 export const CACHE_KEYS = {
   ETH_BALANCE: "ethBalance",
