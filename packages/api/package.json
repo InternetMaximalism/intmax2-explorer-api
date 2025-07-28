@@ -5,11 +5,11 @@
     "@hono/node-server": "^1.17.1",
     "@intmax2-explorer-api/shared": "workspace:*",
     "axios": "^1.11.0",
-    "hono": "^4.8.5",
+    "hono": "^4.8.9",
     "hono-rate-limiter": "^0.4.2",
     "ioredis": "^5.6.1",
     "node-cache": "^5.1.2",
-    "viem": "^2.33.0"
+    "viem": "^2.33.1"
   },
   "scripts": {
     "start": "node dist/index.js",

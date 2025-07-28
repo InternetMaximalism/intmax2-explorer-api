@@ -70,7 +70,7 @@ export const handleError = (err: unknown, c: Context) => {
       {
         code: "VALIDATION_ERROR",
         message: "Validation Error",
-        errors: err.errors.map((e) => ({ path: e.path.join("."), message: e.message })),
+        errors: err.issues.map((e) => ({ path: e.path.join("."), message: e.message })),
       },
       400,
     );
