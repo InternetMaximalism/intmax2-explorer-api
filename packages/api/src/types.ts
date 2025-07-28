@@ -18,3 +18,14 @@ export interface TokenPriceResponse {
   nextCursor: string | null;
   total: number;
 }
+
+export interface CacheOptions {
+  detailCacheTimeout?: number;
+}
+
+type SearchResultType = "block" | "deposit" | "withdrawal" | "not_found";
+
+export interface SearchResult<T = unknown> {
+  type: SearchResultType;
+  item: T | null;
+}

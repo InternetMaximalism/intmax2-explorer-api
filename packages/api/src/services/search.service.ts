@@ -1,14 +1,8 @@
 import type { QueryValidationType } from "@intmax2-explorer-api/shared";
+import type { SearchResult } from "./../types";
 import { getBlock, getBlockByBlockNumber } from "./blocks.service";
 import { getDeposit } from "./deposits.service";
 import { getWithdrawal } from "./withdrawals.service";
-
-type SearchResultType = "block" | "deposit" | "withdrawal" | "not_found";
-
-interface SearchResult<T = unknown> {
-  type: SearchResultType;
-  item: T | null;
-}
 
 export const getSearch = async ({ query }: QueryValidationType): Promise<SearchResult> => {
   if (typeof query === "number") {

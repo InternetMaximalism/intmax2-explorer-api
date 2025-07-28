@@ -5,10 +5,6 @@ export type CustomError = {
   message: string;
 };
 
-export type AsyncLocalStorageStore = {
-  requestId: string;
-};
-
 export const FIRESTORE_DOCUMENT_TYPES = {
   ...FIRESTORE_DOCUMENT_EVENTS,
   ...FIRESTORE_DOCUMENT_STATS,

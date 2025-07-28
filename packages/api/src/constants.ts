@@ -18,7 +18,7 @@ export const CACHE_TIMEOUTS = {
   LIST: 15, // 15 seconds
   DETAIL: 180, // 180 seconds
   MODIFIED_DETAIL: 20, // 20 seconds
-  ETH_BALANCE: 300, // 5 minutes
+  ETH_BALANCE: 600, // 10 minutes
 } as const;
 
 export const CACHE_DEFAULT_STD_TTL = 300; // 5 minutes
