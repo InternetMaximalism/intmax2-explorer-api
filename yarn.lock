@@ -954,16 +954,16 @@ __metadata:
   dependencies:
     "@google-cloud/firestore": "npm:^7.11.3"
     abitype: "npm:^1.0.8"
-    alchemy-sdk: "npm:^3.6.1"
+    alchemy-sdk: "npm:^3.6.2"
     axios: "npm:^1.11.0"
     envalid: "npm:^8.1.0"
-    hono: "npm:^4.8.5"
+    hono: "npm:^4.8.9"
     pino: "npm:^9.7.0"
     pino-pretty: "npm:^13.0.0"
     typescript: "npm:^5.8.3"
-    viem: "npm:^2.33.0"
+    viem: "npm:^2.33.1"
     vitest: "npm:^3.2.4"
-    zod: "npm:3.25.74"
+    zod: "npm:4.0.10"
   languageName: unknown
   linkType: soft
 
@@ -1744,9 +1744,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"alchemy-sdk@npm:^3.6.1":
-  version: 3.6.1
-  resolution: "alchemy-sdk@npm:3.6.1"
+"alchemy-sdk@npm:^3.6.2":
+  version: 3.6.2
+  resolution: "alchemy-sdk@npm:3.6.2"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/abstract-provider": "npm:^5.7.0"
@@ -1763,7 +1763,7 @@ __metadata:
     axios: "npm:^1.7.4"
     sturdy-websocket: "npm:^0.2.1"
     websocket: "npm:^1.0.34"
-  checksum: 10c0/44c169ba36ae15a3129cdd6cb9b460d9c1251366de8e64598e24b9a88c7bb9acbf467bd2caca5b7ad77c4311a70d16dda38b3157d34780c17b4579d60c90ba4a
+  checksum: 10c0/749947850c978b5adf508da96ddbe4e4b44debfdfcd87c2d5221a2cca072ccdec714221a22e2bbeb0869f937543028261cfc365622b33d565ad68337ec55897c
   languageName: node
   linkType: hard
 
@@ -1804,13 +1804,13 @@ __metadata:
     "@hono/node-server": "npm:^1.17.1"
     "@intmax2-explorer-api/shared": "workspace:*"
     axios: "npm:^1.11.0"
-    hono: "npm:^4.8.5"
+    hono: "npm:^4.8.9"
     hono-rate-limiter: "npm:^0.4.2"
     ioredis: "npm:^5.6.1"
     node-cache: "npm:^5.1.2"
     tsx: "npm:^4.20.3"
     typescript: "npm:^5.8.3"
-    viem: "npm:^2.33.0"
+    viem: "npm:^2.33.1"
     vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
@@ -2762,7 +2762,7 @@ __metadata:
     abitype: "npm:^1.0.8"
     tsx: "npm:^4.20.3"
     typescript: "npm:^5.8.3"
-    viem: "npm:^2.33.0"
+    viem: "npm:^2.33.1"
     vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
@@ -3085,10 +3085,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono@npm:^4.8.5":
-  version: 4.8.5
-  resolution: "hono@npm:4.8.5"
-  checksum: 10c0/f3d4632c92a51c8de5f5b645fbbe510c7bdab87390c3e84ee8cc3ba8e1f8912fe52444e58681307d95e45581d38a8cb178f615f73602d0acc768bf801eea18c1
+"hono@npm:^4.8.9":
+  version: 4.8.9
+  resolution: "hono@npm:4.8.9"
+  checksum: 10c0/385539d1787fdc747bc869ef0e5ccc9f39cbe40289b94f23eecfc82c6ca440f059704647cd6381a5066d2cf7baa43ab25184c78d44af4c5c98a5c5b07670059e
   languageName: node
   linkType: hard
 
@@ -4715,9 +4715,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.33.0":
-  version: 2.33.0
-  resolution: "viem@npm:2.33.0"
+"viem@npm:^2.33.1":
+  version: 2.33.1
+  resolution: "viem@npm:2.33.1"
   dependencies:
     "@noble/curves": "npm:1.9.2"
     "@noble/hashes": "npm:1.8.0"
@@ -4732,7 +4732,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/6ac61fc3a27f7587e231f916407e43588c2d2c31bbd9f58e8cd5a0bbbc792341e642930e8d0ec783b6809193571c415852bab415f422b5b21759ed0776f06674
+  checksum: 10c0/3f6cb3f43492a6a6e8849bca57e08b798eb8e61346abb83010a67f11e910ff2f97fbca4c0614f76cd000e7929d93acdaa4d93e3f8ded922c9bb68664bf2f6781
   languageName: node
   linkType: hard
 
@@ -4871,7 +4871,7 @@ __metadata:
     abitype: "npm:^1.0.8"
     tsx: "npm:^4.20.3"
     typescript: "npm:^5.8.3"
-    viem: "npm:^2.33.0"
+    viem: "npm:^2.33.1"
     vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
@@ -5080,9 +5080,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:3.25.74":
-  version: 3.25.74
-  resolution: "zod@npm:3.25.74"
-  checksum: 10c0/59e38b046ac333b5bd1ba325a83b6798721227cbfb1e69dfc7159bd7824b904241ab923026edb714fafefec3624265ae374a70aee9a5a45b365bd31781ffa105
+"zod@npm:4.0.10":
+  version: 4.0.10
+  resolution: "zod@npm:4.0.10"
+  checksum: 10c0/8d1145e767c22b571a7967c198632f69ef15ce571b5021cdba84cf31d9af2ca40b033ea2fcbe5797cfd2da9c67b3a6ebe435938eabfbb1d1f3ab2f17f00f443b
   languageName: node
   linkType: hard

@@ -26,7 +26,9 @@ describe("Hash Validation Object Schema", () => {
     const result = hashValidation.safeParse(invalidObject);
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0].message).toContain("Required");
+      expect(result.error.issues[0].message).toContain(
+        "Invalid input: expected string, received undefined",
+      );
     }
   });
 
