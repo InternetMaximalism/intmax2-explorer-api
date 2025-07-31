@@ -34,6 +34,7 @@ export const FIRESTORE_IN_MAX_BATCH_SIZE = 30;
 
 // request
 export const API_TIMEOUT = 10 * 1000;
+export const MAX_PAGE_SIZE = 250;
 
 // rollup
 export const ROLLUP_CONTRACT_ADDRESS = config.ROLLUP_CONTRACT_ADDRESS as `0x${string}`;

@@ -1,7 +1,6 @@
 import { z } from "zod";
+import { MAX_PAGE_SIZE } from "../constants";
 import { hashSchema } from "./utils";
-
-const MAX_PAGE_SIZE = 250;
 
 export const paginationValidation = z.strictObject({
   perPage: z

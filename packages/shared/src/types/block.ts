@@ -74,3 +74,16 @@ export const INTERNAL_TO_TYPE_MAP = {
   Registration: 1,
   NonRegistration: 2,
 } as const;
+
+export type ProcessingPendingBlockData = {
+  hash: string;
+  status: BlockStatus;
+  internalBlockType: InternalBlockType;
+  blockValidity: BlockValidity;
+  transactionCount: number;
+  nextAccountId: number | null;
+};
+
+export type ProcessingPendingBlockDataWithBlockNumber = ProcessingPendingBlockData & {
+  blockNumber: number;
+};

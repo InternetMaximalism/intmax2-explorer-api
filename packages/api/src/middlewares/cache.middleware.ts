@@ -1,11 +1,6 @@
-import { Context, Next } from "hono";
+import type { Context, Next } from "hono";
 import { cache } from "../lib/cache";
-
-type CachedResponse = {
-  body: string;
-  headers: Record<string, string>;
-  status: number;
-};
+import type { CachedResponse } from "./../types";
 
 const validateKeys = [
   "perPage",
