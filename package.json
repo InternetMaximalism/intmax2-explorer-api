@@ -1,6 +1,6 @@
 {
   "name": "intmax2-explorer-api",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "license": "MIT",
   "description": "Explorer API for INTMAX2 blockchain",
   "repository": {
@@ -15,10 +15,13 @@
     "intmax2",
     "blockchain",
     "explorer",
-    "api"
+    "api",
+    "web3",
+    "ethereum",
+    "layer2"
   ],
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20.0.0",
     "yarn": ">=4.0.0"
   },
   "workspaces": [
