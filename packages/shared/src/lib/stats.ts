@@ -1,17 +1,7 @@
-import type { BlockStatus, BlockValidity, InternalBlockType } from "../types";
-
-export type ProcessingPendingBlockData = {
-  hash: string;
-  status: BlockStatus;
-  internalBlockType: InternalBlockType;
-  blockValidity: BlockValidity;
-  transactionCount: number;
-  nextAccountId: number | null;
-};
-
-type ProcessingPendingBlockDataWithBlockNumber = ProcessingPendingBlockData & {
-  blockNumber: number;
-};
+import type {
+  ProcessingPendingBlockData,
+  ProcessingPendingBlockDataWithBlockNumber,
+} from "../types";
 
 export const calculateNextAccountId = (blockDetails: ProcessingPendingBlockData[]) => {
   const registrationBlocks = blockDetails.filter(

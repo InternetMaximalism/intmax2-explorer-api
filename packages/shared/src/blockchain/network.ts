@@ -33,7 +33,7 @@ export const createNetworkClient = (network: "ethereum" | "scroll") => {
       multicall: true,
     },
     chain: chain as Chain,
-    // TODO: fallback
+    // NOTE: fallback
     transport: http(rpcUrl, {
       retryCount: 3,
       batch: true,

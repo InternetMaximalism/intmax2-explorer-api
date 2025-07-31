@@ -14,32 +14,32 @@ curl -i --location --request GET "$ENDPOINT/v1/health"
 # stats
 curl -i --location --request GET "$ENDPOINT/v1/stats"
 
-# search
+# search(block number, block hash, deposit hash, withdrawal hash)
 curl -i --location --request GET "$ENDPOINT/v1/search?query=0x"
 
-# blocks
+# blocks(block hash)
 curl -i --location --request GET "$ENDPOINT/v1/blocks"
 curl -i --location --request GET "$ENDPOINT/v1/blocks?perPage=50&cursor=0x"
 
-# block detail
+# block detail(block bash)
 curl -i --location --request GET "$ENDPOINT/v1/blocks/0x"
 
 # block validity proof
 curl -i --location --request GET "$ENDPOINT/v1/blocks/100/validityProof"
 
-# deposits
+# deposits(deposit hash)
 curl -i --location --request GET "$ENDPOINT/v1/deposits"
 curl -i --location --request GET "$ENDPOINT/v1/deposits?perPage=50&cursor=0x"
 curl -i --location --request GET "$ENDPOINT/v1/deposits?tokenType=1&status=Completed"
 
-# deposit detail
+# deposit detail(deposit hash)
 curl -i --location --request GET "$ENDPOINT/v1/deposits/0x"
 
-# withdrawals
+# withdrawals(withdrawal hash)
 curl -i --location --request GET "$ENDPOINT/v1/withdrawals"
 curl -i --location --request GET "$ENDPOINT/v1/withdrawals?perPage=50&cursor=0x"
 curl -i --location --request GET "$ENDPOINT/v1/withdrawals?tokenType=1&status=Completed"
 
-# withdrawal detail
+# withdrawal detail(withdrawal hash)
 curl -i --location --request GET "$ENDPOINT/v1/withdrawals/0x"
 ```

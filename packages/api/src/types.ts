@@ -29,3 +29,9 @@ export interface SearchResult<T = unknown> {
   type: SearchResultType;
   item: T | null;
 }
+
+export type CachedResponse = {
+  body: string;
+  headers: Record<string, string>;
+  status: number;
+};
