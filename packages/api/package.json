@@ -9,7 +9,7 @@
     "hono-rate-limiter": "^0.4.2",
     "ioredis": "^5.6.1",
     "node-cache": "^5.1.2",
-    "viem": "^2.33.1"
+    "viem": "^2.33.2"
   },
   "scripts": {
     "start": "node dist/index.js",
