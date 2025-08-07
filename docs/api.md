@@ -10,6 +10,7 @@ export ENDPOINT='http://localhost:3000'
 
 # health
 curl -i --location --request GET "$ENDPOINT/v1/health"
+curl -i -H "X-API-KEY: dummy" --location --request GET "$ENDPOINT/v1/health/redis"
 
 # stats
 curl -i --location --request GET "$ENDPOINT/v1/stats"

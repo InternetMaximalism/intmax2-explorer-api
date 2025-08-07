@@ -14,6 +14,9 @@ export const config = cleanEnv(process.env, {
   }),
   SERVICE_VERSION: str({ default: version }),
   ALLOWED_ORIGINS: str({ default: "*", example: "http://localhost:3000,http://localhost:5173" }),
+  RATE_LIMIT_WINDOW_MS: num({
+    default: 10 * 60 * 1000, // 10 minutes
+  }),
   RATE_LIMIT: num({ default: 1000 }),
   CORS_MAX_AGE: num({ default: 7200 }),
   X_API_KEY: str({
