@@ -54,6 +54,8 @@ docker run --rm -p 3000:3000 --env-file .env intmax2-explorer-api workspace api 
 
 ## Redis
 
+Run Redis in a Docker container with data persistence enabled.
+
 ```sh
 docker run -d --rm \
   --name redis \
