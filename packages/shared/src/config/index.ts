@@ -16,7 +16,10 @@ export const config = cleanEnv(process.env, {
   ALLOWED_ORIGINS: str({ default: "*", example: "http://localhost:3000,http://localhost:5173" }),
   RATE_LIMIT: num({ default: 1000 }),
   CORS_MAX_AGE: num({ default: 7200 }),
-  X_API_KEY: str({ default: "dummy" }),
+  X_API_KEY: str({
+    default: "dummy",
+    desc: "API key used for authentication. Required to bypass rate limiting.",
+  }),
   // gcp
   K_SERVICE: str({ default: process.env.CLOUD_RUN_JOB || "default-service" }),
   K_REVISION: str({
@@ -32,13 +35,18 @@ export const config = cleanEnv(process.env, {
   NETWORK_TYPE: str({
     choices: ["ethereum", "scroll"],
     default: "ethereum",
+    desc: "The type of blockchain network to connect to",
   }),
   NETWORK_ENVIRONMENT: str({
     choices: ["mainnet", "sepolia"],
     default: "sepolia",
+    desc: "The environment of the blockchain network to connect to",
   }),
   ALCHEMY_API_KEY: str(),
-  USE_MIGRATED_ABI: bool({ default: false }),
+  USE_MIGRATED_ABI: bool({
+    default: false,
+    desc: "Use migrated ABI for contracts. Set to `true` on mainnet, and `false` on testnet.",
+  }),
   // block
   VALIDITY_PROVER_API_BLOCK_BATCH_SIZE: num({ default: 15 }),
   VALIDITY_PROVER_API_SLEEP_TIME: num({
@@ -52,9 +60,18 @@ export const config = cleanEnv(process.env, {
   WITHDRAWAL_CONTRACT_ADDRESS: str({ devDefault: "0x" }),
   WITHDRAWAL_CONTRACT_DEPLOYED_BLOCK: num({ devDefault: 0 }),
   // api
-  API_INDEXER_BASE_URL: str({ devDefault: "http://localhost:3000" }),
-  API_TOKEN_BASE_URL: str({ devDefault: "http://localhost:3000" }),
-  API_VALIDITY_PROVER_BASE_URL: str({ devDefault: "http://localhost:3000" }),
+  API_INDEXER_BASE_URL: str({
+    devDefault: "http://localhost:3000",
+    desc: "Base URL for the Indexer API",
+  }),
+  API_TOKEN_BASE_URL: str({
+    devDefault: "http://localhost:3000",
+    desc: "Base URL for the Token API",
+  }),
+  API_VALIDITY_PROVER_BASE_URL: str({
+    devDefault: "http://localhost:3000",
+    desc: "Base URL for the Validity Prover API",
+  }),
 });
 
 export const isProduction = config.NODE_ENV === "production";
