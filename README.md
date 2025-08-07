@@ -2,17 +2,26 @@
 
 The INTMAX2 Explorer API is designed to support the INTMAX2 Explorer, providing seamless and efficient access to blockchain data.
 
+## Setup
+
+Before running any service, make sure to:
+
+```sh
+# Install dependencies
+yarn
+
+# Copy environment variables
+cp .env.example .env
+
+# Build shared packages
+yarn build:shared
+```
+
 ## Development
 
 Start the API or watcher service in development mode:
 
 ```sh
-# install
-yarn
-
-# shared build
-yarn build:shared
-
 # api
 yarn workspace api dev
 
@@ -29,6 +38,8 @@ If your development workflow involves Firestore, you can start a local emulator:
 
 ```sh
 gcloud emulators firestore start
+
+# Set the FIRESTORE_EMULATOR_HOST variable in the same terminal where you will run your application.
 export FIRESTORE_EMULATOR_HOST="HOST:PORT"
 ```
 
