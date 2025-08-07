@@ -164,7 +164,7 @@ This key includes scoped permissions and helps bypass rate limits for authorized
 ## 7. CI/CD & Testing
 
 - **Vitest** unit and integration tests coverage for services and middleware.
-- **Tasks**: `npm run test`, `npm run lint`, `npm run build` in CI pipeline.
+- **Tasks**: `yarn test`, `yarn check`, `yarn build` in CI pipeline.
 - **Docker**: Containerized deployment using provided Dockerfile.
 
 ## 8. Observability
