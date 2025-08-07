@@ -79,4 +79,12 @@ node -e "console.log('ak_' + require('crypto').randomBytes(32).toString('base64u
 See the documentation for details on available endpoints and how to use the API.
 This guide will help you integrate INTMAX2 blockchain data into your applications.
 
-- [API Usage](./docs/api.md)
+- [SYSTEM Design](./docs/SYSTEM_DESIGN.md)
+- [API Usage](./docs/API.md)
+
+## Explorers
+
+Use the following explorers to browse blocks, transactions, and other on-chain data:
+
+- [Mainnet Explorer](https://explorer.intmax.io)
+- [Testnet Explorer](https://beta.testnet.explorer.intmax.io)
