@@ -4,6 +4,43 @@
 
 The INTMAX2 Explorer API provides a RESTful interface for querying blockchain data—including blocks, deposits, withdrawals, and statistics—on the INTMAX2 network. It comprises modular services for indexing, finalizing on-chain events, caching, rate limiting, and search functionality.
 
+### 1.1 Project Structure
+
+```txt
+packages/
+├── api/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── middlewares/
+│   │   ├── routes/
+│   │   └── services/
+│   └── package.json
+├── finalizer/
+│   ├── src/
+│   │   └── service/
+│   └── package.json
+├── shared/
+│   ├── src/
+│   │   ├── abi/
+│   │   ├── blockchain/
+│   │   ├── config/
+│   │   ├── db/
+│   │   ├── lib/
+│   │   ├── types/
+│   │   └── validations/
+│   └── package.json
+└── watcher/
+    ├── src/
+    │   └── service/
+    └── package.json
+```
+
+This mono-repo is organized under the `packages/` directory, with each package focusing on a distinct role:
+- **api**: the HTTP server, routing, controllers, and middleware for client-facing requests.
+- **watcher**: background job that listens to on-chain events and writes indexed data to Firestore.
+- **finalizer**: background job that confirms and finalizes withdrawal events, updating their status in the database.
+- **shared**: common types, utilities, and configuration shared across all packages.
+
 ## 2 High-Level Architecture
 
 ### 2.1 API
