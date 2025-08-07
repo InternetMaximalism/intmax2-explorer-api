@@ -90,6 +90,21 @@ export class RedisClient {
     return await this.client.set(key, stringValue);
   }
 
+  async ping(): Promise<"PONG"> {
+    if (!this.client) {
+      throw new Error("Redis client is not initialized");
+    }
+
+    try {
+      const result = await this.client.ping();
+      return result;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      logger.error(`Redis ping failed: ${errorMessage}`);
+      throw error;
+    }
+  }
+
   public async flushAll() {
     if (this.client) {
       try {

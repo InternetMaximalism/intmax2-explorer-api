@@ -11,7 +11,7 @@ const getClientIP = (c: Context): string => {
 };
 
 export const limiter = rateLimiter({
-  windowMs: 10 * 60 * 1000, // 10 minutes
+  windowMs: config.RATE_LIMIT_WINDOW_MS,
   limit: config.RATE_LIMIT, // RATE_LIMIT requests per windowMs
   standardHeaders: "draft-7",
   keyGenerator: (c) => {

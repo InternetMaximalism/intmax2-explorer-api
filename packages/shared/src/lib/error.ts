@@ -6,8 +6,8 @@ import { logger } from "./logger";
 
 export enum ErrorCode {
   NOT_FOUND = "NOT_FOUND",
-  INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR",
   VALIDATION_ERROR = "VALIDATION_ERROR",
+  INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR",
 }
 
 export class AppError extends Error {
@@ -23,6 +23,12 @@ export class AppError extends Error {
 export class NotFoundError extends AppError {
   constructor(message: string = "Resource not found") {
     super(404, "NOT_FOUND", message);
+  }
+}
+
+export class UnauthorizedError extends AppError {
+  constructor(message: string = "Unauthorized") {
+    super(401, "UNAUTHORIZED", message);
   }
 }
 
