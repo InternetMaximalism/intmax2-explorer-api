@@ -1,6 +1,6 @@
-# @intmax2-explorer-api/shared
+# shared
 
-@intmax2-explorer-api/shared is a shared library designed to provide common functionalities and utilities for projects within the INTMAX2 ecosystem.
+shared is a shared library designed to provide common functionalities and utilities for projects within the INTMAX2 ecosystem.
 
 ## Usage
 

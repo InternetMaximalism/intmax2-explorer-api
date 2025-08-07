@@ -1,6 +1,6 @@
 import { logger, timeOperation } from "@intmax2-explorer-api/shared";
 import { name } from "../package.json";
-import { performJob } from "./service/job.service";
+import { performJob } from "./services/job.service";
 
 async function main() {
   try {
