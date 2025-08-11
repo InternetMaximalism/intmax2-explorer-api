@@ -957,7 +957,7 @@ __metadata:
     alchemy-sdk: "npm:^3.6.2"
     axios: "npm:^1.11.0"
     envalid: "npm:^8.1.0"
-    hono: "npm:^4.8.12"
+    hono: "npm:^4.9.0"
     pino: "npm:^9.7.0"
     pino-pretty: "npm:^13.1.1"
     typescript: "npm:^5.9.2"
@@ -1804,7 +1804,7 @@ __metadata:
     "@hono/node-server": "npm:^1.18.1"
     "@intmax2-explorer-api/shared": "workspace:*"
     axios: "npm:^1.11.0"
-    hono: "npm:^4.8.12"
+    hono: "npm:^4.9.0"
     hono-rate-limiter: "npm:^0.4.2"
     ioredis: "npm:^5.7.0"
     node-cache: "npm:^5.1.2"
@@ -3074,10 +3074,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono@npm:^4.8.12":
-  version: 4.8.12
-  resolution: "hono@npm:4.8.12"
-  checksum: 10c0/09b4742ce86fa807dfeb37e5d83dba728d00963a497bfb8638085ddf4c20182e565cb9cb2d3e7341598d3e99b0adb2d049d86d89b5876c169098862704327a9e
+"hono@npm:^4.9.0":
+  version: 4.9.0
+  resolution: "hono@npm:4.9.0"
+  checksum: 10c0/fd986677c280f2ed8843aa7f4031bcb008215cc9923c866f2f6a3edc7ab9e0482bfdca907ee609818b6784c2f9e965eb66f5a5d8219efa369ec68a11f47e79a7
   languageName: node
   linkType: hard
 
