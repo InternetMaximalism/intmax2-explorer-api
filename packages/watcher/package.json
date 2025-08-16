@@ -5,7 +5,7 @@
     "@google-cloud/firestore": "^7.11.3",
     "@intmax2-explorer-api/shared": "workspace:*",
     "abitype": "^1.0.8",
-    "viem": "^2.33.2"
+    "viem": "^2.33.3"
   },
   "scripts": {
     "start": "node dist/index.js",
@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "tsx": "^4.20.3",
+    "tsx": "^4.20.4",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   }
