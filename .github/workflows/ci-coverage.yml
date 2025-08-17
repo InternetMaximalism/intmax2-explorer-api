@@ -3,19 +3,42 @@ name: CI (dev with coverage)
 on:
   push:
     branches: [dev]
+    paths-ignore:
+      - '**.md'
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: 24.5.0
+  YARN_VERSION: 4.9.2
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test-coverage:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 24.5.0 }
-      - run: corepack enable && corepack prepare yarn@4.9.2 --activate
-      - run: yarn install --immutable
-      - run: yarn test --coverage
-      - uses: actions/upload-artifact@v4
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/setup
         with:
-          name: coverage-report
-          path: coverage/**
-          retention-days: 7
+          node-version: ${{ env.NODE_VERSION }}
+          yarn-version: ${{ env.YARN_VERSION }}
+
+      - name: Build shared packages
+        run: yarn build:shared
+
+      - name: Unit tests with coverage
+        run: yarn test --coverage
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+            name: coverage-report
+            path: coverage/**
+            if-no-files-found: ignore
+            retention-days: 7
