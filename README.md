@@ -94,6 +94,7 @@ This guide will help you integrate INTMAX2 blockchain data into your application
 
 - [SYSTEM Design](./docs/SYSTEM_DESIGN.md)
 - [API Usage](./docs/API.md)
+- [ENV](./packages/shared/src/config/index.ts)
 
 ## Explorers
 
