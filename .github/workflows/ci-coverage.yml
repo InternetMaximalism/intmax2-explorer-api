@@ -1,0 +1,21 @@
+name: CI (dev with coverage)
+
+on:
+  push:
+    branches: [dev]
+
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24.5.0 }
+      - run: corepack enable && corepack prepare yarn@4.9.2 --activate
+      - run: yarn install --immutable
+      - run: yarn test --coverage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/**
+          retention-days: 7

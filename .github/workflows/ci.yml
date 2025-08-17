@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+env:
+  NODE_VERSION: "24.5.0"
+  YARN_VERSION: "4.9.2"
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -16,58 +20,25 @@ concurrency:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 24.5.0
+      - uses: ./.github/actions/setup-yarn
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          yarn-version: ${{ env.YARN_VERSION }}
 
-    - name: Enable Corepack
-      run: corepack enable
+      - name: Check formatting
+        run: yarn check
 
-    - name: Set Yarn version
-      run: corepack prepare yarn@4.9.2 --activate
+      - name: Build shared packages
+        run: yarn build:shared
 
-    - name: Get yarn cache directory path
-      id: yarn-cache-dir-path
-      run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+      - name: Unit tests with coverage
+        run: yarn test --coverage
 
-    - uses: actions/cache@v4
-      id: yarn-cache
-      with:
-        path: |
-          ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          **/node_modules
-          packages/*/node_modules
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
+      - name: Build
+        run: yarn build
 
-    - name: Install dependencies
-      run: yarn install --immutable
-
-    - name: Check formatting
-      run: yarn check
-
-    - name: Build shared packages
-      run: yarn build:shared
-
-    - name: Unit tests with coverage
-      run: yarn test --coverage
-
-    - name: Upload coverage report
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-report
-        path: coverage/**
-        if-no-files-found: ignore
-        retention-days: 7
-
-    - name: Build
-      run: yarn build
-
-    - name: Check for security vulnerabilities
-      run: yarn npm audit
+      - name: Check for security vulnerabilities
+        run: yarn npm audit
