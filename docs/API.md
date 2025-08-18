@@ -4,10 +4,52 @@
 
 The INTMAX2 Explorer API provides RESTful endpoints for querying blockchain data including blocks, deposits, withdrawals, statistics, and search functionality. All endpoints return JSON responses and support pagination where applicable.
 
-## Base URLs
+## Base URL
 
 ```
 Local: http://localhost:3000
+```
+
+## Example Usage
+
+```bash
+export ENDPOINT='http://localhost:3000'
+
+# health
+curl -i --location --request GET "$ENDPOINT/v1/health"
+curl -i -H "X-API-KEY: dummy" --location --request GET "$ENDPOINT/v1/health/redis"
+
+# stats
+curl -i --location --request GET "$ENDPOINT/v1/stats"
+
+# search(block number, block hash, deposit hash, withdrawal hash)
+curl -i --location --request GET "$ENDPOINT/v1/search?query=0x"
+
+# blocks(block hash)
+curl -i --location --request GET "$ENDPOINT/v1/blocks"
+curl -i --location --request GET "$ENDPOINT/v1/blocks?perPage=50&cursor=0x"
+
+# block detail(block bash)
+curl -i --location --request GET "$ENDPOINT/v1/blocks/0x"
+
+# block validity proof
+curl -i --location --request GET "$ENDPOINT/v1/blocks/100/validityProof"
+
+# deposits(deposit hash)
+curl -i --location --request GET "$ENDPOINT/v1/deposits"
+curl -i --location --request GET "$ENDPOINT/v1/deposits?perPage=50&cursor=0x"
+curl -i --location --request GET "$ENDPOINT/v1/deposits?tokenType=1&status=Completed"
+
+# deposit detail(deposit hash)
+curl -i --location --request GET "$ENDPOINT/v1/deposits/0x"
+
+# withdrawals(withdrawal hash)
+curl -i --location --request GET "$ENDPOINT/v1/withdrawals"
+curl -i --location --request GET "$ENDPOINT/v1/withdrawals?perPage=50&cursor=0x"
+curl -i --location --request GET "$ENDPOINT/v1/withdrawals?tokenType=1&status=Completed"
+
+# withdrawal detail(withdrawal hash)
+curl -i --location --request GET "$ENDPOINT/v1/withdrawals/0x"
 ```
 
 ## Common Response Format
@@ -29,12 +71,21 @@ All successful **list responses** follow this structure:
 
 ```json
 {
-  "items": [...],        // Array of data items (for list endpoints)
-  "totalCount": 1234,    // Total number of items (for paginated endpoints)
-  "hasMore": true,       // Whether more items are available
-  "nextCursor": "0x..."  // Cursor for fetching the next page
+  "items": [...],
+  "totalCount": 1234,
+  "hasMore": true,
+  "nextCursor": "0x..."
 }
 ```
+
+**Response Fields**
+
+| Field        | Type    | Description                                                                                  |
+| ------------ | ------- | -------------------------------------------------------------------------------------------- |
+| `items`      | array   | The array of returned data objects (e.g., blocks, deposits, withdrawals).                    |
+| `totalCount` | number  | The total number of items matching the query, across all pages.                              |
+| `hasMore`    | boolean | Indicates whether additional pages of data are available.                                    |
+| `nextCursor` | string  | Opaque cursor (hex string). Use this value as the `cursor` parameter to fetch the next page. |
 
 ### Error Response
 
@@ -226,7 +277,6 @@ List blocks with optional filtering and pagination.
 
 | Field                      | Type      | Description                                                       |
 | -------------------------- | --------- | ----------------------------------------------------------------- |
-| `items`                    | array     | Array of block objects                                            |
 | `blockAggregatorSignature` | string[]  | Array of aggregator signatures for the block (hex strings)        |
 | `blockNumber`              | number    | Sequential block number in the blockchain                         |
 | `blockType`                | string    | Type of the block (e.g., `Type0`, `Type1`, `Type2`)               |
@@ -238,10 +288,6 @@ List blocks with optional filtering and pagination.
 | `timestamp`                | number    | Unix timestamp when the block was created                         |
 | `transactionCount`         | number    | Number of transactions included in the block                      |
 | `transactionDigest`        | string    | Digest of all transactions in the block (hex string)              |
-| `totalCount`               | number    | Total number of blocks matching the query                         |
-| `hasMore`                  | boolean   | Indicates whether more results are available                      |
-| `nextCursor`               | string    | Cursor for fetching the next page of results                      |
-
 
 #### GET /v1/blocks/{hash}
 Get detailed information for a specific block.
@@ -312,7 +358,6 @@ List deposits with optional filtering and pagination.
 
 | Field         | Type    | Description                                                              |
 | ------------- | ------- | ------------------------------------------------------------------------ |
-| `items`       | array   | Array of deposit objects                                                 |
 | `amount`      | string  | Deposit amount in wei (string format for large numbers)                  |
 | `blockNumber` | number  | Block number where the deposit was included                              |
 | `depositId`   | number  | Unique identifier assigned to the deposit                                |
@@ -322,10 +367,6 @@ List deposits with optional filtering and pagination.
 | `timestamp`   | number  | Unix timestamp when the deposit was made                                 |
 | `tokenIndex`  | string  | Index of the deposited token in the supported token list (string format) |
 | `tokenType`   | number  | Token type identifier (0: ETH, 1–3: ERC-20 variants, etc.)               |
-| `totalCount`  | number  | Total number of deposits matching the query                              |
-| `hasMore`     | boolean | Indicates whether more results are available                             |
-| `nextCursor`  | string  | Cursor for fetching the next page of results                             |
-
 
 #### GET /v1/deposits/{hash}
 Get detailed information for a specific deposit.
@@ -379,7 +420,6 @@ List withdrawals with optional filtering and pagination.
 
 | Field                      | Type    | Description                                                          |
 | -------------------------- | ------- | -------------------------------------------------------------------- |
-| `items`                    | array   | Array of withdrawal objects                                          |
 | `amount`                   | string  | Withdrawal amount in wei (string format to support large numbers)    |
 | `hash`                     | string  | Unique withdrawal hash (hex string starting with 0x)                 |
 | `liquidityTimestamp`       | number  | Unix timestamp when the liquidity transaction was finalized          |
@@ -391,10 +431,6 @@ List withdrawals with optional filtering and pagination.
 | `tokenIndex`               | number  | Index of the withdrawn token in the supported token list             |
 | `tokenType`                | number  | Token type identifier (0: ETH, 1–3: ERC-20 variants, etc.)           |
 | `type`                     | string  | Withdrawal type (e.g., `direct`)                                     |
-| `totalCount`               | number  | Total number of withdrawals matching the query                       |
-| `hasMore`                  | boolean | Indicates whether more results are available                         |
-| `nextCursor`               | string  | Cursor for fetching the next page of results                         |
-
 
 #### GET /v1/withdrawals/{hash}
 Get detailed information for a specific withdrawal.
@@ -433,48 +469,6 @@ Same as the `items` array fields from GET /v1/withdrawals (single withdrawal obj
 - `1`: ERC-20 Token Type 1
 - `2`: ERC-721 Token Type 2
 - `3`: ERC-1155 Token Type 3
-
-## Example Usage
-
-```bash
-export ENDPOINT='http://localhost:3000'
-
-# health
-curl -i --location --request GET "$ENDPOINT/v1/health"
-curl -i -H "X-API-KEY: dummy" --location --request GET "$ENDPOINT/v1/health/redis"
-
-# stats
-curl -i --location --request GET "$ENDPOINT/v1/stats"
-
-# search(block number, block hash, deposit hash, withdrawal hash)
-curl -i --location --request GET "$ENDPOINT/v1/search?query=0x"
-
-# blocks(block hash)
-curl -i --location --request GET "$ENDPOINT/v1/blocks"
-curl -i --location --request GET "$ENDPOINT/v1/blocks?perPage=50&cursor=0x"
-
-# block detail(block bash)
-curl -i --location --request GET "$ENDPOINT/v1/blocks/0x"
-
-# block validity proof
-curl -i --location --request GET "$ENDPOINT/v1/blocks/100/validityProof"
-
-# deposits(deposit hash)
-curl -i --location --request GET "$ENDPOINT/v1/deposits"
-curl -i --location --request GET "$ENDPOINT/v1/deposits?perPage=50&cursor=0x"
-curl -i --location --request GET "$ENDPOINT/v1/deposits?tokenType=1&status=Completed"
-
-# deposit detail(deposit hash)
-curl -i --location --request GET "$ENDPOINT/v1/deposits/0x"
-
-# withdrawals(withdrawal hash)
-curl -i --location --request GET "$ENDPOINT/v1/withdrawals"
-curl -i --location --request GET "$ENDPOINT/v1/withdrawals?perPage=50&cursor=0x"
-curl -i --location --request GET "$ENDPOINT/v1/withdrawals?tokenType=1&status=Completed"
-
-# withdrawal detail(withdrawal hash)
-curl -i --location --request GET "$ENDPOINT/v1/withdrawals/0x"
-```
 
 ## Rate Limiting
 
