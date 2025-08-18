@@ -25,7 +25,7 @@ export const redisCheck = async () => {
     const redisStatus = await RedisClient.getInstance().ping();
     if (redisStatus !== "PONG") {
       return {
-        status: "fail",
+        status: "FAIL",
         redis: "unreachable",
       };
     }
@@ -36,7 +36,7 @@ export const redisCheck = async () => {
     };
   } catch (error) {
     return {
-      status: "fail",
+      status: "FAIL",
       redis: "error",
       error: (error as Error).message,
     };
