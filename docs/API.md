@@ -491,10 +491,15 @@ Rate limit information is provided in a **single `ratelimit` header** with three
 
 ## Error Codes
 
-Common HTTP status codes:
+**Common HTTP status codes:**
 - `200`: Success
 - `400`: Bad Request (invalid parameters)
-- `401`: Unauthorized (missing or invalid API key)
 - `404`: Not Found (resource doesn't exist)
 - `429`: Too Many Requests (rate limit exceeded)
 - `500`: Internal Server Error
+
+**ErrorCode values:**
+* `BAD_REQUEST`: Bad Request (invalid parameters) — HTTP 400
+* `NOT_FOUND`: Not Found (resource doesn't exist) — HTTP 404
+* `INTERNAL_SERVER_ERROR`: Internal Server Error — HTTP 500
+* `VALIDATION_ERROR`: Validation Error (schema/business rule failed) — HTTP 400
