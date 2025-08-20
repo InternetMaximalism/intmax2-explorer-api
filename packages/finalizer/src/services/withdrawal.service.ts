@@ -23,7 +23,7 @@ import type { RelayedWithdrawal } from "../types";
 
 export const finalizeRelayedWithdrawals = async () => {
   const withdrawalEvent = new Event(FIRESTORE_DOCUMENT_EVENTS.WITHDRAWAL);
-  const [lastEvent, { ethereumClient, currentBlockNumber }] = await Promise.all([
+  const [lastEvent, { l1Client, currentBlockNumber }] = await Promise.all([
     withdrawalEvent.getLatestEvent<EventData>(),
     getEthereumAndScrollBlockNumbers(),
   ]);
@@ -45,14 +45,14 @@ export const finalizeRelayedWithdrawals = async () => {
 
   const withdrawalEvents = await Promise.all([
     fetchWithdrawalEvents<DirectWithdrawalQueueEvent>(
-      ethereumClient,
+      l1Client,
       startBlockNumber,
       currentBlockNumber,
       directWithdrawals,
       directWithdrawalSuccessedEvent,
     ),
     fetchWithdrawalEvents<ClaimableWithdrawalEvent>(
-      ethereumClient,
+      l1Client,
       startBlockNumber,
       currentBlockNumber,
       claimableWithdrawals,
@@ -121,7 +121,7 @@ const getRelayedWithdrawals = async (withdrawalInstance: Withdrawal) => {
 };
 
 const fetchWithdrawalEvents = async <T>(
-  ethereumClient: PublicClient,
+  l1Client: PublicClient,
   startBlockNumber: bigint,
   currentBlockNumber: bigint,
   withdrawals: RelayedWithdrawal[],
@@ -129,7 +129,7 @@ const fetchWithdrawalEvents = async <T>(
 ) => {
   const withdrawalHashes = withdrawals.map(({ hash }) => hash);
 
-  const events = await fetchEvents<T>(ethereumClient, {
+  const events = await fetchEvents<T>(l1Client, {
     startBlockNumber: startBlockNumber,
     endBlockNumber: currentBlockNumber,
     blockRange: BLOCK_RANGE_MINIMUM,
@@ -144,12 +144,12 @@ const fetchWithdrawalEvents = async <T>(
 };
 
 const getEthereumAndScrollBlockNumbers = async () => {
-  const ethereumClient = createNetworkClient("l1");
+  const l1Client = createNetworkClient("l1");
 
-  const currentBlockNumber = await ethereumClient.getBlockNumber();
+  const currentBlockNumber = await l1Client.getBlockNumber();
 
   return {
-    ethereumClient,
+    l1Client,
     currentBlockNumber,
   };
 };

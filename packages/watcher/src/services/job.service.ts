@@ -17,7 +17,7 @@ export const performJob = async (): Promise<void> => {
     lastBlockProcessedEvent,
     lastDepositProcessedEvent,
     lastWithdrawalQueueProcessedEvent,
-    { ethereumClient, currentBlockNumber, scrollClient, scrollCurrentBlockNumber },
+    { l1Client, currentBlockNumber, l2Client, scrollCurrentBlockNumber },
   ] = await Promise.all([
     blockEvent.getLatestEvent<EventData>(),
     depositEvent.getLatestEvent<EventData>(),
@@ -26,22 +26,11 @@ export const performJob = async (): Promise<void> => {
   ]);
 
   await Promise.all([
-    fetchAndStoreBlocks(
-      scrollClient,
-      scrollCurrentBlockNumber,
-      blockEvent,
-      lastBlockProcessedEvent,
-    ),
-    fetchAndStoreDeposits(
-      ethereumClient,
-      currentBlockNumber,
-      depositEvent,
-      lastDepositProcessedEvent,
-    ),
+    fetchAndStoreBlocks(l2Client, scrollCurrentBlockNumber, blockEvent, lastBlockProcessedEvent),
+    fetchAndStoreDeposits(l1Client, currentBlockNumber, depositEvent, lastDepositProcessedEvent),
     fetchAndStoreWithdrawals({
-      ethereumClient,
-      currentBlockNumber,
-      scrollClient,
+      l1Client,
+      l2Client,
       scrollCurrentBlockNumber,
       lastWithdrawalQueueProcessedEvent,
       withdrawalQueueEvent,
@@ -50,17 +39,17 @@ export const performJob = async (): Promise<void> => {
 };
 
 const getEthereumAndScrollBlockNumbers = async () => {
-  const ethereumClient = createNetworkClient("l1");
-  const scrollClient = createNetworkClient("l2");
+  const l1Client = createNetworkClient("l1");
+  const l2Client = createNetworkClient("l2");
 
   const [currentBlockNumber, scrollCurrentBlockNumber] = await Promise.all([
-    ethereumClient.getBlockNumber(),
-    scrollClient.getBlockNumber(),
+    l1Client.getBlockNumber(),
+    l2Client.getBlockNumber(),
   ]);
 
   return {
-    ethereumClient,
-    scrollClient,
+    l1Client,
+    l2Client,
     currentBlockNumber,
     scrollCurrentBlockNumber,
   };

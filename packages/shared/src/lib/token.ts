@@ -3,7 +3,7 @@ import { LiquidityAbi } from "../abi";
 import { LIQUIDITY_CONTRACT_ADDRESS, TOKEN_MULTICALL_SIZE } from "../constants";
 import type { TokenInfo, TokenType } from "../types";
 
-export const fetchTokenData = async (ethereumClient: PublicClient, tokenIndexes: number[]) => {
+export const fetchTokenData = async (l1Client: PublicClient, tokenIndexes: number[]) => {
   if (tokenIndexes.length === 0) {
     return [];
   }
@@ -15,7 +15,7 @@ export const fetchTokenData = async (ethereumClient: PublicClient, tokenIndexes:
     args: [BigInt(tokenIndex)],
   }));
 
-  const multicallResults = await ethereumClient.multicall({
+  const multicallResults = await l1Client.multicall({
     contracts,
     batchSize: TOKEN_MULTICALL_SIZE,
   });

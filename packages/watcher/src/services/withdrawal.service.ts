@@ -23,8 +23,8 @@ import { type PublicClient, parseAbiItem } from "viem";
 import type { FetchAndStoreWithdrawalsParams } from "../types";
 
 export const fetchAndStoreWithdrawals = async ({
-  ethereumClient,
-  scrollClient,
+  l1Client,
+  l2Client,
   scrollCurrentBlockNumber,
   lastWithdrawalQueueProcessedEvent,
   withdrawalQueueEvent,
@@ -45,13 +45,13 @@ export const fetchAndStoreWithdrawals = async ({
 
   const [directWithdrawalQueuedEvents, claimableWithdrawalEvents] = await Promise.all([
     fetchWithdrawalQueueEvents(
-      scrollClient,
+      l2Client,
       startBlockNumber,
       scrollCurrentBlockNumber,
       directWithdrawalQueuedEvent,
     ),
     fetchWithdrawalQueueEvents(
-      scrollClient,
+      l2Client,
       startBlockNumber,
       scrollCurrentBlockNumber,
       claimableWithdrawalQueuedEvent,
@@ -59,7 +59,7 @@ export const fetchAndStoreWithdrawals = async ({
   ]);
 
   const allEvents = [...directWithdrawalQueuedEvents, ...claimableWithdrawalEvents];
-  const tokenDetailsMap = await fetchTokenDetailsMap(ethereumClient, allEvents);
+  const tokenDetailsMap = await fetchTokenDetailsMap(l1Client, allEvents);
 
   const withdrawalDetails = await Promise.all([
     processWithdrawalEvents(directWithdrawalQueuedEvents, tokenDetailsMap, "direct"),
@@ -84,12 +84,12 @@ export const fetchAndStoreWithdrawals = async ({
 };
 
 const fetchWithdrawalQueueEvents = async (
-  scrollClient: PublicClient,
+  l2Client: PublicClient,
   startBlockNumber: bigint,
   scrollCurrentBlockNumber: bigint,
   eventInterface: ReturnType<typeof parseAbiItem>,
 ) => {
-  const events = await fetchEvents<DirectWithdrawalQueueEvent>(scrollClient, {
+  const events = await fetchEvents<DirectWithdrawalQueueEvent>(l2Client, {
     startBlockNumber,
     endBlockNumber: scrollCurrentBlockNumber,
     blockRange: BLOCK_RANGE_MOST_RECENT,
@@ -141,13 +141,13 @@ const processWithdrawalEvents = async (
 };
 
 const fetchTokenDetailsMap = async (
-  ethereumClient: PublicClient,
+  l1Client: PublicClient,
   events: ClaimableWithdrawalEvent[] | DirectWithdrawalQueueEvent[],
 ) => {
   const tokenIndexes = events.map(({ args }) => args.withdrawal.tokenIndex);
   const uniqueTokenIndexes = [...new Set(tokenIndexes)];
 
-  const tokenDetails = await fetchTokenData(ethereumClient, uniqueTokenIndexes);
+  const tokenDetails = await fetchTokenData(l1Client, uniqueTokenIndexes);
   return new Map(tokenDetails.map((token) => [token.tokenIndex, token]));
 };
 

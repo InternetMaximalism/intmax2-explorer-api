@@ -27,7 +27,7 @@ import type { Abi, PublicClient } from "viem";
 import type { GetDepositData } from "../types";
 
 export const fetchAndStoreDeposits = async (
-  ethereumClient: PublicClient,
+  l1Client: PublicClient,
   currentBlockNumber: bigint,
   depositEvent: Event,
   lastDepositedProcessedEvent: EventData | null,
@@ -42,12 +42,8 @@ export const fetchAndStoreDeposits = async (
     return;
   }
 
-  const depositEvents = await getDepositedEvent(
-    ethereumClient,
-    startBlockNumber,
-    currentBlockNumber,
-  );
-  const depositDetails = await getDepositDetails(ethereumClient, currentBlockNumber, depositEvents);
+  const depositEvents = await getDepositedEvent(l1Client, startBlockNumber, currentBlockNumber);
+  const depositDetails = await getDepositDetails(l1Client, currentBlockNumber, depositEvents);
   const deposit = Deposit.getInstance();
   const newL1WalletCount = await getL1WalletCount(deposit, depositDetails);
   const newEthDepositAmount = depositDetails.reduce((sum, deposit) => {
@@ -121,13 +117,13 @@ const aggregateAndSaveStats = async (
 };
 
 export const getDepositedEvent = async (
-  ethereumClient: PublicClient,
+  l1Client: PublicClient,
   startBlockNumber: bigint,
   currentBlockNumber: bigint,
 ) => {
   try {
     // NOTE: Details: Log response size exceeded. You can make eth_getLogs requests with up to a 2K block range
-    const depositEvents = await fetchEvents<DepositEvent>(ethereumClient, {
+    const depositEvents = await fetchEvents<DepositEvent>(l1Client, {
       startBlockNumber,
       endBlockNumber: currentBlockNumber,
       blockRange: BLOCK_RANGE_MINIMUM,
@@ -145,13 +141,13 @@ export const getDepositedEvent = async (
 };
 
 export const getDepositDetails = async (
-  ethereumClient: PublicClient,
+  l1Client: PublicClient,
   currentBlockNumber: bigint,
   depositEvents: DepositEvent[],
 ) => {
   const tokenIndexes = depositEvents.map(({ args: { tokenIndex } }) => tokenIndex);
   const uniqueTokenIndexes = Array.from(new Set(tokenIndexes));
-  const tokenDetails = await fetchTokenData(ethereumClient, uniqueTokenIndexes);
+  const tokenDetails = await fetchTokenData(l1Client, uniqueTokenIndexes);
   const tokenDetailsMap = new Map(tokenDetails.map((token) => [token.tokenIndex, token]));
 
   const batches: DepositEvent[][] = [];
@@ -162,7 +158,7 @@ export const getDepositDetails = async (
   const depositDetails = [];
   for (const batch of batches) {
     const batchDepositData = await processDepositBatch(
-      ethereumClient,
+      l1Client,
       batch,
       currentBlockNumber,
       tokenDetailsMap,
@@ -174,14 +170,14 @@ export const getDepositDetails = async (
 };
 
 const processDepositBatch = async (
-  ethereumClient: PublicClient,
+  l1Client: PublicClient,
   batch: DepositEvent[],
   currentBlockNumber: bigint,
   tokenDetailsMap: Map<number, TokenInfo>,
 ) => {
   const depositIds = batch.map(({ args: { depositId } }) => depositId);
 
-  const results = (await ethereumClient.readContract({
+  const results = (await l1Client.readContract({
     address: LIQUIDITY_CONTRACT_ADDRESS,
     abi: LiquidityAbi as Abi,
     functionName: "getDepositDataBatch",

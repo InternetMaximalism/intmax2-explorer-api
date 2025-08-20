@@ -35,7 +35,7 @@ import { decodeFunctionData, type Hex, type PublicClient } from "viem";
 import { calculateNonRegistrationLength } from "../lib/utils";
 
 export const fetchAndStoreBlocks = async (
-  scrollClient: PublicClient,
+  l2Client: PublicClient,
   scrollCurrentBlockNumber: bigint,
   blockEvent: Event,
   lastBlockProcessedEvent: EventData | null,
@@ -55,7 +55,7 @@ export const fetchAndStoreBlocks = async (
   }
 
   const [blockPostedEvents, { blockNumber: latestValidityBlockNumber }] = await Promise.all([
-    fetchBlockPostedEvent(scrollClient, startBlockNumber, scrollCurrentBlockNumber),
+    fetchBlockPostedEvent(l2Client, startBlockNumber, scrollCurrentBlockNumber),
     fetchLatestValidityProofBlockNumber(),
   ]);
 
@@ -64,7 +64,7 @@ export const fetchAndStoreBlocks = async (
     const batch = blockPostedEvents.slice(i, i + config.VALIDITY_PROVER_API_BLOCK_BATCH_SIZE);
     const blockDetail = await processBlockBatch(
       batch,
-      scrollClient,
+      l2Client,
       latestValidityBlockNumber,
       i === 0,
     );
@@ -158,12 +158,12 @@ const formatBlockTransaction = (
 };
 
 const fetchBlockPostedEvent = async (
-  scrollClient: PublicClient,
+  l2Client: PublicClient,
   startBlockNumber: bigint,
   scrollCurrentBlockNumber: bigint,
 ) => {
   try {
-    const blockPostedEvents = await fetchEvents<BlockPostedEvent>(scrollClient, {
+    const blockPostedEvents = await fetchEvents<BlockPostedEvent>(l2Client, {
       startBlockNumber,
       endBlockNumber: scrollCurrentBlockNumber,
       blockRange: BLOCK_RANGE_MINIMUM,
@@ -182,13 +182,13 @@ const fetchBlockPostedEvent = async (
 
 const processBlockBatch = async (
   blockPostedEvents: BlockPostedEvent[],
-  scrollClient: PublicClient,
+  l2Client: PublicClient,
   latestValidityBlockNumber: number,
   isInitialBatch: boolean,
 ) => {
   const promises = blockPostedEvents.map(async (blockPostedEvent) => {
     const results = await Promise.allSettled([
-      scrollClient.getTransaction({
+      l2Client.getTransaction({
         hash: blockPostedEvent.transactionHash as `0x${string}`,
       }),
       fetchValidityProof(blockPostedEvent, isInitialBatch),
