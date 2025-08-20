@@ -172,7 +172,7 @@ describe("withdrawal.service", () => {
       expect(Event).toHaveBeenCalledWith(FIRESTORE_DOCUMENT_EVENTS.WITHDRAWAL);
 
       // Verify network client creation
-      expect(createNetworkClient).toHaveBeenCalledWith("ethereum");
+      expect(createNetworkClient).toHaveBeenCalledWith("l1");
 
       // Verify withdrawal instance calls
       expect(mockWithdrawalInstance.listAllWithdrawals).toHaveBeenCalledWith({
