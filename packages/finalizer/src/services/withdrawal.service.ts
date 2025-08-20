@@ -144,7 +144,7 @@ const fetchWithdrawalEvents = async <T>(
 };
 
 const getEthereumAndScrollBlockNumbers = async () => {
-  const ethereumClient = createNetworkClient("ethereum");
+  const ethereumClient = createNetworkClient("l1");
 
   const currentBlockNumber = await ethereumClient.getBlockNumber();
 

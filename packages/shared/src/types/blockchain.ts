@@ -101,3 +101,5 @@ interface Withdrawal {
 
 export type TransactionStatus = "Indexing" | "Relayed" | "Rejected" | "Completed";
 export type TokenType = 0 | 1 | 2 | 3;
+
+export type NetworkLayer = "l1" | "l2";

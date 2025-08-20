@@ -19,7 +19,7 @@ export const getTVL = async () => {
 
 const getEthBalance = async () => {
   try {
-    const ethereumClient = createNetworkClient("ethereum");
+    const ethereumClient = createNetworkClient("l1");
     const balance = await ethereumClient.getBalance({
       address: LIQUIDITY_CONTRACT_ADDRESS,
       blockTag: "safe",
