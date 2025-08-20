@@ -3,9 +3,8 @@ import type { PublicClient } from "viem";
 
 // withdrawal
 export type FetchAndStoreWithdrawalsParams = {
-  ethereumClient: PublicClient;
-  currentBlockNumber: bigint;
-  scrollClient: PublicClient;
+  l1Client: PublicClient;
+  l2Client: PublicClient;
   scrollCurrentBlockNumber: bigint;
   lastWithdrawalQueueProcessedEvent: EventData | null;
   withdrawalQueueEvent: Event;

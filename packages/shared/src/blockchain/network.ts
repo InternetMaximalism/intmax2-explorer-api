@@ -1,4 +1,4 @@
-import { type Chain, createPublicClient, fallback, http, type PublicClient } from "viem";
+import { createPublicClient, fallback, http, type PublicClient } from "viem";
 import * as chains from "viem/chains";
 import { config } from "../config";
 import type { NetworkLayer } from "../types";
@@ -20,14 +20,14 @@ const getClientConfig = (networkLayer: NetworkLayer) => {
   };
 };
 
-export const createNetworkClient = (networkLayer: "l1" | "l2") => {
+export const createNetworkClient = (networkLayer: NetworkLayer) => {
   const { chain, rpcUrls } = getClientConfig(networkLayer);
 
   return createPublicClient({
     batch: {
       multicall: true,
     },
-    chain: chain as Chain,
+    chain,
     transport: fallback(rpcUrls, {
       retryCount: 3,
     }),
