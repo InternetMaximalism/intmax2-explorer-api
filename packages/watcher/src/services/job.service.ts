@@ -50,8 +50,8 @@ export const performJob = async (): Promise<void> => {
 };
 
 const getEthereumAndScrollBlockNumbers = async () => {
-  const ethereumClient = createNetworkClient("ethereum");
-  const scrollClient = createNetworkClient("scroll");
+  const ethereumClient = createNetworkClient("l1");
+  const scrollClient = createNetworkClient("l2");
 
   const [currentBlockNumber, scrollCurrentBlockNumber] = await Promise.all([
     ethereumClient.getBlockNumber(),
