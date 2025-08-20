@@ -1,5 +1,5 @@
 import { type Chain, createPublicClient, fallback, http, type PublicClient } from "viem";
-import chains from "viem/chains";
+import * as chains from "viem/chains";
 import { config } from "../config";
 import type { NetworkLayer } from "../types";
 
