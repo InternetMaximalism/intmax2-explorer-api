@@ -38,14 +38,11 @@ export const config = cleanEnv(process.env, {
   // blockchain
   L1_CHAIN: str({ default: "sepolia" }),
   L2_CHAIN: str({ default: "scrollSepolia" }),
-  NETWORK_ENVIRONMENT: str({
-    choices: ["mainnet", "sepolia"],
-    default: "sepolia",
-    desc: "The environment of the blockchain network to connect to",
-  }),
-  ALCHEMY_API_KEY: str(),
   L1_RPC_URLS: rpcUrls(),
   L2_RPC_URLS: rpcUrls(),
+  ALCHEMY_API_KEY: str(),
+  ALCHEMY_L1_NETWORK: str({ default: "eth-sepolia" }),
+  ALCHEMY_L2_NETWORK: str({ default: "scroll-sepolia" }),
   USE_MIGRATED_ABI: bool({
     default: false,
     desc: "Use migrated ABI for contracts. Set to `true` on mainnet, and `false` on testnet.",
