@@ -939,12 +939,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hono/node-server@npm:^1.18.2":
-  version: 1.18.2
-  resolution: "@hono/node-server@npm:1.18.2"
+"@hono/node-server@npm:^1.19.0":
+  version: 1.19.0
+  resolution: "@hono/node-server@npm:1.19.0"
   peerDependencies:
     hono: ^4
-  checksum: 10c0/9dee029f9642df95f6d98cf2e4fbf89396dbf0cbef310fe621a4ffbf0867a4d3bff221bed5997e52aa0e84c9344c0b8b0e58f2f3bc0effe2a539a8f206062a3b
+  checksum: 10c0/33d7d6a1d139e449e57900533117a356efc04d26ca3cb1412e0c51c761e1eaf475bcf0b9646e46cfe589712d37c3b540223ac458577e090913bf348eebc1e01e
   languageName: node
   linkType: hard
 
@@ -953,7 +953,7 @@ __metadata:
   resolution: "@intmax2-explorer-api/shared@workspace:packages/shared"
   dependencies:
     "@google-cloud/firestore": "npm:^7.11.3"
-    abitype: "npm:^1.0.8"
+    abitype: "npm:^1.0.9"
     alchemy-sdk: "npm:^3.6.3"
     axios: "npm:^1.11.0"
     envalid: "npm:^8.1.0"
@@ -961,7 +961,7 @@ __metadata:
     pino: "npm:^9.9.0"
     pino-pretty: "npm:^13.1.1"
     typescript: "npm:^5.9.2"
-    viem: "npm:^2.33.3"
+    viem: "npm:^2.34.0"
     vitest: "npm:^3.2.4"
     zod: "npm:4.0.17"
   languageName: unknown
@@ -1060,12 +1060,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:1.9.2, @noble/curves@npm:^1.9.1":
-  version: 1.9.2
-  resolution: "@noble/curves@npm:1.9.2"
+"@noble/curves@npm:1.9.6":
+  version: 1.9.6
+  resolution: "@noble/curves@npm:1.9.6"
   dependencies:
     "@noble/hashes": "npm:1.8.0"
-  checksum: 10c0/21d049ae4558beedbf5da0004407b72db84360fa29d64822d82dc9e80251e1ecb46023590cc4b20e70eed697d1b87279b4911dc39f8694c51c874289cfc8e9a7
+  checksum: 10c0/e462875ad752d2cdffc3c7b27b6de3adcff5fae0731e94138bd9e452c5f9b7aaf4c01ea6c62d3c0544b4e7419662535bb2ef1103311de48d51885c053206e118
   languageName: node
   linkType: hard
 
@@ -1075,6 +1075,15 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:1.8.0"
   checksum: 10c0/a76d57444b4d136f43363eb19229d990df15a00fb0e2efbf08a7a4cbaee655f73e46eb29b6ad07b8749be5f7b890c0a7a06a19f4324a4b149b06b3da1def8593
+  languageName: node
+  linkType: hard
+
+"@noble/curves@npm:^1.9.1":
+  version: 1.9.2
+  resolution: "@noble/curves@npm:1.9.2"
+  dependencies:
+    "@noble/hashes": "npm:1.8.0"
+  checksum: 10c0/21d049ae4558beedbf5da0004407b72db84360fa29d64822d82dc9e80251e1ecb46023590cc4b20e70eed697d1b87279b4911dc39f8694c51c874289cfc8e9a7
   languageName: node
   linkType: hard
 
@@ -1703,6 +1712,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"abitype@npm:^1.0.9":
+  version: 1.0.9
+  resolution: "abitype@npm:1.0.9"
+  peerDependencies:
+    typescript: ">=5.0.4"
+    zod: ^3 >=3.22.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+    zod:
+      optional: true
+  checksum: 10c0/8707fcc80d3edaea14717b0c9ebe15cef1f11825a9c5ffcdbd3ac8e53ae34aaa4c5eb9fb4c352d598d0013fcf71370eeda8eac2fc575f04fa0699a43477ae52b
+  languageName: node
+  linkType: hard
+
 "abort-controller@npm:^3.0.0":
   version: 3.0.0
   resolution: "abort-controller@npm:3.0.0"
@@ -1801,7 +1825,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "api@workspace:packages/api"
   dependencies:
-    "@hono/node-server": "npm:^1.18.2"
+    "@hono/node-server": "npm:^1.19.0"
     "@intmax2-explorer-api/shared": "workspace:*"
     axios: "npm:^1.11.0"
     hono: "npm:^4.9.2"
@@ -1810,7 +1834,7 @@ __metadata:
     node-cache: "npm:^5.1.2"
     tsx: "npm:^4.20.4"
     typescript: "npm:^5.9.2"
-    viem: "npm:^2.33.3"
+    viem: "npm:^2.34.0"
     vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
@@ -2759,10 +2783,10 @@ __metadata:
   dependencies:
     "@google-cloud/firestore": "npm:^7.11.3"
     "@intmax2-explorer-api/shared": "workspace:*"
-    abitype: "npm:^1.0.8"
+    abitype: "npm:^1.0.9"
     tsx: "npm:^4.20.4"
     typescript: "npm:^5.9.2"
-    viem: "npm:^2.33.3"
+    viem: "npm:^2.34.0"
     vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
@@ -3766,9 +3790,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ox@npm:0.8.6":
-  version: 0.8.6
-  resolution: "ox@npm:0.8.6"
+"ox@npm:0.8.7":
+  version: 0.8.7
+  resolution: "ox@npm:0.8.7"
   dependencies:
     "@adraffy/ens-normalize": "npm:^1.11.0"
     "@noble/ciphers": "npm:^1.3.0"
@@ -3783,7 +3807,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/025c638966c6e569bb38a78a6f9f84bbeb9f5b0a594ef011ab3f81414edcaf5b20d9ea7d8f90471ddafdcb3f21c61f7a2255d35d2032e8daafbc8b20d98d27cf
+  checksum: 10c0/a0919651e35b60d741f745ef6a0cfa1f63daf17d43e95cae7957c291eba90248be0968ee0a6d2f268e5e79f6dbbc3ab3b4617df0bcadcae722843168639795e1
   languageName: node
   linkType: hard
 
@@ -4704,24 +4728,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.33.3":
-  version: 2.33.3
-  resolution: "viem@npm:2.33.3"
+"viem@npm:^2.34.0":
+  version: 2.34.0
+  resolution: "viem@npm:2.34.0"
   dependencies:
-    "@noble/curves": "npm:1.9.2"
+    "@noble/curves": "npm:1.9.6"
     "@noble/hashes": "npm:1.8.0"
     "@scure/bip32": "npm:1.7.0"
     "@scure/bip39": "npm:1.6.0"
     abitype: "npm:1.0.8"
     isows: "npm:1.0.7"
-    ox: "npm:0.8.6"
-    ws: "npm:8.18.2"
+    ox: "npm:0.8.7"
+    ws: "npm:8.18.3"
   peerDependencies:
     typescript: ">=5.0.4"
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/3e1e1849f88529d37e5a52336003209d2b054364738bdd2b89ef3e684cdefe7894a541886bfbfe35ef6c5441849cd7fa6f393ecfa1008c09a5cacc2c978fd42d
+  checksum: 10c0/e2cd2a672d1912db63e8e0a7e95d0ce551e30ba4c4fa1fde042b23cde590eed7144fcdfce88777bfcbb8503c5f45a7b8d439e82853bc2ef746e408bf1394c4a3
   languageName: node
   linkType: hard
 
@@ -4857,10 +4881,10 @@ __metadata:
   dependencies:
     "@google-cloud/firestore": "npm:^7.11.3"
     "@intmax2-explorer-api/shared": "workspace:*"
-    abitype: "npm:^1.0.8"
+    abitype: "npm:^1.0.9"
     tsx: "npm:^4.20.4"
     typescript: "npm:^5.9.2"
-    viem: "npm:^2.33.3"
+    viem: "npm:^2.34.0"
     vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
@@ -4974,9 +4998,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.18.2":
-  version: 8.18.2
-  resolution: "ws@npm:8.18.2"
+"ws@npm:8.18.3":
+  version: 8.18.3
+  resolution: "ws@npm:8.18.3"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -4985,7 +5009,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 10c0/4b50f67931b8c6943c893f59c524f0e4905bbd183016cfb0f2b8653aa7f28dad4e456b9d99d285bbb67cca4fedd9ce90dfdfaa82b898a11414ebd66ee99141e4
+  checksum: 10c0/eac918213de265ef7cb3d4ca348b891a51a520d839aa51cdb8ca93d4fa7ff9f6ccb339ccee89e4075324097f0a55157c89fa3f7147bde9d8d7e90335dc087b53
   languageName: node
   linkType: hard
 
