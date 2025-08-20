@@ -160,7 +160,7 @@ const fetchBlocksInBatches = async (blockNumbers: bigint[], batchSize = 100) => 
   const blocks = [];
   for (const batch of batches) {
     const batchPromises = batch.map((blockNumber) =>
-      Alchemy.getInstance("scroll").getBlock(blockNumber),
+      Alchemy.getInstance("l2").getBlock(blockNumber),
     );
 
     if (blocks.length > 0) {
