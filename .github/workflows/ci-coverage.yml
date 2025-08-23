@@ -11,7 +11,7 @@ permissions:
 
 env:
   NODE_VERSION: 24.6.0
-  YARN_VERSION: 4.9.2
+  YARN_VERSION: 4.9.3
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

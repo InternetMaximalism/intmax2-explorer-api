@@ -8,11 +8,11 @@
     "alchemy-sdk": "^3.6.3",
     "axios": "^1.11.0",
     "envalid": "^8.1.0",
-    "hono": "^4.9.2",
+    "hono": "^4.9.4",
     "pino": "^9.9.0",
     "pino-pretty": "^13.1.1",
     "viem": "^2.34.0",
-    "zod": "4.0.17"
+    "zod": "4.1.0"
   },
   "scripts": {
     "build": "rm -rf dist tsconfig.tsbuildinfo && tsc",
