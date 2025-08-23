@@ -1,8 +1,8 @@
 FROM node:24.6.0-bookworm-slim AS builder
 
 RUN corepack enable && \
-    corepack prepare yarn@4.9.2 --activate && \
-    yarn set version 4.9.2
+    corepack prepare yarn@4.9.3 --activate && \
+    yarn set version 4.9.3
 
 RUN apt-get update && apt-get install -y \
     python3 \
@@ -46,8 +46,8 @@ ENV NODE_OPTIONS="\
   --zero-fill-buffers"
 
 RUN corepack enable && \
-    corepack prepare yarn@4.9.2 --activate && \
-    yarn set version 4.9.2
+    corepack prepare yarn@4.9.3 --activate && \
+    yarn set version 4.9.3
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
