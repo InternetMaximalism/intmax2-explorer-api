@@ -55,7 +55,7 @@ export const finalizeRelayedWithdrawals = async () => {
       l1Client,
       startBlockNumber,
       currentBlockNumber,
-      claimableWithdrawals,
+      [...directWithdrawals, ...claimableWithdrawals], // NOTE: If directWithdrawals fail, they will appear in claimableWithdrawals
       withdrawalClaimableEvent,
     ),
   ]).then((processed) => processed.flat());

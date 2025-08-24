@@ -200,7 +200,7 @@ describe("withdrawal.service", () => {
         contractAddress: LIQUIDITY_CONTRACT_ADDRESS,
         eventInterface: withdrawalClaimableEvent,
         args: {
-          withdrawalHash: ["0xclaimable1"],
+          withdrawalHash: ["0xdirect1", "0xdirect2", "0xclaimable1"],
         },
       });
 
