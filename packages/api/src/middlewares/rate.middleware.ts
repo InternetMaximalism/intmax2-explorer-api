@@ -24,7 +24,7 @@ export const limiter = rateLimiter({
   },
   handler: (c) => {
     const ip = getClientIP(c);
-    logger.warn(`Rate limit exceeded for IP: ${ip}`);
+    logger.debug(`Rate limit exceeded for IP: ${ip}`);
     throw new TooManyRequestsError("Rate limit exceeded");
   },
 });
