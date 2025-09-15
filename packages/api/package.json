@@ -4,7 +4,7 @@
   "dependencies": {
     "@hono/node-server": "^1.19.0",
     "@intmax2-explorer-api/shared": "workspace:*",
-    "axios": "^1.11.0",
+    "axios": "^1.12.2",
     "hono": "^4.9.6",
     "hono-rate-limiter": "^0.4.2",
     "ioredis": "^5.7.0",
