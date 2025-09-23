@@ -1,4 +1,4 @@
-import type { Context, TypedResponse } from "hono";
+import type { Context } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { ZodError } from "zod";
 import { isProduction } from "../config";
@@ -46,7 +46,7 @@ export class InternalServerError extends AppError {
 
 const IGNORE_ERROR_MESSAGES = ["URI malformed"];
 
-export const handleError = (err: unknown, c: Context): TypedResponse => {
+export const handleError = (err: unknown, c: Context): Response => {
   if (err instanceof ZodError) {
     return c.json(
       {
