@@ -40,9 +40,6 @@ export const config = cleanEnv(process.env, {
   L2_CHAIN: str({ default: "scrollSepolia" }),
   L1_RPC_URLS: rpcUrls(),
   L2_RPC_URLS: rpcUrls(),
-  ALCHEMY_API_KEY: str(),
-  ALCHEMY_L1_NETWORK: str({ default: "ETH_SEPOLIA" }),
-  ALCHEMY_L2_NETWORK: str({ default: "SCROLL_SEPOLIA" }),
   USE_MIGRATED_ABI: bool({
     default: false,
     desc: "Use migrated ABI for contracts. Set to `true` on mainnet, and `false` on testnet.",

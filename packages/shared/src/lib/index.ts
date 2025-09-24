@@ -1,4 +1,3 @@
-export * from "./alchemy";
 export * from "./block";
 export * from "./error";
 export * from "./logger";
