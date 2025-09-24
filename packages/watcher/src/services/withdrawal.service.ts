@@ -1,5 +1,4 @@
 import {
-  Alchemy,
   BLOCK_RANGE_MOST_RECENT,
   type ClaimableWithdrawalEvent,
   claimableWithdrawalQueuedEvent,
@@ -62,8 +61,8 @@ export const fetchAndStoreWithdrawals = async ({
   const tokenDetailsMap = await fetchTokenDetailsMap(l1Client, allEvents);
 
   const withdrawalDetails = await Promise.all([
-    processWithdrawalEvents(directWithdrawalQueuedEvents, tokenDetailsMap, "direct"),
-    processWithdrawalEvents(claimableWithdrawalEvents, tokenDetailsMap, "claimable"),
+    processWithdrawalEvents(l2Client, directWithdrawalQueuedEvents, tokenDetailsMap, "direct"),
+    processWithdrawalEvents(l2Client, claimableWithdrawalEvents, tokenDetailsMap, "claimable"),
   ]).then((processed) => processed.flat());
 
   const withdrawal = Withdrawal.getInstance();
@@ -101,6 +100,7 @@ const fetchWithdrawalQueueEvents = async (
 };
 
 const processWithdrawalEvents = async (
+  l2Client: PublicClient,
   events: ClaimableWithdrawalEvent[] | DirectWithdrawalQueueEvent[],
   tokenDetailsMap: Map<number, TokenInfo>,
   type: WithdrawalType,
@@ -110,7 +110,7 @@ const processWithdrawalEvents = async (
   }
 
   const blockNumbers = [...new Set(events.map((event) => event.blockNumber))];
-  const blocks = await fetchBlocksInBatches(blockNumbers);
+  const blocks = await fetchBlocksInBatches(l2Client, blockNumbers);
   const blockMap = new Map(blockNumbers.map((blockNumber, index) => [blockNumber, blocks[index]]));
 
   return events.map((event) => {
@@ -132,7 +132,7 @@ const processWithdrawalEvents = async (
       tokenIndex: event.args.withdrawal.tokenIndex,
       tokenType: Number(tokenDetail.tokenType),
       amount: String(event.args.withdrawal.amount),
-      relayedTimestamp: block.timestamp,
+      relayedTimestamp: Number(block.timestamp),
       relayedTransactionHash: event.transactionHash,
       status: "Relayed" as TransactionStatus,
       type,
@@ -151,7 +151,11 @@ const fetchTokenDetailsMap = async (
   return new Map(tokenDetails.map((token) => [token.tokenIndex, token]));
 };
 
-const fetchBlocksInBatches = async (blockNumbers: bigint[], batchSize = 100) => {
+const fetchBlocksInBatches = async (
+  l2Client: PublicClient,
+  blockNumbers: bigint[],
+  batchSize = 100,
+) => {
   const batches = [];
   for (let i = 0; i < blockNumbers.length; i += batchSize) {
     batches.push(blockNumbers.slice(i, i + batchSize));
@@ -159,9 +163,7 @@ const fetchBlocksInBatches = async (blockNumbers: bigint[], batchSize = 100) => 
 
   const blocks = [];
   for (const batch of batches) {
-    const batchPromises = batch.map((blockNumber) =>
-      Alchemy.getInstance("l2").getBlock(blockNumber),
-    );
+    const batchPromises = batch.map((blockNumber) => l2Client.getBlock({ blockNumber }));
 
     if (blocks.length > 0) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
