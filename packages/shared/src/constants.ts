@@ -4,10 +4,7 @@ import { config } from "./config";
 export const DEFAULT_PAGE_SIZE = 10;
 
 // block event
-export const BLOCK_RANGE_MOST_RECENT = 500n;
-export const BLOCK_RANGE_MINIMUM = 1000n;
-export const BLOCK_RANGE_NORMAL = 10000n;
-export const BLOCK_RANGE_MAX = 30000n;
+export const BLOCK_RANGE_MIN = BigInt(config.BLOCK_RANGE_MIN);
 
 // db
 export const FIRESTORE_COLLECTIONS = {

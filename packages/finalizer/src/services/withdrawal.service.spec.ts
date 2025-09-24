@@ -1,5 +1,5 @@
 import {
-  BLOCK_RANGE_MINIMUM,
+  BLOCK_RANGE_MIN,
   type ClaimableWithdrawalEvent,
   createNetworkClient,
   type DirectWithdrawalQueueEvent,
@@ -23,7 +23,7 @@ import type { RelayedWithdrawal } from "../types";
 import { finalizeRelayedWithdrawals } from "./withdrawal.service";
 
 vi.mock("@intmax2-explorer-api/shared", () => ({
-  BLOCK_RANGE_MINIMUM: 1000,
+  BLOCK_RANGE_MIN: 1000,
   FIRESTORE_DOCUMENT_EVENTS: {
     WITHDRAWAL: "withdrawal-events",
   },
@@ -185,7 +185,7 @@ describe("withdrawal.service", () => {
       expect(fetchEvents).toHaveBeenNthCalledWith(1, mockEthereumClient, {
         startBlockNumber: 1000000n,
         endBlockNumber: 2000000n,
-        blockRange: BLOCK_RANGE_MINIMUM,
+        blockRange: BLOCK_RANGE_MIN,
         contractAddress: LIQUIDITY_CONTRACT_ADDRESS,
         eventInterface: directWithdrawalSuccessedEvent,
         args: {
@@ -196,7 +196,7 @@ describe("withdrawal.service", () => {
       expect(fetchEvents).toHaveBeenNthCalledWith(2, mockEthereumClient, {
         startBlockNumber: 1000000n,
         endBlockNumber: 2000000n,
-        blockRange: BLOCK_RANGE_MINIMUM,
+        blockRange: BLOCK_RANGE_MIN,
         contractAddress: LIQUIDITY_CONTRACT_ADDRESS,
         eventInterface: withdrawalClaimableEvent,
         args: {

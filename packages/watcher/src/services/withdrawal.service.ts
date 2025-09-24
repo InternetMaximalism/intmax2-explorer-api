@@ -1,5 +1,5 @@
 import {
-  BLOCK_RANGE_MOST_RECENT,
+  BLOCK_RANGE_MIN,
   type ClaimableWithdrawalEvent,
   claimableWithdrawalQueuedEvent,
   type DirectWithdrawalQueueEvent,
@@ -91,7 +91,7 @@ const fetchWithdrawalQueueEvents = async (
   const events = await fetchEvents<DirectWithdrawalQueueEvent>(l2Client, {
     startBlockNumber,
     endBlockNumber: scrollCurrentBlockNumber,
-    blockRange: BLOCK_RANGE_MOST_RECENT,
+    blockRange: BLOCK_RANGE_MIN,
     contractAddress: WITHDRAWAL_CONTRACT_ADDRESS,
     eventInterface: eventInterface,
   });
