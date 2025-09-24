@@ -1,5 +1,5 @@
 import {
-  BLOCK_RANGE_MINIMUM,
+  BLOCK_RANGE_MIN,
   type ClaimableWithdrawalEvent,
   createNetworkClient,
   type DirectWithdrawalQueueEvent,
@@ -132,7 +132,7 @@ const fetchWithdrawalEvents = async <T>(
   const events = await fetchEvents<T>(l1Client, {
     startBlockNumber: startBlockNumber,
     endBlockNumber: currentBlockNumber,
-    blockRange: BLOCK_RANGE_MINIMUM,
+    blockRange: BLOCK_RANGE_MIN,
     contractAddress: LIQUIDITY_CONTRACT_ADDRESS,
     eventInterface: eventInterface,
     args: {

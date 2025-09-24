@@ -1,6 +1,6 @@
 import type { Transaction } from "@google-cloud/firestore";
 import {
-  BLOCK_RANGE_MINIMUM,
+  BLOCK_RANGE_MIN,
   DEPOSIT_BATCH_SIZE,
   Deposit,
   type DepositEvent,
@@ -126,7 +126,7 @@ export const getDepositedEvent = async (
     const depositEvents = await fetchEvents<DepositEvent>(l1Client, {
       startBlockNumber,
       endBlockNumber: currentBlockNumber,
-      blockRange: BLOCK_RANGE_MINIMUM,
+      blockRange: BLOCK_RANGE_MIN,
       contractAddress: LIQUIDITY_CONTRACT_ADDRESS,
       eventInterface: depositedEvent,
     });

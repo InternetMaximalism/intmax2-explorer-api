@@ -40,6 +40,7 @@ export const config = cleanEnv(process.env, {
   L2_CHAIN: str({ default: "scrollSepolia" }),
   L1_RPC_URLS: rpcUrls(),
   L2_RPC_URLS: rpcUrls(),
+  BLOCK_RANGE_MIN: num({ default: 500 }),
   USE_MIGRATED_ABI: bool({
     default: false,
     desc: "Use migrated ABI for contracts. Set to `true` on mainnet, and `false` on testnet.",

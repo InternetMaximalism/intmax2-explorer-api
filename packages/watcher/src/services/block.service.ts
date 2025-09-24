@@ -1,7 +1,7 @@
 import type { Transaction } from "@google-cloud/firestore";
 import {
   BLOCK_BATCH_SIZE_LARGE,
-  BLOCK_RANGE_MINIMUM,
+  BLOCK_RANGE_MIN,
   Block,
   type BlockPostedEvent,
   blockPostedEvent,
@@ -166,7 +166,7 @@ const fetchBlockPostedEvent = async (
     const blockPostedEvents = await fetchEvents<BlockPostedEvent>(l2Client, {
       startBlockNumber,
       endBlockNumber: scrollCurrentBlockNumber,
-      blockRange: BLOCK_RANGE_MINIMUM,
+      blockRange: BLOCK_RANGE_MIN,
       contractAddress: ROLLUP_CONTRACT_ADDRESS,
       eventInterface: blockPostedEvent,
     });
