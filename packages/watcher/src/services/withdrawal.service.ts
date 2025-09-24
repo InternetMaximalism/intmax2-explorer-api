@@ -1,4 +1,5 @@
 import {
+  BLOCK_RANGE_MIN,
   type ClaimableWithdrawalEvent,
   claimableWithdrawalQueuedEvent,
   type DirectWithdrawalQueueEvent,
@@ -16,7 +17,6 @@ import {
   Withdrawal,
   type WithdrawalInput,
   type WithdrawalType,
-  BLOCK_RANGE_MIN,
 } from "@intmax2-explorer-api/shared";
 import { type PublicClient, parseAbiItem } from "viem";
 import type { FetchAndStoreWithdrawalsParams } from "../types";
