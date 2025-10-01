@@ -1,5 +1,11 @@
 import { serve } from "@hono/node-server";
-import { config, handleError, logger, NotFoundError } from "@intmax2-explorer-api/shared";
+import {
+  config,
+  handleError,
+  logger,
+  NotFoundError,
+  TIMEOUT_ERROR,
+} from "@intmax2-explorer-api/shared";
 import { Hono } from "hono";
 import { compress } from "hono/compress";
 import { prettyJSON } from "hono/pretty-json";
@@ -19,7 +25,7 @@ app.use("*", corsMiddleware);
 app.use(secureHeaders());
 app.use(limiter);
 
-app.use(timeout(APP_TIMEOUT));
+app.use(timeout(APP_TIMEOUT, TIMEOUT_ERROR));
 app.use(requestMiddleware);
 
 app.use(compress());
