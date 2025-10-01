@@ -2,7 +2,7 @@ import { type Context, Hono } from "hono";
 import { etag } from "hono/etag";
 import { CACHE_TIMEOUTS } from "../constants";
 import { cacheMiddleware } from "../middlewares";
-import type { CacheOptions } from "./../types";
+import type { CacheOptions } from "../types";
 
 interface RouterConfig {
   listHandler: (c: Context) => Promise<any>;

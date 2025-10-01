@@ -1,5 +1,5 @@
 import type { QueryValidationType } from "@intmax2-explorer-api/shared";
-import type { SearchResult } from "./../types";
+import type { SearchResult } from "../types";
 import { getBlock, getBlockByBlockNumber } from "./blocks.service";
 import { getDeposit } from "./deposits.service";
 import { getWithdrawal } from "./withdrawals.service";

@@ -1,5 +1,5 @@
 import { etag } from "hono/etag";
-import { CACHE_TIMEOUTS } from "./../constants";
+import { CACHE_TIMEOUTS } from "../constants";
 import * as blocksController from "../controllers/blocks.controller";
 import { createBaseRouter } from "./utils";
 
