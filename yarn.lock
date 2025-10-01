@@ -559,7 +559,7 @@ __metadata:
     abitype: "npm:^1.1.1"
     axios: "npm:^1.12.2"
     envalid: "npm:^8.1.0"
-    hono: "npm:^4.9.8"
+    hono: "npm:^4.9.9"
     pino: "npm:^9.11.0"
     pino-pretty: "npm:^13.1.1"
     typescript: "npm:^5.9.2"
@@ -1260,7 +1260,7 @@ __metadata:
     "@hono/node-server": "npm:^1.19.4"
     "@intmax2-explorer-api/shared": "workspace:*"
     axios: "npm:^1.12.2"
-    hono: "npm:^4.9.8"
+    hono: "npm:^4.9.9"
     hono-rate-limiter: "npm:^0.4.2"
     ioredis: "npm:^5.7.0"
     node-cache: "npm:^5.1.2"
@@ -2258,10 +2258,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono@npm:^4.9.8":
-  version: 4.9.8
-  resolution: "hono@npm:4.9.8"
-  checksum: 10c0/18d007abf1c6b88dd833b0732942bff47913c0f332eeab2bf680b8c647b7025bb64db91a8f22a786138629c02b09fd9819256140a19091eeed7c66a16f19244b
+"hono@npm:^4.9.9":
+  version: 4.9.9
+  resolution: "hono@npm:4.9.9"
+  checksum: 10c0/a9ebd5953b9d513596538069bb02a3b1196fd0d52467d7461ab64b378c13315722ac95e2310ed59e518d23d5c04d8ae0c9059db167448170eab395b3ad49bd4c
   languageName: node
   linkType: hard
 
