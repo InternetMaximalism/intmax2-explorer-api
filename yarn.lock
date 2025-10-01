@@ -505,16 +505,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@google-cloud/firestore@npm:^7.11.5":
-  version: 7.11.5
-  resolution: "@google-cloud/firestore@npm:7.11.5"
+"@google-cloud/firestore@npm:^7.11.6":
+  version: 7.11.6
+  resolution: "@google-cloud/firestore@npm:7.11.6"
   dependencies:
     "@opentelemetry/api": "npm:^1.3.0"
     fast-deep-equal: "npm:^3.1.1"
     functional-red-black-tree: "npm:^1.0.1"
     google-gax: "npm:^4.3.3"
     protobufjs: "npm:^7.2.6"
-  checksum: 10c0/ed4fdf64656ba907a0382b7d9a67ddbe1c2e0c48a89d526f1da274ddfba5709cd026611ce08401882ca645ad393c28d3c04013607aee3e4261f40d47ad0b5271
+  checksum: 10c0/db47b0abb30ac2c141522fa1de7906d7c9e79bfd1e55aaae4c2439ffb2a2f542a81f803781b5aa213eb0070a8eec1d1baeb5c20d70720a6c05d78ae967490d82
   languageName: node
   linkType: hard
 
@@ -555,7 +555,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@intmax2-explorer-api/shared@workspace:packages/shared"
   dependencies:
-    "@google-cloud/firestore": "npm:^7.11.5"
+    "@google-cloud/firestore": "npm:^7.11.6"
     abitype: "npm:^1.1.1"
     axios: "npm:^1.12.2"
     envalid: "npm:^8.1.0"
@@ -1962,7 +1962,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "finalizer@workspace:packages/finalizer"
   dependencies:
-    "@google-cloud/firestore": "npm:^7.11.5"
+    "@google-cloud/firestore": "npm:^7.11.6"
     "@intmax2-explorer-api/shared": "workspace:*"
     abitype: "npm:^1.1.1"
     tsx: "npm:^4.20.5"
@@ -3824,7 +3824,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "watcher@workspace:packages/watcher"
   dependencies:
-    "@google-cloud/firestore": "npm:^7.11.5"
+    "@google-cloud/firestore": "npm:^7.11.6"
     "@intmax2-explorer-api/shared": "workspace:*"
     abitype: "npm:^1.1.1"
     tsx: "npm:^4.20.5"
