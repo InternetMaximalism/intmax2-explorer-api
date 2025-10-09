@@ -23,8 +23,9 @@ export const limiter = rateLimiter({
     return xApiKey === config.X_API_KEY;
   },
   handler: (c) => {
+    const xApiKey = c.req.header("X-API-KEY");
     const ip = getClientIP(c);
-    logger.debug(`Rate limit exceeded for IP: ${ip}`);
+    logger.debug(`Rate limit exceeded for IP: ${ip} API Key: ${xApiKey}`);
     throw new TooManyRequestsError("Rate limit exceeded");
   },
 });
