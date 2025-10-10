@@ -2,7 +2,7 @@
   "name": "watcher",
   "version": "1.0.0",
   "dependencies": {
-    "@google-cloud/firestore": "^7.11.5",
+    "@google-cloud/firestore": "^7.11.6",
     "@intmax2-explorer-api/shared": "workspace:*",
     "abitype": "^1.1.1",
     "viem": "^2.37.8"
