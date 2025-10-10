@@ -21,6 +21,8 @@ const mockRedis = {
   set: vi.fn(),
   quit: vi.fn(),
   on: vi.fn(),
+  connect: vi.fn().mockReturnValue(Promise.resolve()),
+  ping: vi.fn().mockResolvedValue("PONG"),
 };
 
 vi.mock("ioredis", () => {
@@ -36,8 +38,10 @@ import Redis from "ioredis";
 describe("RedisClient", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Reset singleton instance
     (RedisClient as any).instance = undefined;
+
+    mockRedis.connect.mockReturnValue(Promise.resolve());
+    mockRedis.ping.mockResolvedValue("PONG");
   });
 
   afterEach(() => {

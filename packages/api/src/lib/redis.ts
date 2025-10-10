@@ -47,6 +47,17 @@ export class RedisClient {
     this.client.on("end", () => {
       logger.debug("Redis client connection ended");
     });
+
+    if (this.client) {
+      this.client
+        .connect()
+        .then(() => this.client!.ping())
+        .then(() => logger.info("Redis healthcheck OK"))
+        .catch((e) => {
+          logger.error(`Redis initial connect failed: ${e?.message || e}`);
+          process.exit(1);
+        });
+    }
   }
 
   public static getInstance(): RedisClient {
@@ -62,32 +73,43 @@ export class RedisClient {
 
   async get<T>(key: string): Promise<T | null> {
     if (!this.client) {
-      return Promise.resolve(null);
-    }
-
-    const cache = await this.client.get(key);
-    if (!cache) {
       return null;
     }
 
     try {
-      return JSON.parse(cache);
-    } catch {
-      return cache as T;
+      const cache = await this.withSoftTimeout(this.client.get(key), 3000, "GET");
+      if (!cache) {
+        return null;
+      }
+
+      try {
+        return JSON.parse(cache);
+      } catch {
+        return cache as T;
+      }
+    } catch (e) {
+      logger.warn(`Redis GET failed for ${key}: ${(e as Error).message}`);
+      return null;
     }
   }
 
   async set<T>(key: string, value: T, expire?: number): Promise<"OK"> {
     if (!this.client) {
-      return Promise.resolve("OK");
+      return "OK";
     }
 
-    const stringValue = typeof value !== "string" ? JSON.stringify(value) : value;
-    if (expire) {
-      return await this.client.set(key, stringValue, "EX", expire);
-    }
+    try {
+      const stringValue = typeof value !== "string" ? JSON.stringify(value) : value;
+      const promise = expire
+        ? this.client.set(key, stringValue, "EX", expire)
+        : this.client.set(key, stringValue);
+      await this.withSoftTimeout(promise, 3000, "SET");
 
-    return await this.client.set(key, stringValue);
+      return "OK";
+    } catch (e) {
+      logger.warn(`Redis SET failed for ${key}: ${(e as Error).message}`);
+      return "OK";
+    }
   }
 
   async ping(): Promise<"PONG"> {
@@ -117,5 +139,23 @@ export class RedisClient {
         this.client = null;
       }
     }
+  }
+
+  private async withSoftTimeout<T>(promise: Promise<T>, ms = 3000, op = "redis") {
+    return new Promise<T>((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        logger.warn(`[${op}] soft-timeout after ${ms}ms -> fallback`);
+        reject(new Error("SOFT_TIMEOUT"));
+      }, ms);
+      promise
+        .then((v) => {
+          clearTimeout(timeout);
+          resolve(v);
+        })
+        .catch((e) => {
+          clearTimeout(timeout);
+          reject(e);
+        });
+    });
   }
 }
