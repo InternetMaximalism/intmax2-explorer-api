@@ -563,7 +563,7 @@ __metadata:
     pino: "npm:^9.11.0"
     pino-pretty: "npm:^13.1.1"
     typescript: "npm:^5.9.2"
-    viem: "npm:^2.37.8"
+    viem: "npm:^2.38.0"
     vitest: "npm:^3.2.4"
     zod: "npm:4.1.11"
   languageName: unknown
@@ -1266,7 +1266,7 @@ __metadata:
     node-cache: "npm:^5.1.2"
     tsx: "npm:^4.20.5"
     typescript: "npm:^5.9.2"
-    viem: "npm:^2.37.8"
+    viem: "npm:^2.38.0"
     vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
@@ -1967,7 +1967,7 @@ __metadata:
     abitype: "npm:^1.1.1"
     tsx: "npm:^4.20.5"
     typescript: "npm:^5.9.2"
-    viem: "npm:^2.37.8"
+    viem: "npm:^2.38.0"
     vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
@@ -3673,9 +3673,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.37.8":
-  version: 2.37.8
-  resolution: "viem@npm:2.37.8"
+"viem@npm:^2.38.0":
+  version: 2.38.0
+  resolution: "viem@npm:2.38.0"
   dependencies:
     "@noble/curves": "npm:1.9.1"
     "@noble/hashes": "npm:1.8.0"
@@ -3690,7 +3690,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/01471fba5de0178fa48e2a9b27edeabb8ec7ba056f1a2048352e344f902a17848765ece0fcb57b6ce321b5ef8e09de9072470e6470d1d85cd25195a4c6d89bef
+  checksum: 10c0/65d13718f6dd8f2de282c147c13700b7c057d855c02641ff1268a57f57963437df1f5bb71fb93e6df547d5e0a880990a9bea497ab2cbc26e89d0bf3e65976f6d
   languageName: node
   linkType: hard
 
@@ -3829,7 +3829,7 @@ __metadata:
     abitype: "npm:^1.1.1"
     tsx: "npm:^4.20.5"
     typescript: "npm:^5.9.2"
-    viem: "npm:^2.37.8"
+    viem: "npm:^2.38.0"
     vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
