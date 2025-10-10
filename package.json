@@ -1,6 +1,6 @@
 {
   "name": "intmax2-explorer-api",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "license": "MIT",
   "description": "Explorer API for INTMAX2 blockchain",
   "repository": {
